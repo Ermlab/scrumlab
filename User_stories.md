@@ -1,0 +1,22 @@
+- jako anonimowy użytkownik mogę zalogować się za pomocą danych z GitLaba (wcześniej musi być skonfigurowana synchronizacja)
+- jako master albo owner mogę przeglądać listę dostępnych projektów z GitLaba
+- jako master albo owner mogę zaimportować projekt z GitLaba (podczas importu system tworzy backloga na podstawie issues z GitLaba)
+- jako administrator ScrumLaba konfiguruję ustawienia synchrnonizacji z serwerem GitLaba
+- jako administrator mam możliwość przetestowania konfiguracji
+- jako zalogowany użytkownik mogę przeglądać backlog
+- jako zalogowany użytkownik mam możliwość dodania user story
+- jako zalogowany użytkownik mam możliwość edytowania pozycji z backloga
+- jako zalogowany użytkownik mogę porządkować elementy w backlogu
+- jako master/owner mogę utworzyć sprint
+- jako master/owner mogę dodawać do sprintu elementy z backloga
+- jako master/owner mogę przenosić story pomiędzy sprintami
+- jako master/owner mogę uruchomić sprint
+- jako użytkownik podczas tworzenia story mogę dodawać taski
+- jako użytkownik mam możliwość przełączania się pomiędzy projektami w backlogu
+- jako użytkownik mam możliwość przełączania się pomiędzy projektami w sprintach
+- jako użytkownik mam możliwość przełączania się pomiędzy projektami w taskboardzie
+- jako użytkownik mam możliwość przeciągnięcia zadania pomiędzy todo/inprogress/verify
+- jako master/owner mam możliwość przeciągnięcia zadania z verify na done lub inprogress
+- jako osoba przydzielona do danego zadania mogę zaktualizować pozostały czas
+- system oznacza sprint jako zakończony po przekroczeniu daty końcowej
+- (epic) raportowanie

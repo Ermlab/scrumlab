@@ -21,4 +21,8 @@ if (Meteor.isClient) {
         return Stories.find();
     }
     
+    Template.tasks.tasks = function(){
+        return Tasks.find();
+    }
+    
 }

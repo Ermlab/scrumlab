@@ -4,6 +4,7 @@ Tasks = new Meteor.Collection("tasks");
 
 if (Meteor.isClient) {
     Meteor.Router.add({
+      '/':'dashboard',
  	  '/dashboard':'dashboard',
       '/projects':'projects',
       '/sprints':'sprints',

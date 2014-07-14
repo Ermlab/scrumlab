@@ -13,6 +13,12 @@ if (Meteor.isClient) {
         }
     }
     
+    Template.user_stories.events = {
+        'click .insert_task': function(event) {
+            alert(event.target.id);
+        }
+    }
+    
     Template.assignees.assignees = function(){
         return Assignees.find();
     }

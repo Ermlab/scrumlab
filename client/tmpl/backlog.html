@@ -17,11 +17,11 @@
                     {{>tasks}}
                     <details>
                         <summary>Dodaj nowe zadanie</summary>
-                        <div style="width: 40%">Nazwa: <input type="text" id="name"/></div>
-                        <div style="width: 20%">Szacowany czas: <input type="number" id="time"/></div>
-                        <div style="width: 40%">Przydzielone do: <select id="assignee_selector">{{>assignees}}</select></div>
+                        Nazwa: <input type="text" id="name" style="width: 30%"/>
+                         Szacowany czas: <input type="number" id="time" style="width: 5%"/>
+                         Przydzielone do: <select id="assignee_selector" style="width: 20%">{{>assignees}}</select>
                         <p>Opis: <input type="text" id="description" size=80/></p>
-                        <input type="button" class="insert" value="Dodaj" />
+                        <input type="button" class="insert_task" value="Dodaj" />
                     </details>
                 </details>
             </div>

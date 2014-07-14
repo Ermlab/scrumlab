@@ -7,15 +7,20 @@
 <template name="user_stories">
     {{#each backlog_items}}
         <div class="story" id={{_id}}>
-            <b>{{name}}</b>
-            <p>{{description}}</p>
-            <div class="hours">{{time}}</div>
-            <div class="assignee">Przydzielone do: {{assignee}}</div>
-            <div class="tasks">
+            <div class="story_title">{{name}}</div>
+            <div class="story_text">{{description}}</div>
+            <div class="story_hours">{{time}}</div>
+            <div class="story_assignee">Przydzielone do: {{assignee}}</div>
+            <div>
                 <details>
                     <summary>Zadania</summary>
                     {{#each tasks _id}}
-                        <p>{{name}}</p>
+                        <div class="task">
+                            <div class="task_title">{{name}}</div>
+                            <div class="task_hours">{{time}}</div>
+                            <div class="task_text">{{description}}</div>
+                            <div class="task_assignee">Przydzielone do: {{assignee}}</div>
+                        </div>
                     {{/each}}
                     <details>
                         <summary>Dodaj nowe zadanie</summary>

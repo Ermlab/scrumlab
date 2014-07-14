@@ -6,7 +6,7 @@
     margin-left: auto;
     margin-right: auto;
     padding: 10px;
-    background: #eae8e8;
+    background: #87aefa;
     border-radius: 10px;
     color: black;
     font-size: 16px;
@@ -14,14 +14,61 @@
     position: relative;
 }
 
-.tasks {
+.story_title {
+    width: 80%;
+    font-weight: bold;
+    font-size: 20px;
     position: relative;
-    margin-left: 10px;
+    margin: 10px;
 }
 
-.hours {
+.story_text {
+    margin: 10px;
+}
+
+.story_hours {
     position: absolute;
     top: 5px;
+    right: 5px;
+    margin: 5px;
+    width: auto;
+    text-align: right;
+    height: 40px;
+    font-size: 40px;
+}
+
+.story_assignee {
+    position: absolute;
+    right: 10px;
+    width: auto;
+    text-align: right;
+    height: 16px;
+    font-size: 16px;
+}
+
+.task {
+    width: 97%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    background: #c7d4f8;
+    border-radius: 5px;
+}
+
+.task_title {
+    width: 60%;
+    font-weight: bold;
+    font-size: 20px;
+    position: absolute;
+    margin: 10px;
+}
+
+.task_text {
+    margin: 10px;
+}
+
+.task_hours {
+    position: relative;
     right: 5px;
     width: auto;
     text-align: right;
@@ -29,10 +76,10 @@
     font-size: 40px;
 }
 
-.assignee {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+.task_assignee {
+    position: relative;
+    right: 5px;
+    bottom: 5px;
     width: auto;
     text-align: right;
     height: 16px;

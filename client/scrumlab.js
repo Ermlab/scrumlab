@@ -6,8 +6,5 @@ if (Meteor.isClient) {
       '/taskboard':'taskboard',
       '/backlog':'backlog',
       '/burndown':'burndown'});
-    
-
-    
 }
                       

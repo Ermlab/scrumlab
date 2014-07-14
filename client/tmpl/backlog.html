@@ -1,5 +1,54 @@
 <template name="backlog">
-{{>menu}}
-    
-    Witamy na stronie backlog.
+    {{>menu}}
+    {{>input}}
+    {{>user_stories}}
+</template>
+
+<template name="user_stories">
+    {{#each backlog_items}}
+        <div class="story" id={{_id}}>
+            <b>{{name}}</b>
+            <p>{{description}}</p>
+            <div class="hours">{{time}}</div>
+            <div class="assignee">Przydzielone do: {{assignee}}</div>
+            <div class="tasks">
+                <details>
+                    <summary>Zadania</summary>
+                    {{>tasks}}
+                    <details>
+                        <summary>Dodaj nowe zadanie</summary>
+                        <div style="width: 40%">Nazwa: <input type="text" id="name"/></div>
+                        <div style="width: 20%">Szacowany czas: <input type="number" id="time"/></div>
+                        <div style="width: 40%">Przydzielone do: <select id="assignee_selector">{{>assignees}}</select></div>
+                        <p>Opis: <input type="text" id="description" size=80/></p>
+                        <input type="button" class="insert" value="Dodaj" />
+                    </details>
+                </details>
+            </div>
+        </div>
+    {{/each}}
+</template>
+
+<template name="input">
+    <details>
+        <summary>Dodaj nowy element</summary>
+        <p>Nazwa: <input type="text" id="name"/></p>
+        <p>Opis: <input type="text" id="description" size=80/></p>
+        <p>Szacowany czas: <input type="number" id="time" size="10"/></p>
+        <p>Przydzielone do: <select id="assignee_selector">{{>assignees}}</select></p>
+        <input type="button" class="insert" value="Dodaj" />
+    </details>
+</template>
+
+<template name="assignees">
+    <option value="0">Brak przydziału</option>
+    {{#each assignees}}
+        <option value={{_id}}>{{name}}</option>
+    {{/each}}
+</template>
+
+<template name="tasks">
+    {{#each tasks}}
+        <p>{{id}}</p>
+    {{/each}}
 </template>

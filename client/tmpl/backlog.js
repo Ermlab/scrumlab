@@ -7,7 +7,9 @@ if (Meteor.isClient) {
             var hours = document.getElementById("time").value;
             var assignee = document.getElementById("assignee_selector");
             var assignee_name = assignee.options[assignee.selectedIndex].text;
-            Stories.insert({name: name.value, description: desc.value, time: hours, assignee: assignee_name});
+            var type = document.getElementById("type_selector");
+            var type_name = type.options[type.selectedIndex].text;
+            Stories.insert({name: name.value, description: desc.value, time: hours, type: type_name, assignee: assignee_name});
             name.value = '';
             desc.value = '';
         }
@@ -17,15 +19,17 @@ if (Meteor.isClient) {
         'click .insert_task': function(event) {
             var task = event.currentTarget.parentElement;
             var story = task.parentElement.parentElement.parentElement;
-            var story_id = story.getAttribute("id")
+            var story_id = story.getAttribute("id");
             var name = task.getElementsByClassName("t_name")[0].value;
             var desc = task.getElementsByClassName("t_description")[0].value;
             var hours = task.getElementsByClassName("t_time")[0].value;
             var assignee = task.getElementsByClassName("t_assignee_selector")[0];
             var assignee_name = assignee.options[assignee.selectedIndex].text;
-            Tasks.insert({story_id: story_id, name: name, description: desc, time: hours, assignee: assignee_name});
-            name.value = '';
-            desc.value = '';
+            if(name != '') {
+                Tasks.insert({story_id: story_id, name: name, description: desc, time: hours, assignee: assignee_name});
+                name.value = '';
+                desc.value = '';
+            }
         }
     }
     

@@ -1,3 +1,11 @@
+#spotkanie
+{
+    background-image: url('spotkanie.jpg');
+    background-repeat: repeat-x;
+    min-height:100%;
+    width:100%;
+    position:absolute;
+}
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;

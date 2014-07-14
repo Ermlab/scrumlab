@@ -1,0 +1,1 @@
+GitLab = Npm.require("gitlab");

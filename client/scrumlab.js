@@ -1,4 +1,4 @@
-Assignees = new Meteor.Collection("assignnes");
+Assignees = new Meteor.Collection("assignees");
 Stories = new Meteor.Collection("stories");
 Tasks = new Meteor.Collection("tasks");
 

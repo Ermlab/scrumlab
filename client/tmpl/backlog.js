@@ -15,7 +15,17 @@ if (Meteor.isClient) {
     
     Template.user_stories.events = {
         'click .insert_task': function(event) {
-            alert(event.target.id);
+            var task = event.currentTarget.parentElement;
+            var story = task.parentElement.parentElement.parentElement;
+            var story_id = story.getAttribute("id")
+            var name = task.getElementsByClassName("t_name")[0].value;
+            var desc = task.getElementsByClassName("t_description")[0].value;
+            var hours = task.getElementsByClassName("t_time")[0].value;
+            var assignee = task.getElementsByClassName("t_assignee_selector")[0];
+            var assignee_name = assignee.options[assignee.selectedIndex].text;
+            Tasks.insert({story_id: story_id, name: name, description: desc, time: hours, assignee: assignee_name});
+            name.value = '';
+            desc.value = '';
         }
     }
     
@@ -27,8 +37,8 @@ if (Meteor.isClient) {
         return Stories.find();
     }
     
-    Template.tasks.tasks = function(){
-        return Tasks.find();
-    }
+    Template.user_stories.tasks = function(id){
+        return Tasks.find({story_id: id});
+    } 
     
 }

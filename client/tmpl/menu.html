@@ -2,12 +2,12 @@
     
     <div class="navbar navbar-default">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">ErmLab ScrumLab</a>
+            <a class="navbar-brand">ErmLab ScrumLab</a>
         </div>
         
         <div class="navbar-collapse collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="\dashboard">Dashboard</a></li>
+                <li><a href="\">Dashboard</a></li>
                 <li><a href="\projects">Projects</a></li>
                 <li><a href="\backlog">Backlog</a></li>
                 <li><a href="\sprints">Sprints</a></li>
@@ -16,7 +16,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Sign up</a></li>
+                <li><a href="">Sign up{{>OknoModalne}}</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -31,4 +31,24 @@
         
     </div>
     
+</template>
+
+<template name="OknoModalne">
+    <div class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            <p>One fine body…</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </template>

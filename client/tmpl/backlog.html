@@ -14,13 +14,15 @@
             <div class="tasks">
                 <details>
                     <summary>Zadania</summary>
-                    {{>tasks}}
+                    {{#each tasks _id}}
+                        <p>{{name}}</p>
+                    {{/each}}
                     <details>
                         <summary>Dodaj nowe zadanie</summary>
-                        Nazwa: <input type="text" id="name" style="width: 30%"/>
-                         Szacowany czas: <input type="number" id="time" style="width: 5%"/>
-                         Przydzielone do: <select id="assignee_selector" style="width: 20%">{{>assignees}}</select>
-                        <p>Opis: <input type="text" id="description" size=80/></p>
+                        Nazwa: <input type="text" class="t_name" style="width: 30%"/>
+                         Szacowany czas: <input type="number" class="t_time" style="width: 5%"/>
+                         Przydzielone do: <select class="t_assignee_selector" style="width: 20%">{{>assignees}}</select>
+                        <p>Opis: <input type="text" class="t_description" style="width: 80%"/></p>
                         <input type="button" class="insert_task" value="Dodaj" />
                     </details>
                 </details>
@@ -44,11 +46,5 @@
     <option value="0">Brak przydziału</option>
     {{#each assignees}}
         <option value={{_id}}>{{name}}</option>
-    {{/each}}
-</template>
-
-<template name="tasks">
-    {{#each tasks}}
-        <p>{{id}}</p>
     {{/each}}
 </template>

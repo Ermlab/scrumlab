@@ -9,5 +9,5 @@ insecure
 bootstrap-3
 iron-router
 accounts-ui
-accounts-password
 iron-router-active
+gitlab

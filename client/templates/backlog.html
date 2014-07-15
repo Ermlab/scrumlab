@@ -1,0 +1,66 @@
+<template name="backlog">
+    {{>menu}} {{>input}} {{>user_stories}}
+</template>
+
+<template name="user_stories">
+    {{#each backlog_items}}
+    <div class="story" id={{_id}}>
+        <div class="story_title">{{name}} - {{type}}</div>
+        <div class="story_text">{{description}}</div>
+        <div class="story_hours">{{time}}</div>
+        <div class="story_assignee">Przydzielone do: {{assignee}}</div>
+        <div>
+            <details>
+                <summary>Zadania</summary>
+                {{#each tasks _id}}
+                <div class="task">
+                    <div class="task_title">{{name}}</div>
+                    <div class="task_hours">{{time}}</div>
+                    <div class="task_text">{{description}}</div>
+                    <div class="task_assignee">Przydzielone do: {{assignee}}</div>
+                </div>
+                {{/each}}
+                <details class="task_add">
+                    <summary>Dodaj nowe zadanie</summary>
+                    <input type="text" class="t_name" style="width: 95%" placeholder="Nazwa" />
+                    <br/>
+                    <input type="text" class="t_description" style="width: 95%" placeholder="Opis" />
+                    <br/>Szacowany czas:
+                    <input type="number" class="t_time" style="width: 10%" />
+                    <br/>Przydzielone do:
+                    <select class="t_assignee_selector" style="width: 30%">{{>assignees}}</select>
+                    <input type="button" class="insert_task" value="Dodaj" style="float: right" />
+                </details>
+            </details>
+        </div>
+    </div>
+    {{/each}}
+</template>
+
+<template name="input">
+    <details class="story_add">
+        <summary>Dodaj nowy element</summary>
+        <input type="text" id="name" style="width: 95%" placeholder="Nazwa" />
+        <br/>
+        <input type="text" id="description" style="width: 95%" placeholder="Opis" />
+        <br/>Szacowany czas:
+        <input type="number" id="time" style="width: 5%" />
+        <br/>Typ zadania:
+        <select id="type_selector" style="width: 20%">
+            <option value="feature">Feature</option>
+            <option value="bug">Bug</option>
+            <option value="spike">Spike</option>
+            <option value="other">Inny</option>
+        </select>
+        <br/>Przydzielone do:
+        <select id="assignee_selector" style="width: 20%">{{>assignees}}</select>
+        <input type="button" class="insert" value="Dodaj" style="float: right" />
+    </details>
+</template>
+
+<template name="assignees">
+    <option value="0">Brak przydziału</option>
+    {{#each assignees}}
+    <option value={{_id}}>{{name}}</option>
+    {{/each}}
+</template>

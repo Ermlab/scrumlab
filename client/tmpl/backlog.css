@@ -30,15 +30,28 @@
 }
 
 .story_title {
-    width: 80%;
+    width: 60%;
     font-weight: bold;
     font-size: 20px;
-    position: relative;
+    position: absolute;
+    top: 5px;
+    left: 5px;
     margin: 10px;
+}
+
+.story_type {
+    text-align: center;
+    width: 20%;
+    font-weight: bold;
+    font-size: 20px;
+    position: absolute;
+    top: 5px;
+    left: 61%;
 }
 
 .story_text {
     margin: 10px;
+    margin-top: 45px;
 }
 
 .story_hours {

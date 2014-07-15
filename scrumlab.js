@@ -14,7 +14,7 @@ if (Meteor.isServer) {
     });
       
     gitlab.users.session("paul.dawidczyk@gmail.com","32360016",function(data){
-        console.log(data);
+        //console.log(data);
     });
     
 }

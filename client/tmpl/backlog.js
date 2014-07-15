@@ -2,13 +2,20 @@ if (Meteor.isClient) {
     
     Template.user_stories.rendered = function() {
         $.fn.editable.defaults.mode = 'inline';
-        $('.story_title, .story_text, .story_hours, .story_assignee').editable({
+        $.fn.editable.defaults.emptytext = 'Brak';
+        $('.story_title, .story_type, .story_text, .story_hours, .story_assignee').editable({
             success: function(response, newValue) {
-            alert(newValue);
+                var story_id = this.parentElement.getAttribute("id");
+                var update_field = {};
+                update_field[this.getAttribute("ref")] = newValue;
+                Stories.update(story_id, {$set: update_field});
             }});
         $('.task_title, .task_text, .task_hours, .task_assignee').editable({
             success: function(response, newValue) {
-            alert(newValue);
+                var task_id = this.parentElement.getAttribute("id");
+                var update_field = {};
+                update_field[this.getAttribute("ref")] = newValue;
+                Tasks.update(task_id, {$set: update_field});
             }});
     }
 

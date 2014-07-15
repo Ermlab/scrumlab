@@ -7,19 +7,20 @@
 <template name="user_stories">
     {{#each backlog_items}}
         <div class="story" id={{_id}}>
-            <p class="story_title" data-type="text">{{name}} - {{type}}</p>
-            <p class="story_text" data-type="textarea">{{description}}</p>
-            <p class="story_hours" data-type="text" data-mode="popup">{{time}}</p>
-            <p class="story_assignee" data-type="text">Przydzielone do: {{assignee}}</p>
+            <p class="story_title" ref="name" data-type="text">{{name}}</p>
+            <p class="story_type" ref="type" data-type="text">{{type}}</p>
+            <p class="story_text" ref="description" data-type="textarea">{{description}}</p>
+            <p class="story_hours" ref="time" data-type="text" data-mode="popup">{{time}}</p>
+            <p class="story_assignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
             <div>
                 <details>
                     <summary>Zadania</summary>
                     {{#each tasks _id}}
-                        <div class="task">
-                            <p class="task_title" data-type="text">{{name}}</p>
-                            <p class="task_hours" data-type="text" data-mode="popup">{{time}}</p>
-                            <p class="task_text" data-type="textarea">{{description}}</p>
-                            <p class="task_assignee" data-type="text">Przydzielone do: {{assignee}}</p>
+                        <div class="task" id={{_id}}>
+                            <p class="task_title" ref="name" data-type="text">{{name}}</p>
+                            <p class="task_hours" ref="time" data-type="text" data-mode="popup">{{time}}</p>
+                            <p class="task_text" ref="description" data-type="textarea">{{description}}</p>
+                            <p class="task_assignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
                         </div>
                     {{/each}}
                     <details class="task_add">

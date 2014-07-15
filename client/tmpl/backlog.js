@@ -1,8 +1,15 @@
 if (Meteor.isClient) {
     
     Template.user_stories.rendered = function () {
-        $( "#container" ).sortable();
-        $( "#container" ).disableSelection();
+        $("#container").sortable({axis: 'y',
+                stop: function (event, ui) {
+                    var data = $("#container").sortable("toArray");
+                    for(var i = 0; i < data.length; i++){
+                        Stories.update(data[i], {$set: {position: i}});
+                    }
+                }
+                });
+                $("#container").disableSelection();
         $.fn.editable.defaults.emptytext = 'Brak';
         $.fn.editable.defaults.toggle = 'dblclick';
         $('.story_title, .story_type, .story_text, .story_hours, .story_assignee').editable({
@@ -65,11 +72,11 @@ if (Meteor.isClient) {
     }
     
     Template.user_stories.backlog_items = function(){
-        return Stories.find();
+        return Stories.find({}, {sort: {position: 1}});
     }
     
     Template.user_stories.tasks = function(id){
-        return Tasks.find({story_id: id});
+        return Tasks.find();
     } 
     
 }

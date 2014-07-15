@@ -1,5 +1,9 @@
 if (Meteor.isClient) {
     
+    UI.body.rendered = function () {
+    }
+  
+
     Template.input.events = {
         'click input.insert': function() {
             var name = document.getElementById("name");
@@ -30,6 +34,14 @@ if (Meteor.isClient) {
                 name.value = '';
                 desc.value = '';
             }
+        },
+        
+        'dblclick .story_title, dblclick .story_text': function(event) {
+            alert("caught story click");
+        },
+        
+        'dblclick .task': function(event) {
+            alert("caught task click");
         }
     }
     

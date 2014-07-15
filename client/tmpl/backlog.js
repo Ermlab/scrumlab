@@ -1,8 +1,8 @@
 if (Meteor.isClient) {
     
     Template.user_stories.rendered = function() {
-        $.fn.editable.defaults.mode = 'inline';
         $.fn.editable.defaults.emptytext = 'Brak';
+        $.fn.editable.defaults.toggle = 'dblclick';
         $('.story_title, .story_type, .story_text, .story_hours, .story_assignee').editable({
             success: function(response, newValue) {
                 var story_id = this.parentElement.getAttribute("id");
@@ -39,24 +39,16 @@ if (Meteor.isClient) {
             var task = event.currentTarget.parentElement;
             var story = task.parentElement.parentElement.parentElement;
             var story_id = story.getAttribute("id");
-            var name = task.getElementsByClassName("t_name")[0].value;
-            var desc = task.getElementsByClassName("t_description")[0].value;
+            var name = task.getElementsByClassName("t_name")[0];
+            var desc = task.getElementsByClassName("t_description")[0];
             var hours = task.getElementsByClassName("t_time")[0].value;
             var assignee = task.getElementsByClassName("t_assignee_selector")[0];
             var assignee_name = assignee.options[assignee.selectedIndex].text;
             if(name != '') {
-                Tasks.insert({story_id: story_id, name: name, description: desc, time: hours, assignee: assignee_name});
+                Tasks.insert({story_id: story_id, name: name.value, description: desc.value, time: hours, assignee: assignee_name});
                 name.value = '';
                 desc.value = '';
             }
-        },
-        
-        'dblclick .story_title, dblclick .story_text': function(event) {
-            alert("caught story click");
-        },
-        
-        'dblclick .task': function(event) {
-            alert("caught task click");
         }
     }
     

@@ -35,7 +35,7 @@
     font-size: 20px;
     position: absolute;
     top: 5px;
-    left: 5px;
+    left: 10px;
     margin: 10px;
 }
 
@@ -46,7 +46,9 @@
     font-size: 20px;
     position: absolute;
     top: 5px;
+    margin: 10px;
     left: 61%;
+    color: red;
 }
 
 .story_text {
@@ -56,7 +58,7 @@
 
 .story_hours {
     position: absolute;
-    top: 5px;
+    top: -5px;
     right: 5px;
     margin: 5px;
     width: auto;
@@ -85,6 +87,7 @@
     position: relative;
     box-shadow: 3px 3px 8px #888888;
     border-radius: 5px;
+    position: relative;
 }
 
 .task_add {
@@ -107,19 +110,19 @@
     font-weight: bold;
     font-size: 20px;
     position: relative;
-    top: 5px;
+    top: 10px;
     left: 5px;
     margin: 10px;
 }
 
 .task_text {
-    margin: 10px;
+    margin: 15px;
 }
 
 .task_hours {
     position: absolute;
-    right: 5px;
-    top: 5px;
+    right: 15px;
+    top: -5px;
     text-align: right;
     height: 40px;
     width: 40px;

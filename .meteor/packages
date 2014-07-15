@@ -7,7 +7,9 @@ standard-app-packages
 autopublish
 insecure
 bootstrap-3
-router
+iron-router
+accounts-ui
+iron-router-active
 gitlab
 x-editable-bootstrap
 jquery-ui

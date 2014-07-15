@@ -7,5 +7,7 @@ standard-app-packages
 autopublish
 insecure
 bootstrap-3
-router
-gitlab
+iron-router
+accounts-ui
+accounts-password
+iron-router-active

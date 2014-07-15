@@ -1,3 +1,7 @@
+#container {
+    width: 100%;
+}
+
 .story_add {
     width: 60%;
     height: auto;
@@ -14,7 +18,7 @@
 }
 
 .story {
-    width: 60%;
+    width: 70%;
     height: auto;
     min-height: 40px;
     margin: 10px;

@@ -1,22 +1,30 @@
 if (Meteor.isClient) {
     
-    Template.user_stories.rendered = function() {
+    Template.user_stories.rendered = function () {
+        $( "#container" ).sortable();
+        $( "#container" ).disableSelection();
         $.fn.editable.defaults.emptytext = 'Brak';
         $.fn.editable.defaults.toggle = 'dblclick';
         $('.story_title, .story_type, .story_text, .story_hours, .story_assignee').editable({
-            success: function(response, newValue) {
+            success: function (response, newValue) {
                 var story_id = this.parentElement.getAttribute("id");
                 var update_field = {};
                 update_field[this.getAttribute("ref")] = newValue;
-                Stories.update(story_id, {$set: update_field});
-            }});
+                Stories.update(story_id, {
+                    $set: update_field
+                });
+            }
+        });
         $('.task_title, .task_text, .task_hours, .task_assignee').editable({
-            success: function(response, newValue) {
+            success: function (response, newValue) {
                 var task_id = this.parentElement.getAttribute("id");
                 var update_field = {};
                 update_field[this.getAttribute("ref")] = newValue;
-                Tasks.update(task_id, {$set: update_field});
-            }});
+                Tasks.update(task_id, {
+                    $set: update_field
+                });
+            }
+        });
     }
 
     Template.input.events = {

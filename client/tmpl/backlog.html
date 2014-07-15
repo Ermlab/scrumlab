@@ -5,7 +5,8 @@
 </template>
 
 <template name="user_stories">
-    {{#each backlog_items}}
+    <div id="container">
+        {{#each backlog_items}}
         <div class="story" id={{_id}}>
             <p class="story_title" ref="name" data-type="text">{{name}}</p>
             <p class="story_type" ref="type" data-type="text">{{type}}</p>
@@ -16,26 +17,29 @@
                 <details>
                     <summary>Zadania</summary>
                     {{#each tasks _id}}
-                        <div class="task" id={{_id}}>
-                            <p class="task_title" ref="name" data-type="text">{{name}}</p>
-                            <p class="task_hours" ref="time" data-type="text" data-mode="popup">{{time}}</p>
-                            <p class="task_text" ref="description" data-type="textarea">{{description}}</p>
-                            <p class="task_assignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
-                        </div>
+                    <div class="task" id={{_id}}>
+                        <p class="task_title" ref="name" data-type="text">{{name}}</p>
+                        <p class="task_hours" ref="time" data-type="text" data-mode="popup">{{time}}</p>
+                        <p class="task_text" ref="description" data-type="textarea">{{description}}</p>
+                        <p class="task_assignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
+                    </div>
                     {{/each}}
                     <details class="task_add">
                         <summary>Dodaj nowe zadanie</summary>
-                        <input type="text" class="t_name" style="width: 95%" placeholder="Nazwa"/><br/>
-                        <input type="text" class="t_description" style="width: 95%" placeholder="Opis"/><br/>
-                        Szacowany czas:
-                        <input type="number" class="t_time" style="width: 10%"/> <br/>
-                        Przydzielone do: <select class="t_assignee_selector"  style="width: 30%">{{>assignees}}</select>
+                        <input type="text" class="t_name" style="width: 95%" placeholder="Nazwa" />
+                        <br/>
+                        <input type="text" class="t_description" style="width: 95%" placeholder="Opis" />
+                        <br/>Szacowany czas:
+                        <input type="number" class="t_time" style="width: 10%" />
+                        <br/>Przydzielone do:
+                        <select class="t_assignee_selector" style="width: 30%">{{>assignees}}</select>
                         <input type="button" class="insert_task" value="Dodaj" style="float: right" />
                     </details>
                 </details>
             </div>
         </div>
-    {{/each}}
+        {{/each}}
+    </div>
 </template>
 
 <template name="input">

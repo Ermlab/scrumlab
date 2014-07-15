@@ -66,7 +66,10 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10px;
+    height: auto;
+    min-height: 50px;
     background: #c7d4f8;
+    position: relative;
     box-shadow: 3px 3px 8px #888888;
     border-radius: 5px;
 }
@@ -90,7 +93,9 @@
     width: 60%;
     font-weight: bold;
     font-size: 20px;
-    position: absolute;
+    position: relative;
+    top: 5px;
+    left: 5px;
     margin: 10px;
 }
 
@@ -99,11 +104,12 @@
 }
 
 .task_hours {
-    position: relative;
+    position: absolute;
     right: 5px;
-    width: auto;
+    top: 5px;
     text-align: right;
     height: 40px;
+    width: 40px;
     font-size: 40px;
 }
 

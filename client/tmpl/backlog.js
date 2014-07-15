@@ -1,8 +1,16 @@
 if (Meteor.isClient) {
     
-    UI.body.rendered = function () {
+    Template.user_stories.rendered = function() {
+        $.fn.editable.defaults.mode = 'inline';
+        $('.story_title, .story_text, .story_hours, .story_assignee').editable({
+            success: function(response, newValue) {
+            alert(newValue);
+            }});
+        $('.task_title, .task_text, .task_hours, .task_assignee').editable({
+            success: function(response, newValue) {
+            alert(newValue);
+            }});
     }
-  
 
     Template.input.events = {
         'click input.insert': function() {

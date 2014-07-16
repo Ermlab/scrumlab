@@ -11,5 +11,5 @@ iron-router
 accounts-ui
 iron-router-active
 gitlab
-x-editable-bootstrap
 jquery-ui
+x-editable-bootstrap

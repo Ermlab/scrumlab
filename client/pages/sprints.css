@@ -1,0 +1,22 @@
+.sprint_body {
+    width: 60%;
+    float: left;
+    margin-left: 3%;
+    border: solid;
+}
+
+.backlog_items {
+    width:30%;
+    float: right;
+    margin-right: 3%;
+    border-radius: 5px;
+    background: #dcf2b2;
+}
+
+.backlog_item {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
+    background: #b2ecf2;
+}

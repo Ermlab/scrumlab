@@ -1,0 +1,9 @@
+<template name="sprints">
+    <div class="sprint_body"></div>
+    <div class="backlog_items">
+        Backlog items:<br/>
+        {{#each issues}}
+        <p class="backlog_item">{{name}} - {{time}}</p>
+        {{/each}}
+    </div>
+</template>

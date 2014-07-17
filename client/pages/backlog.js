@@ -1,4 +1,4 @@
-Template.user_stories.rendered = function () {
+Template.userStories.rendered = function () {
     $("#container").sortable({
         axis: 'y',
         stop: function (event, ui) {
@@ -15,66 +15,66 @@ Template.user_stories.rendered = function () {
     $("#container").disableSelection();
     $.fn.editable.defaults.emptytext = 'Brak';
     $.fn.editable.defaults.toggle = 'dblclick';
-    $('.story_title, .story_type, .story_text, .story_hours, .story_assignee').editable({
+    $('.storyTitle, .storyType, .storyText, .storyHours, .storyAssignee').editable({
         success: function (response, newValue) {
-            var story_id = this.parentElement.getAttribute("id");
-            var update_field = {};
-            update_field[this.getAttribute("ref")] = newValue;
-            Stories.update(story_id, {
-                $set: update_field
+            var storyId = this.parentElement.getAttribute("id");
+            var updateField = {};
+            updateField[this.getAttribute("ref")] = newValue;
+            Stories.update(storyId, {
+                $set: updateField
             });
         }
     });
-    $('.task_title, .task_text, .task_hours, .task_assignee').editable({
+    $('.taskTitle, .taskText, .taskHours, .taskAssignee').editable({
         success: function (response, newValue) {
-            var task_id = this.parentElement.getAttribute("id");
-            var update_field = {};
-            update_field[this.getAttribute("ref")] = newValue;
-            Tasks.update(task_id, {
-                $set: update_field
+            var taskId = this.parentElement.getAttribute("id");
+            var updateField = {};
+            updateField[this.getAttribute("ref")] = newValue;
+            Tasks.update(taskId, {
+                $set: updateField
             });
         }
     });
 }
 
-Template.stories_input.events = {
+Template.storiesInput.events = {
     'click input.insert': function () {
         var name = document.getElementById("name");
         var desc = document.getElementById("description");
         var hours = document.getElementById("time").value;
-        var assignee = document.getElementById("assignee_selector");
-        var assignee_name = assignee.options[assignee.selectedIndex].text;
-        var type = document.getElementById("type_selector");
-        var type_name = type.options[type.selectedIndex].text;
+        var assignee = document.getElementById("assigneeSelector");
+        var assigneeName = assignee.options[assignee.selectedIndex].text;
+        var type = document.getElementById("typeSelector");
+        var typeName = type.options[type.selectedIndex].text;
         Stories.insert({
             name: name.value,
             description: desc.value,
             time: hours,
-            type: type_name,
-            assignee: assignee_name
+            type: typeName,
+            assignee: assigneeName
         });
         name.value = '';
         desc.value = '';
     }
 }
 
-Template.user_stories.events = {
-    'click .insert_task': function (event) {
+Template.userStories.events = {
+    'click .insertTask': function (event) {
         var task = event.currentTarget.parentElement;
         var story = task.parentElement.parentElement.parentElement;
-        var story_id = story.getAttribute("id");
-        var name = task.getElementsByClassName("t_name")[0];
-        var desc = task.getElementsByClassName("t_description")[0];
-        var hours = task.getElementsByClassName("t_time")[0].value;
-        var assignee = task.getElementsByClassName("t_assignee_selector")[0];
-        var assignee_name = assignee.options[assignee.selectedIndex].text;
+        var storyId = story.getAttribute("id");
+        var name = task.getElementsByClassName("tName")[0];
+        var desc = task.getElementsByClassName("tDescription")[0];
+        var hours = task.getElementsByClassName("tTime")[0].value;
+        var assignee = task.getElementsByClassName("tAssigneeSelector")[0];
+        var assigneeName = assignee.options[assignee.selectedIndex].text;
         if (name != '') {
             Tasks.insert({
-                story_id: story_id,
+                storyId: storyId,
                 name: name.value,
                 description: desc.value,
                 time: hours,
-                assignee: assignee_name
+                assignee: assigneeName
             });
             name.value = '';
             desc.value = '';
@@ -86,7 +86,7 @@ Template.assignees.assignees = function () {
     return Assignees.find();
 }
 
-Template.user_stories.backlog_items = function () {
+Template.userStories.backlogItems = function () {
     return Stories.find({}, {
         sort: {
             position: 1
@@ -94,6 +94,6 @@ Template.user_stories.backlog_items = function () {
     });
 }
 
-Template.user_stories.tasks = function (id) {
+Template.userStories.tasks = function (id) {
     return Tasks.find();
 }

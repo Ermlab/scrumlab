@@ -1,38 +1,37 @@
 <template name="backlog">
-    {{> stories_input}}
-    {{> user_stories}}
+    {{> storiesInput}} {{> userStories}}
 </template>
 
-<template name="user_stories">
+<template name="userStories">
     <div id="container">
-        {{#each backlog_items}}
+        {{#each backlogItems}}
         <div class="story" id={{_id}}>
-            <p class="story_title" ref="name" data-type="text">{{name}}</p>
-            <p class="story_type" ref="type" data-type="text">{{type}}</p>
-            <p class="story_text" ref="description" data-type="textarea">{{description}}</p>
-            <p class="story_hours" ref="time" data-type="text">{{time}}</p>
-            <p class="story_assignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
+            <p class="storyTitle" ref="name" data-type="text">{{name}}</p>
+            <p class="storyType" ref="type" data-type="text">{{type}}</p>
+            <p class="storyText" ref="description" data-type="textarea">{{description}}</p>
+            <p class="storyHours" ref="time" data-type="text">{{time}}</p>
+            <p class="storyAssignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
             <div>
                 <details>
                     <summary>Zadania</summary>
                     {{#each tasks _id}}
                     <div class="task" id={{_id}}>
-                        <p class="task_title" ref="name" data-type="text">{{name}}</p>
-                        <p class="task_hours" ref="time" data-type="text" data-mode="popup">{{time}}</p>
-                        <p class="task_text" ref="description" data-type="textarea">{{description}}</p>
-                        <p class="task_assignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
+                        <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
+                        <p class="taskHours" ref="time" data-type="text" data-mode="popup">{{time}}</p>
+                        <p class="taskText" ref="description" data-type="textarea">{{description}}</p>
+                        <p class="taskAssignee" ref="assignee" data-type="text">Przydzielone do: {{assignee}}</p>
                     </div>
                     {{/each}}
-                    <details class="task_add">
+                    <details class="addTask">
                         <summary>Dodaj nowe zadanie</summary>
-                        <input type="text" class="t_name" style="width: 95%" placeholder="Nazwa" />
+                        <input type="text" class="tName" style="width: 95%" placeholder="Nazwa" />
                         <br/>
-                        <input type="text" class="t_description" style="width: 95%" placeholder="Opis" />
+                        <input type="text" class="tDescription" style="width: 95%" placeholder="Opis" />
                         <br/>Szacowany czas:
-                        <input type="number" class="t_time" style="width: 10%" />
+                        <input type="number" class="tTime" style="width: 10%" />
                         <br/>Przydzielone do:
-                        <select class="t_assignee_selector" style="width: 30%">{{> assignees}}</select>
-                        <input type="button" class="insert_task" value="Dodaj" style="float: right" />
+                        <select class="tAssigneeSelector" style="width: 30%">{{> assignees}}</select>
+                        <input type="button" class="insertTask" value="Dodaj" style="float: right" />
                     </details>
                 </details>
             </div>
@@ -41,20 +40,23 @@
     </div>
 </template>
 
-<template name="stories_input">
-    <details class="story_add">
+<template name="storiesInput">
+    <details class="addStory">
         <summary>Dodaj nowy element</summary>
-        <input type="text" id="name" style="width: 95%" placeholder="Nazwa"/><br/>
-        <input type="text" id="description" style="width: 95%" placeholder="Opis"/><br/>
-        Szacowany czas:
-        <input type="number" id="time" style="width: 5%"/> <br/>
-        Typ zadania: <select id="type_selector"  style="width: 20%">
-        <option value="feature">Feature</option>
-        <option value="bug">Bug</option>
-        <option value="spike">Spike</option>
-        <option value="other">Inny</option>
-        </select> <br/>
-        Przydzielone do: <select id="assignee_selector"  style="width: 20%">{{> assignees}}</select>
+        <input type="text" id="name" style="width: 95%" placeholder="Nazwa" />
+        <br/>
+        <input type="text" id="description" style="width: 95%" placeholder="Opis" />
+        <br/>Szacowany czas:
+        <input type="number" id="time" style="width: 5%" />
+        <br/>Typ zadania:
+        <select id="typeSelector" style="width: 20%">
+            <option value="feature">Feature</option>
+            <option value="bug">Bug</option>
+            <option value="spike">Spike</option>
+            <option value="other">Inny</option>
+        </select>
+        <br/>Przydzielone do:
+        <select id="assigneeSelector" style="width: 20%">{{> assignees}}</select>
         <input type="button" class="insert" value="Dodaj" style="float: right" />
     </details>
 </template>
@@ -62,6 +64,6 @@
 <template name="assignees">
     <option value="0">Brak przydziału</option>
     {{#each assignees}}
-        <option value={{_id}}>{{name}}</option>
+    <option value={{_id}}>{{name}}</option>
     {{/each}}
 </template>

@@ -1,8 +1,7 @@
 #container {
     width: 100%;
 }
-
-.story_add {
+.addStory {
     width: 60%;
     height: auto;
     margin: 10px;
@@ -16,7 +15,6 @@
     box-shadow: 3px 3px 8px #888888;
     position: relative;
 }
-
 .story {
     width: 70%;
     height: auto;
@@ -32,8 +30,7 @@
     box-shadow: 3px 3px 8px #888888;
     position: relative;
 }
-
-.story_title {
+.storyTitle {
     width: 60%;
     font-weight: bold;
     font-size: 20px;
@@ -42,8 +39,7 @@
     left: 10px;
     margin: 10px;
 }
-
-.story_type {
+.storyType {
     text-align: center;
     width: 20%;
     font-weight: bold;
@@ -54,13 +50,11 @@
     left: 61%;
     color: red;
 }
-
-.story_text {
+.storyText {
     margin: 10px;
     margin-top: 45px;
 }
-
-.story_hours {
+.storyHours {
     position: absolute;
     top: -5px;
     right: 5px;
@@ -70,8 +64,7 @@
     height: 40px;
     font-size: 40px;
 }
-
-.story_assignee {
+.storyAssignee {
     position: absolute;
     right: 10px;
     width: auto;
@@ -79,7 +72,6 @@
     height: 16px;
     font-size: 16px;
 }
-
 .task {
     width: 97%;
     margin-left: auto;
@@ -93,8 +85,7 @@
     border-radius: 5px;
     position: relative;
 }
-
-.task_add {
+.taskAdd {
     width: 97%;
     height: auto;
     margin: 10px;
@@ -108,8 +99,7 @@
     box-shadow: 3px 3px 8px #888888;
     position: relative;
 }
-
-.task_title {
+.taskTitle {
     width: 60%;
     font-weight: bold;
     font-size: 20px;
@@ -118,12 +108,10 @@
     left: 5px;
     margin: 10px;
 }
-
-.task_text {
+.taskText {
     margin: 15px;
 }
-
-.task_hours {
+.taskHours {
     position: absolute;
     right: 15px;
     top: -5px;
@@ -132,8 +120,7 @@
     width: 40px;
     font-size: 40px;
 }
-
-.task_assignee {
+.taskAssignee {
     position: relative;
     right: 5px;
     bottom: 5px;

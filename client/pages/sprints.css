@@ -5,7 +5,6 @@
     border-radius: 5px;
     min-height: 100px;
 }
-
 .sprint {
     width: 100%;
     border-radius: 5px;
@@ -13,24 +12,21 @@
     padding: 10px;
     margin: 10px;
 }
-
-#sprint_add {
+#addSprint {
     width: 60%;
     float: left;
     margin-left: 3%;
     border-radius: 5px;
     background: #87fac9;
 }
-
 #backlogItems {
-    width:30%;
+    width: 30%;
     float: right;
     margin-right: 3%;
     border-radius: 5px;
     background: #dcf2b2;
     text-align: center;
 }
-
 .backlogItem {
     width: 95%;
     height: auto;
@@ -45,7 +41,6 @@
     padding: 5px;
     margin-bottom: 10px;
 }
-
 .backlogItemText {
     margin: 5px;
     font-size: 16px;
@@ -55,7 +50,6 @@
     left: 5px;
     display: inline-block;
 }
-
 .backlogItemTime {
     background: #fc688b;
     font-size: 20px;

@@ -4,3 +4,4 @@ Issues = new Meteor.Collection("issues");
 Assignees = new Meteor.Collection("assignees");
 Stories = new Meteor.Collection("stories");
 Tasks = new Meteor.Collection("tasks");
+Sprints = new Meteor.Collection("sprints");

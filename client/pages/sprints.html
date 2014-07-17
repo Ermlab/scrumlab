@@ -1,9 +1,28 @@
 <template name="sprints">
-    <div class="sprint_body"></div>
-    <div class="backlog_items">
-        Backlog items:<br/>
-        {{#each issues}}
-        <p class="backlog_item">{{name}} - {{time}}</p>
+    {{> sprintsInput}}
+    <div id="sprintBody">{{> sprintsList}}</div>
+    <div id="backlogItems">
+        Nieprzydzielone zadania z backloga:<br/>
+        {{#each backlogItems}}
+        <p class="backlogItem">
+            <div class="backlogItemText">{{name}}</div>
+            <div class="backlogItemTime">{{time}}</div>
+        </p>
         {{/each}}
     </div>
+</template>
+
+<template name="sprintsList">
+    {{#each sprint}}
+    <div class="sprint">{{name}} {{enddate}} {{status}}</div>
+    {{/each}}
+</template>
+
+<template name="sprintsInput">
+    <details class="sprint_add">
+        <summary>Dodaj nowy sprint</summary>
+        <input type="text" id="name" style="width: 95%" placeholder="Nazwa"/><br/>
+        <p>Data zakończenia: <input type="text" id="datepicker"></p>
+        <input type="button" class="insert" value="Dodaj" style="float: right" />
+    </details>
 </template>

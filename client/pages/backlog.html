@@ -1,5 +1,5 @@
 <template name="backlog">
-    {{> input}}
+    {{> stories_input}}
     {{> user_stories}}
 </template>
 
@@ -41,7 +41,7 @@
     </div>
 </template>
 
-<template name="input">
+<template name="stories_input">
     <details class="story_add">
         <summary>Dodaj nowy element</summary>
         <input type="text" id="name" style="width: 95%" placeholder="Nazwa"/><br/>

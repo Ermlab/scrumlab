@@ -1,8 +1,8 @@
 <template name="backlog">
-    {{> storiesInput}} {{> userStories}}
+    {{> backlogInput}} {{> backlogStories}}
 </template>
 
-<template name="userStories">
+<template name="backlogStories">
     <div id="container">
         {{#each backlogItems}}
         <div class="story" id={{_id}}>
@@ -30,7 +30,7 @@
                         <br/>Szacowany czas:
                         <input type="number" class="tTime" style="width: 10%" />
                         <br/>Przydzielone do:
-                        <select class="tAssigneeSelector" style="width: 30%">{{> assignees}}</select>
+                        <select class="tAssigneeSelector" style="width: 30%">{{> backlogAssignees}}</select>
                         <input type="button" class="insertTask" value="Dodaj" style="float: right" />
                     </details>
                 </details>
@@ -40,7 +40,7 @@
     </div>
 </template>
 
-<template name="storiesInput">
+<template name="backlogInput">
     <details class="addStory">
         <summary>Dodaj nowy element</summary>
         <input type="text" id="name" style="width: 95%" placeholder="Nazwa" />
@@ -56,12 +56,12 @@
             <option value="other">Inny</option>
         </select>
         <br/>Przydzielone do:
-        <select id="assigneeSelector" style="width: 20%">{{> assignees}}</select>
+        <select id="assigneeSelector" style="width: 20%">{{> backlogAssignees}}</select>
         <input type="button" class="insert" value="Dodaj" style="float: right" />
     </details>
 </template>
 
-<template name="assignees">
+<template name="backlogAssignees">
     <option value="0">Brak przydziału</option>
     {{#each assignees}}
     <option value={{_id}}>{{name}}</option>

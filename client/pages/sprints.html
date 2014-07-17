@@ -2,9 +2,9 @@
     {{> sprintsInput}}
     <div id="sprintBody">{{> sprintsList}}</div>
     <div id="backlogItems">
-        Nieprzydzielone zadania z backloga:<br/>
-        {{#each backlogItems}}
-        <p class="backlogItem">
+        Nieprzydzielone zadania z backloga:
+        <br/>{{#each backlogItems}}
+        <p class="backlogItem" id={{_id}} ref={{sprint}} ref2={{time}}>
             <div class="backlogItemText">{{name}}</div>
             <div class="backlogItemTime">{{time}}</div>
         </p>
@@ -13,16 +13,27 @@
 </template>
 
 <template name="sprintsList">
-    {{#each sprint}}
-    <div class="sprint">{{name}} {{enddate}} {{status}}</div>
+    {{#each sprints}}
+    <div class="sprint" id={{_id}}>{{name}} {{enddate}} {{status}}
+        <div class="sprintTimeMarker">{{time}}</div>
+        {{#each assignedItems _id}}
+        <div class="backlogItem" id={{_id}} ref={{sprint}} ref2={{time}}>
+            <div class="backlogItemText">{{name}}</div>
+            <div class="backlogItemTime">{{time}}</div>
+        </div>
+        {{/each}}
+    </div>
     {{/each}}
 </template>
 
 <template name="sprintsInput">
-    <details class="addSprint">
+    <details id="addSprint">
         <summary>Dodaj nowy sprint</summary>
-        <input type="text" id="name" style="width: 95%" placeholder="Nazwa"/><br/>
-        <p>Data zakończenia: <input type="text" id="datepicker"></p>
-        <input type="button" class="insert" value="Dodaj" style="float: right" />
+        <input type="text" id="name" style="width: 95%" placeholder="Nazwa" />
+        <br/>
+        <p>Data zakończenia:
+            <input type="text" id="datepicker">
+            <input type="button" class="insert" value="Dodaj" style="float: right" />
+        </p>
     </details>
 </template>

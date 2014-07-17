@@ -13,9 +13,6 @@ Meteor.loginWithGitlabAccount = function (email, password, callback) {
         methodArguments: [loginRequest],
         userCallback: callback
     });
-
-    console.log("Logging in as", loginRequest);
-
 };
 
 Template.masterLayout.events = {

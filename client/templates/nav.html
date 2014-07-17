@@ -1,0 +1,19 @@
+<template name="navProjectsDropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        {{#if isActiveRoute 'project' }}
+        {{project.gitlab.name_with_namespace}}
+        {{else}}
+        Projects
+        {{/if}}
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu" role="menu">
+        {{#each projects}}
+        <li><a href="{{ pathFor 'project' gitlabId=gitlab.id }}">{{gitlab.name_with_namespace}}</a>
+        </li>
+        {{/each}}
+        <li class="divider"></li>
+        <li><a href="{{ pathFor 'projectsSettings' }}">Settings</a>
+        </li>
+    </ul>
+</template>

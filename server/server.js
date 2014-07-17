@@ -41,15 +41,20 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
     for (var i = 0; i < projects.length; i++) {
         var existingProject = Projects.findOne({
-            id: projects[i].id
+            'gitlab.id': projects[i].id
         });
 
         if (existingProject !== undefined) {
-            projects[i]._id = existingProject._id;
+            Projects.update(existingProject._id, {
+                $set: {
+                    gitlab: projects[i]
+                }
+            });
+        } else {
+            Projects.insert({
+                gitlab: projects[i]
+            });
         }
-        Projects.upsert({
-            _id: projects[i]._id
-        }, projects[i]);
     }
 
     // Authorize user and update its profile
@@ -60,17 +65,26 @@ Accounts.registerLoginHandler(function (loginRequest) {
     var userData = userFuture.wait();
 
     var existingUser = Meteor.users.findOne({
-        username: userData.username
+        'gitlab.username': userData.username
     });
+
 
     var userId = null;
     if (existingUser !== undefined) {
         userId = existingUser._id;
         Meteor.users.update({
             _id: userId
-        }, userData);
+        }, {
+            $set: {
+                username: userData.username,
+                gitlab: userData
+            }
+        });
     } else {
-        userId = Meteor.users.insert(userData);
+        userId = Meteor.users.insert({
+            username: userData.username,
+            gitlab: userData
+        });
     }
 
     return {
@@ -85,7 +99,7 @@ Accounts.onLogin(function (data) {
 
     // get all projects available for current user
     var projectsFuture = new Future();
-    Server.getUserApi(user.private_token).projects.all(function (projects) {
+    Server.getUserApi(user.gitlab.private_token).projects.all(function (projects) {
         projectsFuture.return(projects);
     });
     var projects = projectsFuture.wait();

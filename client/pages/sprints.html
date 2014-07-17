@@ -4,7 +4,7 @@
     <div id="backlogItems">
         Nieprzydzielone zadania z backloga:
         <br/>{{#each backlogItems}}
-        <p class="backlogItem" id={{_id}} ref={{sprint}} ref2={{time}}>
+        <p class="backlogItem" id={{_id}} ref={{sprint}}>
             <div class="backlogItemText">{{name}}</div>
             <div class="backlogItemTime">{{time}}</div>
         </p>
@@ -14,10 +14,10 @@
 
 <template name="sprintsList">
     {{#each sprints}}
-    <div class="sprint" id={{_id}}>{{name}} {{enddate}} {{status}}
+    <div class="sprint" id={{_id}} ref={{time}}>{{name}} {{enddate}} {{status}}
         <div class="sprintTimeMarker">{{time}}</div>
         {{#each assignedItems _id}}
-        <div class="backlogItem" id={{_id}} ref={{sprint}} ref2={{time}}>
+        <div class="backlogItem" id={{_id}} ref={{sprint}}>
             <div class="backlogItemText">{{name}}</div>
             <div class="backlogItemTime">{{time}}</div>
         </div>

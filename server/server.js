@@ -1,6 +1,6 @@
 var Fiber = Npm.require('fibers');
-var Future = Npm.require('fibers/future');
 
+var Future = Npm.require('fibers/future');
 
 // Serverside functions
 Server = {
@@ -69,8 +69,13 @@ Accounts.registerLoginHandler(function (loginRequest) {
         Meteor.users.update({
             _id: userId
         }, userData);
+        
     } else {
-        userId = Meteor.users.insert(userData);
+        if (existingUser !== undefined) {
+            userId = Meteor.users.insert(userData);
+            
+            ZalogowanyID = userId;
+        }
     }
 
     return {

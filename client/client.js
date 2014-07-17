@@ -26,11 +26,6 @@ Template.masterLayout.events = {
         var password = i_password.value;
 
         Meteor.loginWithGitlabAccount(email, password);
-
-        i_password.value = '';
-        i_email.value = '';
-
-        LoginPanel.style.visibility = "hidden";
     },
     'keypress #i_password': function (event) {
 
@@ -42,9 +37,8 @@ Template.masterLayout.events = {
             Meteor.loginWithGitlabAccount(email, password);
 
             i_password.value = '';
+            
             i_email.value = '';
-
-            LoginPanel.style.visibility = "hidden";
 
             return false;
         }

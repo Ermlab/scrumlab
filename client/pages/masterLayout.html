@@ -40,12 +40,10 @@
                             </ul>
                             <ul class="nav navbar-nav navbar-right" style="margin-top:5px">
                                 <li>
-                                    <form id="LoginPanel">
-                                        Email:
-                                        <input type="text" size=10 id="i_email" name="i_email"> Password:
-                                        <input type="password" size=10 id="i_password" name="i_password">
-                                        <input type="button" style="margin-right:5px;" id="i_confirm" name="i_confirm" value="LogIn" />
-                                    </form>
+                                    {{#if currentUser}}
+                                    {{else}}
+                                    {{> LoginForm}}
+                                    {{/if}}
                                 </li>
                                 <li>
                                     {{> loginButtons}}
@@ -65,4 +63,11 @@
     </div>
 </template>
 
-
+<template name="LoginForm">
+    <form id="LoginPanel">
+        Email:
+        <input type="text" size=10 id="i_email" name="i_email">Password:
+        <input type="password" size=10 id="i_password" name="i_password">
+        <input type="button" style="margin-right:5px;" id="i_confirm" name="i_confirm" value="LogIn" />
+    </form>
+</template>

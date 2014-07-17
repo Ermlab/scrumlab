@@ -9,6 +9,21 @@ Template.sprints.backlogItems = function () {
 }
 
 Template.sprints.rendered = function () {
+    // Setting sortable property to sprintlist container
+    $("#sprintBody").sortable({
+        axis: 'y',
+        // Saving new sprints order in database
+        stop: function (event, ui) {
+            var data = $("#sprintBody").sortable("toArray");
+            for (var i = 0; i < data.length; i++) {
+                Sprints.update(data[i], {
+                    $set: {
+                        position: i
+                    }
+                });
+            }
+        }
+    });
     // Setting sortable property to backlog and sprint containers
     $("#backlogItems, .sprint").sortable({
         stop: function (event, ui) {
@@ -57,19 +72,23 @@ Template.sprints.rendered = function () {
                         }
                     });
                 }
-                // Getting rid of the doubled item
+                // Getting rid of duplicated ui item
                 ui.item.remove();
             }
         },
         connectWith: "#backlogItems, .sprint",
-        cancel: ".sprintTimeMarker"
+        cancel: ".sprintTimeMarker, .sprintInfo"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
 }
 
 Template.sprintsList.sprints = function () {
-    return Sprints.find();
+    return Sprints.find({}, {
+        sort: {
+            position: 1
+        }
+    });
 }
 
 Template.sprintsList.assignedItems = function (ownerId) {

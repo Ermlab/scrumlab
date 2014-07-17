@@ -41,12 +41,14 @@
                             <ul class="nav navbar-nav navbar-right" style="margin-top:5px">
                                 <li>
                                     {{#if currentUser}}
+                                    {{>UserName}}{{> LogoutAction}}
                                     {{else}}
-                                    {{> LoginForm}}
+                                        {{#if loggingIn}}
+                                            {{>LoadingUser}}
+                                        {{else}}
+                                            {{> LoginForm}}
+                                        {{/if}}
                                     {{/if}}
-                                </li>
-                                <li>
-                                    {{> loginButtons}}
                                 </li>
                             </ul>
                         </div>
@@ -66,8 +68,22 @@
 <template name="LoginForm">
     <form id="LoginPanel">
         Email:
-        <input type="text" size=10 id="i_email" name="i_email">Password:
+        <input type="text" size=10 id="i_email" name="i_email"> Password:
         <input type="password" size=10 id="i_password" name="i_password">
         <input type="button" style="margin-right:5px;" id="i_confirm" name="i_confirm" value="LogIn" />
     </form>
+</template>
+
+<template name="LoadingUser">
+    <b>Loading user . . . </b>
+</template>
+
+<template name="LogoutAction">
+    <input type="button" style="margin-right:5px;" id="i_logout" name="i_logout" value="LogOut" />
+</template>
+
+<template name="UserName">
+    
+    <b>Hello {{userName}} </b>
+    
 </template>

@@ -18,30 +18,42 @@
                                 <span class="icon-bar "></span>
                                 <span class="icon-bar "></span>
                             </button>
-                            <a class="navbar-brand " href="# ">Srumlab</a>
+
+                            <a class="navbar-brand" href="#">Scrumlab</a>
                         </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse " id="navbar-collapse ">
-                            <ul class="nav navbar-nav ">
-                                <li class="{{ isActiveRoute 'dashboard' }} ">
-                                    <a href="{{pathFor 'dashboard'}} " class="glyphicon glyphicon-home "></a>
+                        <div class="collapse navbar-collapse" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li class="{{ isActiveRoute 'dashboard' }}">
+                                    <a href="{{ pathFor 'dashboard' }}" class="glyphicon glyphicon-home"></a>
                                 </li>
-                                <li class="dropdown ">
-                                    <a href="# " class="dropdown-toggle " data-toggle="dropdown ">Projects <span class="caret "></span></a>
-                                    <ul class="dropdown-menu " role="menu ">
-                                        <li><a href="# ">Project 1</a>
-                                        </li>
-                                        <li><a href="# ">Project 2</a>
-                                        </li>
-                                        <li class="divider "></li>
-                                        <li><a href="# ">Sync with Gitlab</a>
-                                        </li>
-                                    </ul>
+                                <li class="dropdown">
+                                    {{> navProjectsDropdown}}
                                 </li>
-                                <li class="{{ isActiveRoute 'about' }} ">
-                                    <a href="{{ pathFor 'about' }} ">About</a>
+
+                                {{#if isActiveRoute 'project' }}
+                                <li class="{{ isActiveRoute 'projectDashboard' gitlabId=project.gitlab.id }}">
+                                    <a href="{{ pathFor 'project' gitlabId=project.gitlab.id }}">Overview</a>
                                 </li>
+
+                                <li class="{{ isActiveRoute 'projectBacklog' }}">
+                                    <a href="{{ pathFor 'projectBacklog' gitlabId=project.gitlab.id }}">Backlog</a>
+                                </li>
+                                <li class="{{ isActiveRoute 'projectSprints' }}">
+                                    <a href="{{ pathFor 'projectSprints' gitlabId=project.gitlab.id }}">Sprints</a>
+                                </li>
+                                {{else}}
+                                <li class="{{ isActiveRoute 'about' }}">
+                                    <a href="{{ pathFor 'about' }}">About</a>
+                                </li>
+                                <li class="{{ isActiveRoute 'backlog' }}">
+                                    <a href="{{ pathFor 'backlog' }}">Backlog test</a>
+                                </li>
+                                <li class="{{ isActiveRoute 'sprints' }}">
+                                    <a href="{{ pathFor 'sprints' }}">Sprints test</a>
+                                </li>
+                                {{/if}}
                             </ul>
                         </div>
                     </div>
@@ -57,7 +69,7 @@
     </div>
 </template>
 
-<template name="masterLayoutLoginForm ">
+<template name="masterLayoutLoginForm">
     <p>
         <div class="row">
             <div>
@@ -79,7 +91,7 @@
 
 <template name="masterLayoutLoadingForm">
     <p>
-        <div class="pull-left"><b>Please wait, loading . . .</b>
+        <div class="pull-left"><b>Logging in...</b>
         </div>
     </p>
 </template>
@@ -87,7 +99,7 @@
 <template name="masterLayoutConnected">
     <div class="center-block">
         <p class="text-info">
-            <b>Profile: {{currentUser.username}}</b>
+            <b>Hi, {{currentUser.username}}</b>
             <button type="submit" class="btn btn-primary btn-sm col-xs-5" id="iLogout">Sign out</button>
         </p>
     </div>

@@ -25,10 +25,10 @@ Template.masterLayout.events = {
         }
         return true;
     },
-    'click #login-buttons-logout': function () {
+   /* 'click #login-buttons-logout': function () {
         Template.LoginForm.style.visibility = "visible";
-    },
-    'click #iLogout': function () {
+    },*/
+    'click #userLogout': function () {
         Meteor.logout();
     }
 };

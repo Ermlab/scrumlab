@@ -4,9 +4,6 @@ var Future = Npm.require('fibers/future');
 
 // Serverside functions
 Server = {
-    foo: function () {
-        console.log("Called server side function");
-    },
 
     getAdminApi: function () {
         Deprecated("getAdminApi", "getGitlabApi");
@@ -126,7 +123,6 @@ Meteor.startup(function () {
 
     // Fetch data from all servers
     _.each(GitlabServers.find().fetch(), function (server) {
-        console.log("Fetching data from " + server.url);
         var api = new GitLab(server);
         Server.fetchUsers(api);
         Server.fetchProjects(api);
@@ -148,7 +144,6 @@ Accounts.registerLoginHandler(function (loginRequest) {
         future.return(data);
     });
     var userData = future.wait();
-    console.log('register - user data', userData);
 
     var existingUser = Meteor.users.findOne({
         'gitlab.username': userData.username,
@@ -192,7 +187,6 @@ Accounts.onLogin(function (data) {
 
     //majac usera, znajde jego origin, origin = id servera
 
-    console.log('onlogin', user);
     var server = GitlabServers.findOne(user.origin);
     Server.getGitlabApi({
         url: server.url,

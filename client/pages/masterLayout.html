@@ -3,15 +3,22 @@
         <div class="row">
             <div class="col-md-12">
                 <nav class="navbar navbar-default" role="navigation">
-                    <div class="container-fluid">
+                    <div class="navbar-right">
+
+                        {{#if currentUser}} {{> masterLayoutConnected}} {{else}} {{#if loggingIn}} {{> masterLayoutLoadingForm}} {{else}} {{> masterLayoutLoginForm}} {{/if}} {{/if}}
+
+                    </div>
+
+                    <div class="container-fluid ">
                         <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
+                        <div class="navbar-header ">
+                            <button type="button " class="navbar-toggle " data-toggle="collapse " data-target="#navbar-collapse ">
+                                <span class="sr-only ">Toggle navigation</span>
+                                <span class="icon-bar "></span>
+                                <span class="icon-bar "></span>
+                                <span class="icon-bar "></span>
                             </button>
+
                             <a class="navbar-brand" href="#">Scrumlab</a>
                         </div>
 
@@ -48,23 +55,52 @@
                                 </li>
                                 {{/if}}
                             </ul>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li>{{> loginButtons}}</li>
-                            </ul>
                         </div>
-                        <!-- /.navbar-collapse -->
                     </div>
-                    <!-- /.container-fluid -->
                 </nav>
 
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row ">
+            <div class="col-md-12 ">
                 {{> yield}}
             </div>
         </div>
     </div>
 </template>
 
+<template name="masterLayoutLoginForm">
+    <p>
+        <div class="row">
+            <div>
+                <div class="col-xs-5 ">
+                    <input class="form-control input-sm" id="iEmail" type="email" placeholder="Enter email ">
+                </div>
+                <div class="col-xs-4 ">
+                    <input type="password" class="form-control input-sm" id="inputPassword3" placeholder="Password">
+                </div>
+                <div>
+                    <div class="col-xs-2 ">
+                        <button type="button" class="btn btn-primary btn-sm" id="signIn">Sign In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </p>
+</template>
 
+<template name="masterLayoutLoadingForm">
+    <p>
+        <div class="pull-left"><b>Logging in...</b>
+        </div>
+    </p>
+</template>
+
+<template name="masterLayoutConnected">
+    <div class="center-block">
+        <p class="text-info">
+            <b>Hi, {{currentUser.username}}</b>
+            <button type="submit" class="btn btn-primary btn-sm col-xs-5" id="iLogout">Sign out</button>
+        </p>
+    </div>
+</template>

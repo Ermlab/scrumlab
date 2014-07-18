@@ -1,12 +1,9 @@
 var Fiber = Npm.require('fibers');
-var Future = Npm.require('fibers/future');
 
+var Future = Npm.require('fibers/future');
 
 // Serverside functions
 Server = {
-    foo: function () {
-        console.log("Called server side function");
-    },
 
     getAdminApi: function () {
         Deprecated("getAdminApi", "getGitlabApi");
@@ -189,7 +186,6 @@ Meteor.startup(function () {
 
     // Fetch data from all servers
     _.each(GitlabServers.find().fetch(), function (server) {
-        console.log("Fetching data from " + server.url);
         var api = new GitLab(server);
         Server.fetchUsers(api);
         Server.fetchProjects(api);
@@ -220,6 +216,7 @@ Accounts.registerLoginHandler(function (loginRequest) {
     });
 
     var userId = null;
+
     if (existingUser !== undefined) {
         userId = existingUser._id;
         Meteor.users.update({
@@ -238,28 +235,38 @@ Accounts.registerLoginHandler(function (loginRequest) {
         });
     }
 
-    return {
-        userId: userId,
-    };
+    if (userId !== null) {
+        return {
+            userId: userId,
+        };
+
+    }
 });
 
 Accounts.onLogin(function (data) {
-    console.log("logged in", data.user);
 
     var user = data.user;
 
     // get all projects available for current user
     var projectsFuture = new Future();
-    Server.getUserApi(user.gitlab.private_token).projects.all(function (projects) {
+
+    //majac usera, znajde jego origin, origin = id servera
+
+    var server = GitlabServers.findOne(user.origin);
+    Server.getGitlabApi({
+        url: server.url,
+        token: user.gitlab.private_token
+    }).projects.all(function (projects) {
         projectsFuture.return(projects);
     });
+
     var projects = projectsFuture.wait();
 
     var in_projects = [];
+
     for (var i = 0; i < projects.length; i++) {
         in_projects.push(projects[i].id);
     }
-    console.log(user._id, " has access to ", in_projects);
 
     Meteor.users.update({
         _id: user._id

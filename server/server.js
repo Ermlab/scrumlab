@@ -86,9 +86,72 @@ Server = {
         });
     },
 
-    fetchIssues: function (api) {
+    fetchAllIssues: function (api) {
         // Fetch all issues from Gitlab server
+        api.projects.all(function (projects) {
+            Fiber(function () {
+                for (var i = 0; i < projects.length; i++) {
+                    api.projects.issues.list(projects[i].id, {}, function (issues) {
+                        Fiber(function () {
+                            for (var i = 0; i < issues.length; i++) {
+                                // Check if issue already exists, then update or insert
+                                var existingIssue = Issues.findOne({
+                                    'gitlab.id': issues[i].id,
+                                    'origin': api.options._id
+                                });
+
+                                if (existingIssue !== undefined) {
+                                    Issues.update(existingIssue._id, {
+                                        $set: {
+                                            gitlab: issues[i]
+                                        }
+                                    });
+                                } else {
+                                    Issues.insert({
+                                        gitlab: issues[i],
+                                        origin: api.options._id
+                                    });
+                                }
+                            }
+                        }).run();
+                    });
+                }
+            }).run();
+        });
+    },
+
+    fetchUserIssues: function (api) {
+        // Fetch all user issues from Gitlab server
         api.issues.all(function (issues) {
+            Fiber(function () {
+                for (var i = 0; i < issues.length; i++) {
+                    // Check if issue already exists, then update or insert
+                    var existingIssue = Issues.findOne({
+                        'gitlab.id': issues[i].id,
+                        'origin': api.options._id
+                    });
+
+                    if (existingIssue !== undefined) {
+                        Issues.update(existingIssue._id, {
+                            $set: {
+                                gitlab: issues[i]
+                            }
+                        });
+                    } else {
+                        Issues.insert({
+                            gitlab: issues[i],
+                            origin: api.options._id
+                        });
+                    }
+                }
+            }).run();
+        });
+    },
+
+
+    fetchProjectIssues: function (api, projectId) {
+        // Fetch all project issues from Gitlab server
+        api.projects.issues.list(projectId, {}, function (issues) {
             Fiber(function () {
                 for (var i = 0; i < issues.length; i++) {
                     // Check if issue already exists, then update or insert
@@ -130,7 +193,9 @@ Meteor.startup(function () {
         var api = new GitLab(server);
         Server.fetchUsers(api);
         Server.fetchProjects(api);
-        Server.fetchIssues(api);
+        Server.fetchAllIssues(api);
+        //Server.fetchUserIssues(api);
+        //Server.fetchProjectIssues(api);
     });
 });
 

@@ -1,37 +1,25 @@
-displayName = function () {
-    var user = Meteor.user();
-    if (!user)
-        return '';
-    if (user.profile && user.profile.name)
-        return user.profile.name;
-    if (user.username)
-        return user.username;
-    if (user.emails && user.emails[0] && user.emails[0].address)
-        return user.emails[0].address;
-    return 'none';
-};
-
 Template.masterLayout.events = {
-    'click #i_confirm': function () {
+    'click #signIn': function () {
 
-        var email = i_email.value;
+        var email = iEmail.value;
 
-        var password = i_password.value;
+        var password = inputPassword3.value;
 
         Meteor.loginWithGitlabAccount(email, password);
     },
-    'keypress #i_password': function (event) {
+    'keypress #inputPassword3': function (event) {
 
         if (event.which == 13 || event.keyCode == 13) {
-            var email = i_email.value;
 
-            var password = i_password.value;
+            var email = iEmail.value;
+
+            var password = inputPassword3.value;
 
             Meteor.loginWithGitlabAccount(email, password);
 
-            i_password.value = '';
+            iEmail.value = '';
 
-            i_email.value = '';
+            inputPassword3.value = '';
 
             return false;
         }
@@ -40,14 +28,7 @@ Template.masterLayout.events = {
     'click #login-buttons-logout': function () {
         Template.LoginForm.style.visibility = "visible";
     },
-    'click #i_logout': function () {
+    'click #iLogout': function () {
         Meteor.logout();
     }
 };
-
-Template.UserName.helpers({
-    userName: function () {
-        return displayName();
-    },
-
-});

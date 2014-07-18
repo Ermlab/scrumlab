@@ -3,52 +3,44 @@
         <div class="row">
             <div class="col-md-12">
                 <nav class="navbar navbar-default" role="navigation">
-                    <div class="container-fluid">
+                    <div class="navbar-right">
+
+                        {{#if currentUser}} {{> masterLayoutConnected}} {{else}} {{#if loggingIn}} {{> masterLayoutLoadingForm}} {{else}} {{> masterLayoutLoginForm}} {{/if}} {{/if}}
+
+                    </div>
+
+                    <div class="container-fluid ">
                         <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
+                        <div class="navbar-header ">
+                            <button type="button " class="navbar-toggle " data-toggle="collapse " data-target="#navbar-collapse ">
+                                <span class="sr-only ">Toggle navigation</span>
+                                <span class="icon-bar "></span>
+                                <span class="icon-bar "></span>
+                                <span class="icon-bar "></span>
                             </button>
-                            <a class="navbar-brand" href="#">Srumlab</a>
+                            <a class="navbar-brand " href="# ">Srumlab</a>
                         </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse" id="navbar-collapse">
-                            <ul class="nav navbar-nav">
-                                <li class="{{ isActiveRoute 'dashboard' }}">
-                                    <a href="{{pathFor 'dashboard'}}" class="glyphicon glyphicon-home"></a>
+                        <div class="collapse navbar-collapse " id="navbar-collapse ">
+                            <ul class="nav navbar-nav ">
+                                <li class="{{ isActiveRoute 'dashboard' }} ">
+                                    <a href="{{pathFor 'dashboard'}} " class="glyphicon glyphicon-home "></a>
                                 </li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <span class="caret"></span></a>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Project 1</a>
+                                <li class="dropdown ">
+                                    <a href="# " class="dropdown-toggle " data-toggle="dropdown ">Projects <span class="caret "></span></a>
+                                    <ul class="dropdown-menu " role="menu ">
+                                        <li><a href="# ">Project 1</a>
                                         </li>
-                                        <li><a href="#">Project 2</a>
+                                        <li><a href="# ">Project 2</a>
                                         </li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Sync with Gitlab</a>
+                                        <li class="divider "></li>
+                                        <li><a href="# ">Sync with Gitlab</a>
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="{{ isActiveRoute 'about' }}">
-                                    <a href="{{ pathFor 'about' }}">About</a>
-                                </li>
-
-                            </ul>
-                            <ul class="nav navbar-nav navbar-right" style="margin-top:5px">
-                                <li>
-                                    {{#if currentUser}}
-                                    {{>UserName}}{{> LogoutAction}}
-                                    {{else}}
-                                        {{#if loggingIn}}
-                                            {{>LoadingUser}}
-                                        {{else}}
-                                            {{> LoginForm}}
-                                        {{/if}}
-                                    {{/if}}
+                                <li class="{{ isActiveRoute 'about' }} ">
+                                    <a href="{{ pathFor 'about' }} ">About</a>
                                 </li>
                             </ul>
                         </div>
@@ -57,33 +49,46 @@
 
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row ">
+            <div class="col-md-12 ">
                 {{> yield}}
             </div>
         </div>
     </div>
 </template>
 
-<template name="LoginForm">
-    <form id="LoginPanel">
-        Email:
-        <input type="text" size=10 id="i_email" name="i_email"> Password:
-        <input type="password" size=10 id="i_password" name="i_password">
-        <input type="button" style="margin-right:5px;" id="i_confirm" name="i_confirm" value="LogIn" />
-    </form>
+<template name="masterLayoutLoginForm ">
+    <p>
+        <div class="row">
+            <div>
+                <div class="col-xs-5 ">
+                    <input class="form-control input-sm" id="iEmail" type="email" placeholder="Enter email ">
+                </div>
+                <div class="col-xs-4 ">
+                    <input type="password" class="form-control input-sm" id="inputPassword3" placeholder="Password">
+                </div>
+                <div>
+                    <div class="col-xs-2 ">
+                        <button type="button" class="btn btn-primary btn-sm" id="signIn">Sign In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </p>
 </template>
 
-<template name="LoadingUser">
-    <b>Loading user . . . </b>
+<template name="masterLayoutLoadingForm">
+    <p>
+        <div class="pull-left"><b>Please wait, loading . . .</b>
+        </div>
+    </p>
 </template>
 
-<template name="LogoutAction">
-    <input type="button" style="margin-right:5px;" id="i_logout" name="i_logout" value="LogOut" />
-</template>
-
-<template name="UserName">
-    
-    <b>Hello {{userName}} </b>
-    
+<template name="masterLayoutConnected">
+    <div class="center-block">
+        <p class="text-info">
+            <b>Profile: {{currentUser.username}}</b>
+            <button type="submit" class="btn btn-primary btn-sm col-xs-5" id="iLogout">Sign out</button>
+        </p>
+    </div>
 </template>

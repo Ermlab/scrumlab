@@ -1,3 +1,42 @@
 <template name="projectSprints">
-    TODO: project sprints
+    {{> project.gitlab.id}}
+    {{> projectSprintsInput}}
+    <div id="sprintBody">{{> projectSprintsList}}</div>
+    <div id="backlogItems">
+        Unassgined backlog issues:
+        <br/>{{#each backlogItems}}
+        <p class="backlogItem" id={{_id}} ref={{sprint}}>
+            <div class="backlogItemText">{{name}}</div>
+            <div class="backlogItemTime">{{time}}</div>
+        </p>
+        {{/each}}
+    </div>
+</template>
+
+<template name="projectSprintsList">
+    {{#each sprints}}
+    <div class="sprint" id={{_id}} ref={{time}}>
+        <div class="sprintInfo"><b>{{name}}</b> End date: {{enddate}} Status: {{status}}
+            <div class="sprintTimeMarker">{{time}}</div>
+        </div>
+        {{#each assignedItems _id}}
+        <div class="backlogItem" id={{_id}} ref={{sprint}}>
+            <div class="backlogItemText">{{name}}</div>
+            <div class="backlogItemTime">{{time}}</div>
+        </div>
+        {{/each}}
+    </div>
+    {{/each}}
+</template>
+
+<template name="projectSprintsInput">
+    <details id="addSprint">
+        <summary>Add new sprint</summary>
+        <input type="text" id="name" style="width: 95%" placeholder="Name" />
+        <br/>
+        <p>End date:
+            <input type="text" id="datepicker">
+            <input type="button" class="insert" value="Dodaj" style="float: right" />
+        </p>
+    </details>
 </template>

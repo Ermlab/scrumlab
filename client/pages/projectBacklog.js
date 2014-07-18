@@ -25,7 +25,7 @@ Template.projectBacklogAssignees.rendered = function () {
             var storyId = this.parentElement.getAttribute("id");
             var updateField = {};
             updateField[this.getAttribute("ref")] = newValue;
-            Stories.update(storyId, {
+            Issues.update(storyId, {
                 $set: updateField
             });
         }
@@ -55,7 +55,7 @@ Template.projectBacklogInput.events = {
         var type = document.getElementById("typeSelector");
         var typeName = type.options[type.selectedIndex].text;
         // Adding new story to database
-        Stories.insert({
+        Issues.insert({
             name: name.value,
             description: desc.value,
             time: hours,

@@ -1,6 +1,30 @@
+/*--- require sections --*/
 var Fiber = Npm.require('fibers');
-
 var Future = Npm.require('fibers/future');
+
+
+/*--- publish section ---*/
+
+//publish user data in order to have access to gitlab user data
+Meteor.publish("userData", function () {
+    if (this.userId) {
+        return Meteor.users.find({
+            _id: this.userId
+        }, {
+            fields: {
+                'gitlab': 1
+            }
+        });
+    } else {
+        this.ready();
+    }
+});
+
+Meteor.publish('projects', function () {
+    return Projects.find();
+});
+
+
 
 // Serverside functions
 Server = {

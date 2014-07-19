@@ -1,11 +1,11 @@
 <template name="navProjectsDropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="min-width:100px">
         
         {{#if isActiveRoute 'projectsSettings'}}
         Project Settings
         {{else}}
         {{#if isActiveRoute 'project' }}
-        {{project.gitlab.name_with_namespace}}
+        {{project.gitlab.name}}
         {{else}}
         Projects
         {{/if}}

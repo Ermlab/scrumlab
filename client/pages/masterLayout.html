@@ -24,9 +24,12 @@
                                 <li class="{{ isActiveRoute 'dashboard' }}">
                                     <a href="{{ pathFor 'dashboard' }}" class="glyphicon glyphicon-home"></a>
                                 </li>
+                                
+                                 {{#if currentUser}}
                                 <li class="dropdown">
                                     {{> navProjectsDropdown}}
                                 </li>
+                                {{/if}}
 
                                 {{#if isActiveRoute 'project' }}
                                 <li class="{{ isActiveRoute 'projectDashboard' gitlabId=project.gitlab.id }}">

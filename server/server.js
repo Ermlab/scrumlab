@@ -21,23 +21,22 @@ Meteor.publish("userData", function () {
 });
 
 
-
-Meteor.publish('projectNames', function () {
-    return Projects.find({},{
-        fields: {
-            'gitlab.id':1,
-            'gitlab.name': 1,
-            'gitlab.name_with_namespace': 1
-        }
-    });
-});
-
-
 //TODO: it should return only logged user projects
-Meteor.publish('allprojects', function () {
-    return Projects.find();
+Meteor.publish('userProjects', function () {
+
+    if (this.userId) {
+
+        return Projects.find({
+            members_id: this.userId
+        });
+    } else
+        return null;
 });
 
+
+Meteor.publish('issues', function (projectId) {
+    return Issues.find();
+});
 
 
 
@@ -249,6 +248,9 @@ Accounts.registerLoginHandler(function (loginRequest) {
     });
     var userData = future.wait();
 
+
+
+
     var existingUser = Meteor.users.findOne({
         'gitlab.username': userData.username,
         'origin': server._id
@@ -256,7 +258,10 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
     var userId = null;
 
+
     if (existingUser !== undefined) {
+
+
         userId = existingUser._id;
         Meteor.users.update({
             _id: userId
@@ -305,13 +310,35 @@ Accounts.onLogin(function (data) {
 
     for (var i = 0; i < projects.length; i++) {
         in_projects.push(projects[i].id);
+
+
+        //update projects members field
+        //find project and update its members property
+
+        var proj = Projects.findOne({
+            'gitlab.id': projects[i].id,
+            'origin': user.origin
+        });
+
+        Projects.update(proj._id, {
+            $addToSet: {
+                gl_members_id: user.gitlab.id,
+                members_id: user._id
+            }
+        });
+
+        //update user in_projects field
+        Meteor.users.update({
+            _id: user._id
+        }, {
+            $addToSet: {
+                gl_projects_id: projects[i].id,
+                projects_id: proj._id
+            }
+        });
+
+
     }
 
-    Meteor.users.update({
-        _id: user._id
-    }, {
-        $set: {
-            in_projects: in_projects
-        }
-    });
+
 });

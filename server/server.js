@@ -20,9 +20,24 @@ Meteor.publish("userData", function () {
     }
 });
 
-Meteor.publish('projects', function () {
+
+
+Meteor.publish('projectNames', function () {
+    return Projects.find({},{
+        fields: {
+            'gitlab.id':1,
+            'gitlab.name': 1,
+            'gitlab.name_with_namespace': 1
+        }
+    });
+});
+
+
+//TODO: it should return only logged user projects
+Meteor.publish('allprojects', function () {
     return Projects.find();
 });
+
 
 
 

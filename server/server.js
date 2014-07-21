@@ -1,6 +1,44 @@
+/*--- require sections --*/
 var Fiber = Npm.require('fibers');
-
 var Future = Npm.require('fibers/future');
+
+
+/*--- publish section ---*/
+
+//publish user data in order to have access to gitlab user data
+Meteor.publish("userData", function () {
+    if (this.userId) {
+        return Meteor.users.find({
+            _id: this.userId
+        }, {
+            fields: {
+                'gitlab': 1
+            }
+        });
+    } else {
+        this.ready();
+    }
+});
+
+
+//TODO: it should return only logged user projects
+Meteor.publish('userProjects', function () {
+
+    if (this.userId) {
+
+        return Projects.find({
+            member_ids: this.userId
+        });
+    } else
+        return null;
+});
+
+
+Meteor.publish('issues', function (projectId) {
+    return Issues.find();
+});
+
+
 
 // Serverside functions
 Server = {
@@ -210,6 +248,9 @@ Accounts.registerLoginHandler(function (loginRequest) {
     });
     var userData = future.wait();
 
+
+
+
     var existingUser = Meteor.users.findOne({
         'gitlab.username': userData.username,
         'origin': server._id
@@ -217,7 +258,10 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
     var userId = null;
 
+
     if (existingUser !== undefined) {
+
+
         userId = existingUser._id;
         Meteor.users.update({
             _id: userId
@@ -266,13 +310,33 @@ Accounts.onLogin(function (data) {
 
     for (var i = 0; i < projects.length; i++) {
         in_projects.push(projects[i].id);
+
+
+        //update projects members field
+        //find project and update its members property
+
+        var proj = Projects.findOne({
+            'gitlab.id': projects[i].id,
+            'origin': user.origin
+        });
+
+        Projects.update(proj._id, {
+            $addToSet: {
+                member_ids: user._id
+            }
+        });
+
+        //update user in_projects field
+        Meteor.users.update({
+            _id: user._id
+        }, {
+            $addToSet: {
+                project_ids: proj._id
+            }
+        });
+
+
     }
 
-    Meteor.users.update({
-        _id: user._id
-    }, {
-        $set: {
-            in_projects: in_projects
-        }
-    });
+
 });

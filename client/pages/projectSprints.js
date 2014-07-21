@@ -1,15 +1,3 @@
-Template.projectSprints.backlogItems = function () {
-    return Stories.find({
-        sprint: {
-            "$exists": false
-        }
-    }, {
-        sort: {
-            position: 1
-        }
-    });
-}
-
 Template.projectSprints.rendered = function () {
     // Setting sortable property to sprintlist container
     $("#sprintBody").sortable({
@@ -18,7 +6,7 @@ Template.projectSprints.rendered = function () {
         stop: function (event, ui) {
             var data = $("#sprintBody").sortable("toArray");
             for (var i = 0; i < data.length; i++) {
-                Stories.update(data[i], {
+                Sprints.update(data[i], {
                     $set: {
                         position: i
                     }
@@ -32,21 +20,24 @@ Template.projectSprints.rendered = function () {
             // Getting the element id and containing sprint's id (or a backlogItems container)
             var ownerId = ui.item.parent().attr("id");
             var selfId = ui.item.attr("id");
+            var previousId = ui.item.attr("ref");
             // If no owner is specified or element was returned to backlog container ownerId is set to 0
             if (ownerId == 'backlogItems') ownerId = '0';
+            // If no previous owner present, previousId is set to 0
+            if (typeof (previousId) == 'undefined') previousId = '0';
             // Check if the item was dropped back in container it was taken from by
             // comparing parent id with original parent id stored in "ref" variable
-            if (ownerId != ui.item.attr("ref")) {
+            if (ownerId != previousId) {
                 // Check if owner is actually a sprint
                 if (ownerId != 0) {
-                    Stories.update(selfId, {
+                    Issues.update(selfId, {
                         $set: {
                             sprint: ownerId
                         }
                     });
                     // Recalculate the time estimate of a sprint 
                     var sum = 0;
-                    var data = Stories.find({
+                    var data = Issues.find({
                         sprint: ownerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
@@ -59,7 +50,7 @@ Template.projectSprints.rendered = function () {
                 } else {
                     // If ownerId = 0, the field sprint is removed, resulting in element being unassigned
                     // no time estimate recalculation needed
-                    Stories.update(selfId, {
+                    Issues.update(selfId, {
                         $unset: {
                             sprint: ""
                         }
@@ -71,12 +62,12 @@ Template.projectSprints.rendered = function () {
                 if (previousOwnerId != 0) {
                     // Recalculate the time estimate of a sprint 
                     var sum = 0;
-                    var data = Stories.find({
+                    var data = Issues.find({
                         sprint: previousOwnerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
                     // Update the time estimate
-                    Stories.update(previousOwnerId, {
+                    Issues.update(previousOwnerId, {
                         $set: {
                             time: sum
                         }
@@ -94,8 +85,12 @@ Template.projectSprints.rendered = function () {
 }
 
 Template.projectSprintsList.assignedItems = function (ownerId) {
-    return Stories.find({
+    return Issues.find({
         sprint: ownerId
+    }, {
+        sort: {
+            position: 1
+        }
     });
 }
 

@@ -1,12 +1,12 @@
 <template name="projectSprints">
-    <div id="projectId" ref={{project.gitlab.id}}></div>{{> projectSprintsInput}}
+    <input type="hidden" id="projectId" ref={{projectId}}>{{> projectSprintsInput}}
     <div id="sprintBody">{{> projectSprintsList}}</div>
-    <div id="backlogItems">
+    <div id="backlogItems" ref="0">
         Unassgined backlog issues:
-        <br/>{{#each backlogItems}}
+        <br/>{{#each issues}}
         <p class="backlogItem" id={{_id}} ref={{sprint}}>
-            <div class="backlogItemText">{{name}}</div>
-            <div class="backlogItemTime">{{time}}</div>
+            <div class="backlogItemText">{{gitlab.title}}</div>
+            <div class="backlogItemTime">{{estimate}}</div>
         </p>
         {{/each}}
     </div>
@@ -20,8 +20,8 @@
         </div>
         {{#each assignedItems _id}}
         <div class="backlogItem" id={{_id}} ref={{sprint}}>
-            <div class="backlogItemText">{{name}}</div>
-            <div class="backlogItemTime">{{time}}</div>
+            <div class="backlogItemText">{{gitlab.title}}</div>
+            <div class="backlogItemTime">{{estimate}}</div>
         </div>
         {{/each}}
     </div>

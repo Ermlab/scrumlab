@@ -16,6 +16,7 @@ Template.projectBacklogAssignees.rendered = function () {
     });
     $("#container").disableSelection();
     // Setting default values for x-editable
+    $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.emptytext = '(...)';
     $.fn.editable.defaults.toggle = 'dblclick';
     // Setting editable property to story elements
@@ -92,7 +93,7 @@ Template.projectBacklogIssues.events = {
                 'storyId': storyId,
                 'name': name.value,
                 'description': desc.value,
-                'time': hours,
+                'estimate': hours,
                 'assignee': assigneeName
             });
             // Resetting the input fields

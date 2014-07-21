@@ -27,7 +27,7 @@ Meteor.publish('userProjects', function () {
     if (this.userId) {
 
         return Projects.find({
-            members_id: this.userId
+            member_ids: this.userId
         });
     } else
         return null;
@@ -322,8 +322,7 @@ Accounts.onLogin(function (data) {
 
         Projects.update(proj._id, {
             $addToSet: {
-                gl_members_id: user.gitlab.id,
-                members_id: user._id
+                member_ids: user._id
             }
         });
 
@@ -332,8 +331,7 @@ Accounts.onLogin(function (data) {
             _id: user._id
         }, {
             $addToSet: {
-                gl_projects_id: projects[i].id,
-                projects_id: proj._id
+                project_ids: proj._id
             }
         });
 

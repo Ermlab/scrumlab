@@ -3,20 +3,20 @@
 </template>
 
 <template name="projectBacklogIssues">
-    <div id="container">
+    <div id="container" ref={{projectId}}>
         {{#each issues}}
-        <div class="story" id={{_id}}>
+        <div class="story" id={{_id}} ref={{gitlab.title}}>
             <p class="storyTitle" ref="gitlab.title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="gitlab.state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="gitlab.description" data-type="textarea">{{gitlab.description}}</p>
-            <p class="storyHours" ref="time" data-type="text" data-placeholder="time">{{time}}</p>
-            <p class="storyAssignee" ref="gitalb.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
+            <p class="storyHours" ref="estimate" data-type="text" data-placeholder="time">{{estimate}}</p>
+            <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
             <p class="deleteButton"></p>
             <div>
                 <details>
                     <summary>Tasks</summary>
                     {{#each tasks _id}}
-                    <div class="task" id={{_id}}>
+                    <div class="task" id={{_id}} ref={{name}}>
                         <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
                         <p class="taskHours" ref="time" data-type="text" data-mode="popup">{{time}}</p>
                         <p class="taskText" ref="description" data-type="textarea">{{description}}</p>
@@ -49,7 +49,7 @@
         <br/>
         <input type="text" id="description" style="width: 95%" placeholder="Description" />
         <br/>Estimated time:
-        <input type="number" id="time" style="width: 5%" />
+        <input type="number" id="estimate" style="width: 5%" />
         <br/>Issue type:
         <select id="typeSelector" style="width: 20%">
             <option value="opened">opened</option>

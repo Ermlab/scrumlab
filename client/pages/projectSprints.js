@@ -1,6 +1,8 @@
 Template.projectSprints.backlogItems = function () {
-    return Issues.find({
-        sprint: '0'
+    return Stories.find({
+        sprint: {
+            "$exists": false
+        }
     }, {
         sort: {
             position: 1
@@ -16,7 +18,7 @@ Template.projectSprints.rendered = function () {
         stop: function (event, ui) {
             var data = $("#sprintBody").sortable("toArray");
             for (var i = 0; i < data.length; i++) {
-                Issues.update(data[i], {
+                Stories.update(data[i], {
                     $set: {
                         position: i
                     }
@@ -35,16 +37,16 @@ Template.projectSprints.rendered = function () {
             // Check if the item was dropped back in container it was taken from by
             // comparing parent id with original parent id stored in "ref" variable
             if (ownerId != ui.item.attr("ref")) {
-                Issues.update(selfId, {
-                    $set: {
-                        sprint: ownerId
-                    }
-                });
                 // Check if owner is actually a sprint
                 if (ownerId != 0) {
+                    Stories.update(selfId, {
+                        $set: {
+                            sprint: ownerId
+                        }
+                    });
                     // Recalculate the time estimate of a sprint 
                     var sum = 0;
-                    var data = Issues.find({
+                    var data = Stories.find({
                         sprint: ownerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
@@ -54,6 +56,14 @@ Template.projectSprints.rendered = function () {
                             time: sum
                         }
                     });
+                } else {
+                    // If ownerId = 0, the field sprint is removed, resulting in element being unassigned
+                    // no time estimate recalculation needed
+                    Stories.update(selfId, {
+                        $unset: {
+                            sprint: ""
+                        }
+                    });
                 }
                 // Get previous owner id to allow time estimate recalculation
                 var previousOwnerId = ui.item.attr("ref");
@@ -61,12 +71,12 @@ Template.projectSprints.rendered = function () {
                 if (previousOwnerId != 0) {
                     // Recalculate the time estimate of a sprint 
                     var sum = 0;
-                    var data = Issues.find({
+                    var data = Stories.find({
                         sprint: previousOwnerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
                     // Update the time estimate
-                    Issues.update(previousOwnerId, {
+                    Stories.update(previousOwnerId, {
                         $set: {
                             time: sum
                         }
@@ -83,27 +93,21 @@ Template.projectSprints.rendered = function () {
     $("#datepicker").datepicker();
 }
 
-Template.projectSprintsList.sprints = function () {
-    return Sprints.find({}, {
-        sort: {
-            position: 1
-        }
-    });
-}
-
 Template.projectSprintsList.assignedItems = function (ownerId) {
-    return Issues.find({
+    return Stories.find({
         sprint: ownerId
     });
 }
 
 Template.projectSprintsInput.events = {
-    'click input.insert': function () {
+    'click input.insert': function (event) {
         var name = document.getElementById("name");
         var date = document.getElementById("datepicker");
+        var projectId = document.getElementById("projectId").getAttribute("ref");
         Sprints.insert({
             name: name.value,
             enddate: date.value,
+            project: projectId,
             time: '0',
             status: 'ready'
         });

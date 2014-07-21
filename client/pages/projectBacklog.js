@@ -47,21 +47,27 @@ Template.projectBacklogAssignees.rendered = function () {
 Template.projectBacklogInput.events = {
     'click input.insert': function () {
         // Gathering necessary new story data
+        var projectId = Number(document.getElementById("container").getAttribute("ref"));
         var name = document.getElementById("name");
         var desc = document.getElementById("description");
-        var hours = document.getElementById("time").value;
+        var time = document.getElementById("estimate").value;
         var assignee = document.getElementById("assigneeSelector");
         var assigneeName = assignee.options[assignee.selectedIndex].text;
         var type = document.getElementById("typeSelector");
         var typeName = type.options[type.selectedIndex].text;
         // Adding new story to database
         Issues.insert({
-            name: name.value,
-            description: desc.value,
-            time: hours,
-            type: typeName,
-            assignee: assigneeName,
-            sprint: '0'
+            'estimate': time,
+            'sprint': '0',
+            'gitlab': {
+                'title': name.value,
+                'description': desc.value,
+                'state': typeName,
+                'project_id': projectId,
+                'assignee': {
+                    'username': assigneeName
+                }
+            }
         });
         // Resetting the input fields
         name.value = '';
@@ -83,11 +89,11 @@ Template.projectBacklogIssues.events = {
         // Adding task to database
         if (name != '') {
             Tasks.insert({
-                storyId: storyId,
-                name: name.value,
-                description: desc.value,
-                time: hours,
-                assignee: assigneeName
+                'storyId': storyId,
+                'name': name.value,
+                'description': desc.value,
+                'time': hours,
+                'assignee': assigneeName
             });
             // Resetting the input fields
             name.value = '';
@@ -99,15 +105,16 @@ Template.projectBacklogIssues.events = {
         // Retrieve class and id of parent element
         var parentClass = event.currentTarget.parentElement.getAttribute("class");
         var parentId = event.currentTarget.parentElement.getAttribute("id");
+        var parentTitle = event.currentTarget.parentElement.getAttribute("ref");
         if (parentClass == 'story') {
-            var choice = confirm('Confirm deletion of issue id:' + parentId);
+            var choice = confirm('Confirm deletion of issue: ' + parentTitle);
             if (choice == true) {
                 Issues.remove({
                     _id: parentId
                 });
             }
         } else if (parentClass = 'task') {
-            var choice = confirm('Confirm deletion of task id:' + parentId);
+            var choice = confirm('Confirm deletion of task: ' + parentTitle);
             if (choice == true) {
                 Tasks.remove({
                     _id: parentId

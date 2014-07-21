@@ -1,6 +1,5 @@
 <template name="projectSprints">
-    {{> project.gitlab.id}}
-    {{> projectSprintsInput}}
+    <div id="projectId" ref={{project.gitlab.id}}></div>{{> projectSprintsInput}}
     <div id="sprintBody">{{> projectSprintsList}}</div>
     <div id="backlogItems">
         Unassgined backlog issues:

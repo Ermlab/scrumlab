@@ -21,3 +21,7 @@ Meteor.loginWithGitlabAccount = function (email, password, callback) {
         userCallback: callback
     });
 };
+
+Handlebars.registerHelper('conlog', function(thing) {
+  console.log(thing);
+});

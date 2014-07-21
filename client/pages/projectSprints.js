@@ -78,7 +78,7 @@ Template.projectSprints.rendered = function () {
             }
         },
         connectWith: "#backlogItems, .sprint",
-        cancel: ".sprintTimeMarker, .sprintInfo"
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
@@ -94,6 +94,30 @@ Template.projectSprintsList.assignedItems = function (ownerId) {
     });
 }
 
+Template.projectSprintsList.events = {
+    'click .startButton': function (event) {
+        // Get selected sprint data
+        var parentId = event.currentTarget.parentElement.getAttribute("id");
+        var sprint = Sprints.findOne({
+            _id: parentId
+        });
+        // Check if sprint is ready to start
+        if (sprint.status == 'ready') {
+            // Check if sprint is not overdue already
+            var finish = sprint.endDate;
+            if (CheckDate(sprint.endDate) == true) {
+                // Update sprint status
+                Sprints.update(parentId, {
+                    $set: {
+                        status: 'in progress'
+                    }
+                });
+            } else alert('Sprint is already overdue.');
+        } else if (sprint.status == 'in progress') alert('Sprint already in progress');
+        else if (sprint.status == 'closed') alert('This sprint has already finished');
+    }
+}
+
 Template.projectSprintsInput.events = {
     'click input.insert': function (event) {
         var name = document.getElementById("name");
@@ -101,7 +125,7 @@ Template.projectSprintsInput.events = {
         var projectId = document.getElementById("projectId").getAttribute("ref");
         Sprints.insert({
             name: name.value,
-            enddate: date.value,
+            endDate: date.value,
             project: projectId,
             time: '0',
             status: 'ready'

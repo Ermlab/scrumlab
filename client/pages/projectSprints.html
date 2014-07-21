@@ -1,4 +1,6 @@
 <template name="projectSprints">
+    <link type="text/css" rel="Stylesheet" href="http://ajax.microsoft.com/ajax/jquery.ui/1.8.6/themes/
+smoothness/jquery-ui.css" />
     <input type="hidden" id="projectId" ref={{projectId}}>{{> projectSprintsInput}}
     <div id="sprintBody">{{> projectSprintsList}}</div>
     <div id="backlogItems" ref="0">
@@ -15,9 +17,11 @@
 <template name="projectSprintsList">
     {{#each sprints}}
     <div class="sprint" id={{_id}} ref={{time}}>
-        <div class="sprintInfo"><b>{{name}}</b> End date: {{enddate}} Status: {{status}}
+        <div class="sprintInfo"><b>{{name}}</b> End date: {{endDate}} Status: {{status}}
             <div class="sprintTimeMarker">{{time}}</div>
         </div>
+        <button type="button" class="startButton" id={{_id}}>Start
+        </button>
         {{#each assignedItems _id}}
         <div class="backlogItem" id={{_id}} ref={{sprint}}>
             <div class="backlogItemText">{{gitlab.title}}</div>

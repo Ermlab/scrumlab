@@ -6,11 +6,7 @@ smoothness/jquery-ui.css" />
         <div class="row">
             <div class="col-md-12">
                 <nav class="navbar navbar-default" role="navigation">
-                    <div class="navbar-right">
 
-                        {{#if currentUser}} {{> masterLayoutConnected}} {{else}} {{#if loggingIn}} {{> masterLayoutLoadingForm}} {{else}} {{> masterLayoutLoginForm}} {{/if}} {{/if}}
-
-                    </div>
 
                     <div class="container-fluid ">
                         <!-- Brand and toggle get grouped for better mobile display -->
@@ -31,9 +27,12 @@ smoothness/jquery-ui.css" />
                                 <li class="{{ isActiveRoute 'dashboard' }}">
                                     <a href="{{ pathFor 'dashboard' }}" class="glyphicon glyphicon-home"></a>
                                 </li>
+                                
+                                 {{#if currentUser}}
                                 <li class="dropdown">
                                     {{> navProjectsDropdown}}
                                 </li>
+                                {{/if}}
 
                                 {{#if isActiveRoute 'project' }}
                                 <li class="{{ isActiveRoute 'projectDashboard' gitlabId=project.gitlab.id }}">
@@ -50,14 +49,15 @@ smoothness/jquery-ui.css" />
                                 <li class="{{ isActiveRoute 'about' }}">
                                     <a href="{{ pathFor 'about' }}">About</a>
                                 </li>
-                                <li class="{{ isActiveRoute 'backlog' }}">
-                                    <a href="{{ pathFor 'backlog' }}">Backlog test</a>
-                                </li>
-                                <li class="{{ isActiveRoute 'sprints' }}">
-                                    <a href="{{ pathFor 'sprints' }}">Sprints test</a>
-                                </li>
                                 {{/if}}
                             </ul>
+
+
+
+                            {{#if currentUser}} {{> masterLayoutConnected}} {{else}} {{#if loggingIn}} {{> masterLayoutLoadingForm}} {{else}} {{> masterLayoutLoginForm}} {{/if}} {{/if}}
+
+
+
                         </div>
                     </div>
                 </nav>
@@ -73,37 +73,51 @@ smoothness/jquery-ui.css" />
 </template>
 
 <template name="masterLayoutLoginForm">
-    <p>
-        <div class="row">
-            <div>
-                <div class="col-xs-5 ">
-                    <input class="form-control input-sm" id="iEmail" type="email" placeholder="Enter email ">
-                </div>
-                <div class="col-xs-4 ">
-                    <input type="password" class="form-control input-sm" id="inputPassword3" placeholder="Password">
-                </div>
-                <div>
-                    <div class="col-xs-2 ">
-                        <button type="button" class="btn btn-primary btn-sm" id="signIn">Sign In</button>
-                    </div>
-                </div>
-            </div>
+
+    <div class="navbar-form navbar-right">
+
+        <div class="form-group">
+            <input class="form-control input-sm" id="iEmail" type="email" placeholder="Enter email ">
         </div>
-    </p>
+        <div class="form-group">
+            <input type="password" class="form-control input-sm" id="inputPassword3" placeholder="Password">
+        </div>
+        <button type="button" class="btn btn-success btn-sm" id="signIn">Sign In</button>
+    </div>
+
+
+
 </template>
 
 <template name="masterLayoutLoadingForm">
-    <p>
-        <div class="pull-left"><b>Logging in...</b>
-        </div>
-    </p>
+    <div class="navbar-right">
+        <p class="navbar-text">
+            Logging in...
+        </p>
+    </div>
+
 </template>
 
 <template name="masterLayoutConnected">
-    <div class="center-block">
-        <p class="text-info">
-            <b>Hi, {{currentUser.username}}</b>
-            <button type="submit" class="btn btn-primary btn-sm col-xs-5" id="iLogout">Sign out</button>
-        </p>
-    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+
+        <li class="dropdown">
+            
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="{{currentUser.gitlab.avatar_url }}" class="img-rounded" alt="user avatar" style="height:32px; margin:-8px 0px" />
+             {{currentUser.gitlab.name}} <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Profile</a>
+                </li>
+                <li><a href="#">Settings</a>
+                </li>
+
+                <li class="divider"></li>
+                <li role="presentation"><a role="menuitem" id="userLogout" tabindex="-1" href="#">Sign out</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
 </template>

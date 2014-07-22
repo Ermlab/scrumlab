@@ -17,6 +17,6 @@ Template.settingsProjects.events({
     }
 });
 
-Template.projectsSettings.projects = function () {
+Template.settingsProjects.projects = function () {
     return Projects.find();
 };

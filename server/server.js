@@ -90,13 +90,15 @@ Server = {
                 for (var i = 0; i < projects.length; i++) {
                     api.projects.issues.list(projects[i].id, {}, function (issues) {
                         Fiber(function () {
+                            if (issues.length > 0) var projectId = Projects.findOne({
+                                'gitlab.id': issues[0].project_id
+                            })._id;
                             for (var i = 0; i < issues.length; i++) {
                                 // Check if issue already exists, then update or insert
                                 var existingIssue = Issues.findOne({
                                     'gitlab.id': issues[i].id,
                                     'origin': api.options._id
                                 });
-
                                 if (existingIssue !== undefined) {
                                     Issues.update(existingIssue._id, {
                                         $set: {
@@ -106,7 +108,9 @@ Server = {
                                 } else {
                                     Issues.insert({
                                         gitlab: issues[i],
-                                        origin: api.options._id
+                                        origin: api.options._id,
+                                        // project_id from local Projects mongoDB
+                                        project_id: projectId
                                     });
                                 }
                             }

@@ -41,6 +41,7 @@ Template.projectSprints.rendered = function () {
                         sprint: ownerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
+                    if (isNaN(sum)) sum = 0;
                     // Update the time estimate
                     Sprints.update(ownerId, {
                         $set: {

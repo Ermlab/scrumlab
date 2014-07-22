@@ -5,7 +5,7 @@
 <template name="projectBacklogIssues">
     <div id="container" ref={{projectId}}>
         {{#each issues}}
-        <div class="story" id={{_id}} ref={{gitlab.title}}>
+        <div class="story" id={{_id}} ref={{gitlab.title}} objectType="issue">
             <p class="storyTitle" ref="gitlab.title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="gitlab.state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="gitlab.description" data-type="textarea">{{gitlab.description}}</p>
@@ -16,7 +16,7 @@
                 <details>
                     <summary>Tasks</summary>
                     {{#each tasks _id}}
-                    <div class="task" id={{_id}} ref={{name}}>
+                    <div class="task" id={{_id}} ref={{name}}  objectType="task">
                         <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
                         <p class="taskHours" ref="estimate" data-type="text">{{estimate}}</p>
                         <p class="taskText" ref="description" data-type="textarea">{{description}}</p>

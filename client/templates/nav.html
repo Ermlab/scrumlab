@@ -9,7 +9,7 @@
     </a>
     <ul class="dropdown-menu" role="menu">
         {{#each projectsName}} {{#if enabled}}
-        <li><a href="{{ pathFor 'project' gitlabId=gitlab.id }}">{{gitlab.name_with_namespace}}</a>
+        <li><a href="{{ pathFor 'project' id=_id }}">{{gitlab.name_with_namespace}}</a>
         </li>
         {{/if}} {{/each}} {{#if anyProjectIsEnabled}}
         <li class="divider"></li>

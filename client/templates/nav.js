@@ -5,9 +5,10 @@ Template.navProjectsDropdown.anyProjectIsEnabled = function () {
 }
 
 Template.navProjectsDropdown.projectNames = function () {
+    //TODO: refactor, fields are not needed on the client side (PG)
     return Projects.find({}, {
         fields: {
-            'gitlab.id': 1,
+            '_id': 1,
             'gitlab.name': 1,
             'gitlab.name_with_namespace': 1
         }

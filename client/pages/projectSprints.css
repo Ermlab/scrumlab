@@ -1,0 +1,93 @@
+#sprintBody {
+    width: 60%;
+    float: left;
+    margin-left: 3%;
+    border-radius: 5px;
+    min-height: 100px;
+}
+.sprint {
+    width: 100%;
+    border-radius: 5px;
+    background: #dcf2b2;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
+}
+.sprintClosed {
+    width: 100%;
+    border-radius: 5px;
+    background: #dcf2b2;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
+}
+.sprintInfo {} .sprintTimeMarker {
+    background: #fc688b;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    text-align: center;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+#addSprint {
+    width: 60%;
+    height: auto;
+    margin: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+    background: #87fac9;
+    border-radius: 10px;
+    color: black;
+    font-size: 16px;
+    box-shadow: 3px 3px 8px #888888;
+    position: relative;
+}
+#backlogItems {
+    width: 30%;
+    float: right;
+    margin-right: 3%;
+    border-radius: 5px;
+    background: #dcf2b2;
+    text-align: center;
+}
+.backlogItem {
+    width: 95%;
+    height: auto;
+    min-height: 40px;
+    margin: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
+    background: #b2ecf2;
+    text-align: left;
+    position: relative;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+.backlogItemText {
+    margin: 5px;
+    font-size: 16px;
+    width: 80%;
+    position: relative;
+    top: 5px;
+    left: 5px;
+    display: inline-block;
+}
+.backlogItemTime {
+    background: #fc688b;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    text-align: center;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+#ui-datepicker-div {
+    display: none;
+}

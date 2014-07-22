@@ -16,3 +16,7 @@ Template.settingsProjects.events({
         });
     }
 });
+
+Template.projectsSettings.projects = function () {
+    return Projects.find();
+};

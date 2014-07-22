@@ -43,6 +43,10 @@ Meteor.publish('issues', function (projectId) {
 // Serverside functions
 Server = {
     getGitlabApi: function (options) {
+        if (options.origin === undefined) {
+            throw new Error("Origin is not defined");
+        }
+
         return new GitLab(options);
     },
 
@@ -56,7 +60,8 @@ Server = {
         var server = GitlabServers.findOne(user.origin);
         var api = Server.getGitlabApi({
             url: server.url,
-            token: user.token
+            token: user.token,
+            origin: server._id
         });
         Server.fetchProjects(api, function (ids) {
             Meteor.users.update(user._id, {
@@ -78,12 +83,14 @@ Server = {
         // Fetch all users from Gitlab server
         api.users.all(function (users) {
             Fiber(function () {
+                //console.log(users);
                 for (var i = 0; i < users.length; i++) {
                     // Check if user already exists, then update or insert
                     var existingUser = Meteor.users.findOne({
                         'gitlab.id': users[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
+                    console.log(existingUser);
                     if (existingUser !== undefined) {
                         Meteor.users.update(existingUser._id, {
                             $set: {
@@ -95,7 +102,7 @@ Server = {
                         Meteor.users.insert({
                             'username': users[i].username,
                             'gitlab': users[i],
-                            'origin': api.options._id
+                            'origin': api.options.origin
                         });
                     }
                 }
@@ -112,7 +119,7 @@ Server = {
                     // Check if project already exists, then update or insert
                     var existingProject = Projects.findOne({
                         'gitlab.id': projects[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
 
                     var projectId;
@@ -126,7 +133,7 @@ Server = {
                     } else {
                         projectId = Projects.insert({
                             'gitlab': projects[i],
-                            'origin': api.options._id
+                            'origin': api.options.origin
                         });
                     }
 
@@ -148,7 +155,7 @@ Server = {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
                         'gitlab.id': issues[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
 
                     if (existingIssue !== undefined) {
@@ -163,7 +170,7 @@ Server = {
                             // 'project_id': ??????
                             // Trzeba pobrac projekt na podstawie id i origin, a potem jego id
                             'gitlab': issues[i],
-                            'origin': api.options._id
+                            'origin': api.options.origin
                         });
                     }
                 }
@@ -182,7 +189,7 @@ Server = {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
                         'gitlab.id': issues[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
 
                     if (existingIssue !== undefined) {
@@ -195,7 +202,7 @@ Server = {
                         Issues.insert({
                             'project_id': projectId,
                             'gitlab': issues[i],
-                            'origin': api.options._id
+                            'origin': api.options.origin
                         });
                     }
                 }
@@ -213,7 +220,7 @@ Server = {
                     // Check if issue already exists, then update or insert
                     var existingSprint = Sprints.findOne({
                         'gitlab.id': milestones[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
 
                     if (existingSprint !== undefined) {
@@ -226,7 +233,7 @@ Server = {
                         Sprints.insert({
                             'project_id': projectId,
                             'gitlab': milestones[i],
-                            'origin': api.options._id
+                            'origin': api.options.origin
                         });
                     }
                 }
@@ -241,7 +248,7 @@ Server = {
 
 Meteor.startup(function () {
     // Fixtures 
-    if (GitlabServers.find().count() == 0) {
+    if (GitlabServers.find().count() === 0) {
         GitlabServers.insert({
             url: 'http://gitlab.ermlab.com/',
             token: '7d1dByE7ecRyBHKhieWR'
@@ -250,7 +257,8 @@ Meteor.startup(function () {
 
     // Fetch data from all servers
     _.each(GitlabServers.find().fetch(), function (server) {
-        var api = new GitLab(server);
+        server.origin = server._id;
+        var api = Server.getGitlabApi(server);
         Server.fetchUsers(api);
         //Server.fetchProjects(api);
     });
@@ -258,7 +266,7 @@ Meteor.startup(function () {
 
 Accounts.registerLoginHandler(function (loginRequest) {
     // Use first available server if not specified in login request
-    if (loginRequest.gitlabServerId == undefined) {
+    if (loginRequest.gitlabServerId === undefined) {
         loginRequest.gitlabServerId = GitlabServers.findOne()._id;
     }
 
@@ -266,7 +274,10 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
     // Authorize user and update its profile
     var future = new Future();
-    Server.getGitlabApi(server).users.session(loginRequest.email, loginRequest.password, function (data) {
+
+    server.origin = server._id;
+    var api = Server.getGitlabApi(server);
+    api.users.session(loginRequest.email, loginRequest.password, function (data) {
         future.return(data);
     });
     var userData = future.wait();

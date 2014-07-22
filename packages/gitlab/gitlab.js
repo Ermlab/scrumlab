@@ -3,4 +3,7 @@
 // See https://www.npmjs.org/package/gitlab
 
 // GitLab = Npm.require("gitlab");
-GitLab = Npm.require(process.env.PWD);
+
+var path = process.cwd();
+path = path.substring(0, path.indexOf('.meteor')) + 'packages/node_modules/node-gitlab';
+GitLab = Npm.require(path);

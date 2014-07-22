@@ -10,5 +10,5 @@ Package.describe({
 
 Package.on_use(function (api) {
     api.export("GitLab");
-    api.add_files("gitlab.js","server");
+    api.add_files("gitlab.js", "server");
 });

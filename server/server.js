@@ -31,12 +31,18 @@ Server = {
             token: user.token,
             origin: server._id
         });
+
+        //we fetch user projects, and execute callback
         Server.fetchProjects(api, function (ids) {
+
+            console.log('ref proj:', ids);
+
             Meteor.users.update(user._id, {
                 $set: {
                     project_ids: ids
                 }
             });
+
 
             _.each(ids, function (id) {
                 // TODO: refactor, issues should be fetched when project is activated
@@ -51,14 +57,14 @@ Server = {
         // Fetch all users from Gitlab server
         api.users.all(function (users) {
             Fiber(function () {
-                //console.log(users);
+
                 for (var i = 0; i < users.length; i++) {
                     // Check if user already exists, then update or insert
                     var existingUser = Meteor.users.findOne({
                         'gitlab.id': users[i].id,
                         'origin': api.options.origin
                     });
-                    console.log(existingUser);
+
                     if (existingUser !== undefined) {
                         Meteor.users.update(existingUser._id, {
                             $set: {
@@ -78,8 +84,9 @@ Server = {
         });
     },
 
+    // Fetch all projects for authenticated (by private_token) api user from Gitlab server
     fetchProjects: function (api, callback) {
-        // Fetch all projects from Gitlab server
+
         api.projects.all(function (projects) {
             var allProjectIds = [];
             Fiber(function () {
@@ -91,6 +98,8 @@ Server = {
                     });
 
                     var projectId;
+
+                    //todo: refactor to update with upsert parameter
                     if (existingProject !== undefined) {
                         Projects.update(existingProject._id, {
                             $set: {
@@ -152,7 +161,7 @@ Server = {
         // Fetch all project issues from Gitlab server
         api.projects.issues.list(project.gitlab.id, {}, function (issues) {
             Fiber(function () {
-                console.log(issues.length);
+
                 for (var i = 0; i < issues.length; i++) {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
@@ -210,8 +219,48 @@ Server = {
     },
 
     fetchProjectMembers: function (api, projectId) {
+        var project = Projects.findOne(projectId);
 
-    }
+        if (!project)
+            throw new Error("Project with id=" + projectId + " not exists, so I cant find its members");
+
+        api.projects.members.list(project.gitlab.id, function (members) {
+
+            //async code which updates collections have to run in Fiber
+            Fiber(function () {
+
+                //choose from the array of objects (members) only member id (gitlab id)
+                var usersGlIds = _.pluck(members, 'id');
+
+
+                //update project collection, add members id to member_ids array
+
+                var usersMongoIds = Meteor.users.find({
+                    'gitlab.id': {
+                        $in: usersGlIds
+                    },
+                    'origin': project.origin
+                }, {
+                    fields: {
+                        'origin': 1
+                    }
+                }).fetch();
+
+                //choose from the array of objects (users) only mongo user id
+                usersMongoIds = _.pluck(usersMongoIds, '_id');
+
+                Projects.update(project._id, {
+                    $set: {
+                        'member_ids': usersMongoIds
+                    }
+                });
+
+                console.log('mongo---', usersMongoIds);
+            }).run();
+
+        }); //end api
+
+    } //end func
 };
 
 Meteor.startup(function () {
@@ -310,14 +359,14 @@ Accounts.onLogin(function (data) {
 
     var projects = projectsFuture.wait();
 
-    
+
     console.log('from gitlab');
     console.log(projects);
-    
-    
+
+
     console.log('user ');
     console.log(user);
-    
+
     var in_projects = [];
 
     for (var i = 0; i < projects.length; i++) {

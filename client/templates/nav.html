@@ -18,12 +18,12 @@
         
          {{ conlog gitlab }}
         
-        <li>{{gitlab.name}}</li>
         
-        <!--{{#if enabled}}-->
+        
+        {{#if enabled}}
         <li><a href="{{ pathFor 'project' id=_id }}">{{gitlab.name_with_namespace}}</a>
         </li>
-        <!--{{/if}} -->
+        {{/if}} 
         
         {{/each}}
         

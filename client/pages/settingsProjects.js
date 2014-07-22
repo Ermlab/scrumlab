@@ -1,15 +1,17 @@
-Template.projectsSettings.events({
+Template.settingsProjects.events({
     'click .btn.activateProject': function (e) {
+        console.log('act');
         Projects.update(this._id, {
             $set: {
-                active: true
+                enabled: true
             }
         });
     },
     'click .btn.deactivateProject': function (e) {
+        console.log('deact');
         Projects.update(this._id, {
             $set: {
-                active: false
+                enabled: false
             }
         });
     }

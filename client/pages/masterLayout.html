@@ -24,7 +24,7 @@ smoothness/jquery-ui.css" />
                         <!-- Collect the nav links, forms, and other content for toggling -->
                         <div class="collapse navbar-collapse" id="navbar-collapse">
                             <ul class="nav navbar-nav">
-                                <li class="{{ isActiveRoute 'dashboard' }}">
+                                <li class="{{ isActiveRoute '^dashboard$' }}">
                                     <a href="{{ pathFor 'dashboard' }}" class="glyphicon glyphicon-home"></a>
                                 </li>
                                 
@@ -34,19 +34,19 @@ smoothness/jquery-ui.css" />
                                 </li>
                                 {{/if}}
 
-                                {{#if isActiveRoute 'project' }}
-                                <li class="{{ isActiveRoute 'projectDashboard' gitlabId=project.gitlab.id }}">
+                                {{#if isActiveRoute '^project' }}
+                                <li class="{{ isActiveRoute '^projectDashboard$' gitlabId=project.gitlab.id }}">
                                     <a href="{{ pathFor 'project' gitlabId=project.gitlab.id }}">Overview</a>
                                 </li>
 
-                                <li class="{{ isActiveRoute 'projectBacklog' }}">
+                                <li class="{{ isActiveRoute '^projectBacklog$' }}">
                                     <a href="{{ pathFor 'projectBacklog' gitlabId=project.gitlab.id }}">Backlog</a>
                                 </li>
-                                <li class="{{ isActiveRoute 'projectSprints' }}">
+                                <li class="{{ isActiveRoute '^projectSprints$' }}">
                                     <a href="{{ pathFor 'projectSprints' gitlabId=project.gitlab.id }}">Sprints</a>
                                 </li>
                                 {{else}}
-                                <li class="{{ isActiveRoute 'about' }}">
+                                <li class="{{ isActiveRoute '^about$' }}">
                                     <a href="{{ pathFor 'about' }}">About</a>
                                 </li>
                                 {{/if}}

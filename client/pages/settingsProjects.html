@@ -1,11 +1,11 @@
-<template name="projectsSettings">
+<template name="settingsProjects">
     <ul class="list-group">
         {{#each projects}}
         <li class="list-group-item">
             {{#if enabled}}
-            <button type="button" class="deactivateProject btn btn-success pull-right">Active</button>
+            <button type="button" class="deactivateProject btn btn-success pull-right">Enabled</button>
             {{else}}
-            <button type="button" class="activateProject btn btn-default pull-right">Inactive</button>
+            <button type="button" class="activateProject btn btn-default pull-right">Disabled</button>
             {{/if}}
             <p><a href="{{gitlab.web_url}}">{{gitlab.name_with_namespace}}</a>
             </p>

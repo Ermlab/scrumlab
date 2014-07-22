@@ -1,16 +1,14 @@
-//TODO: change to publish subscribe model
-/*
-Template.navProjectsDropdown.projects = function () {
-    return Projects.find();
-    
-};
-*/
-
+Template.navProjectsDropdown.anyProjectIsEnabled = function () {
+    return Projects.find({
+        enabled: true
+    }).count() > 0;
+}
 
 Template.navProjectsDropdown.projectNames = function () {
+    //TODO: refactor, fields are not needed on the client side (PG)
     return Projects.find({}, {
         fields: {
-            'gitlab.id': 1,
+            '_id': 1,
             'gitlab.name': 1,
             'gitlab.name_with_namespace': 1
         }

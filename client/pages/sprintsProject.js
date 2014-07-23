@@ -1,4 +1,4 @@
-Template.projectSprints.rendered = function () {
+Template.sprintsProject.rendered = function () {
     // Setting sortable property to sprintlist container
     $("#sprintBody").sortable({
         axis: 'y',

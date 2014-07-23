@@ -1,10 +1,10 @@
-Template.navProjectsDropdown.anyProjectIsEnabled = function () {
+Template.navProjectsList.anyProjectIsEnabled = function () {
     return Projects.find({
         enabled: true
     }).count() > 0;
 }
 
-Template.navProjectsDropdown.projectNames = function () {
+Template.navProjectsList.projectNames = function () {
     //TODO: refactor, fields are not needed on the client side (PG)
     return Projects.find({member_ids: Meteor.userId()}, {
         fields: {

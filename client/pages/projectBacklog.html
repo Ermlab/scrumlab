@@ -1,4 +1,15 @@
-<template name="backlogProject">
+<template name="projectBacklog">
+
+    <!--glyphicon glyphicon-plus-->
+    <div class="input-group input-group-lg">
+        <input type="text" class="form-control" placeholder="Story title">
+
+        <span class="input-group-btn">
+            
+        <button class="btn btn-success" type="button">Add</button>
+      </span>
+    </div>
+
     {{> projectBacklogInput}} {{> projectBacklogIssues}}
 </template>
 
@@ -16,7 +27,7 @@
                 <details>
                     <summary>Tasks</summary>
                     {{#each tasks _id}}
-                    <div class="task" id={{_id}} ref={{name}}  objectType="task">
+                    <div class="task" id={{_id}} ref={{name}} objectType="task">
                         <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
                         <p class="taskHours" ref="estimate" data-type="text">{{estimate}}</p>
                         <p class="taskText" ref="description" data-type="textarea">{{description}}</p>

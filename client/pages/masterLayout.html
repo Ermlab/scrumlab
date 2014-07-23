@@ -32,23 +32,18 @@ smoothness/jquery-ui.css" />
                                 <li class="dropdown">
                                     {{> navProjectsList}}
                                 </li>
-                                
-                                {{/if}} 
-                                
-                                
-                                
-                                
-                                {{#if isActivePath 'project\/' }}
-                                
-                                <li class="{{ isActiveRoute '^dashboardProject$' id=project._id }}">
-                                    <a href="{{ pathFor 'dashboardProject' id=project._id }}">Overview</a>
+
+                                {{/if}} {{#if isActivePath 'project\/' }}
+
+                                <li class="{{ isActiveRoute '^projectDashboard$' id=project._id }}">
+                                    <a href="{{ pathFor 'projectDashboard' id=project._id }}">Overview</a>
                                 </li>
 
-                                <li class="{{ isActiveRoute '^backlogProject$' }}">
-                                    <a href="{{ pathFor 'backlogProject' id=project._id }}">Backlog</a>
+                                <li class="{{ isActiveRoute '^projectBacklog$' }}">
+                                    <a href="{{ pathFor 'projectBacklog' id=project._id }}">Backlog</a>
                                 </li>
-                                <li class="{{ isActiveRoute '^sprintsProject$' }}">
-                                    <a href="{{ pathFor 'sprintsProject' id=project._id }}">Sprints</a>
+                                <li class="{{ isActiveRoute '^projectSprints$' }}">
+                                    <a href="{{ pathFor 'projectSprints' id=project._id }}">Sprints</a>
                                 </li>
                                 {{else}}
                                 <li class="{{ isActiveRoute '^about$' }}">
@@ -72,17 +67,11 @@ smoothness/jquery-ui.css" />
         </div>
         <div class="row ">
             <div class="col-md-12 ">
-                
-                
-                 {{#if isActivePath 'project\/?' }}
-                                normal start with ?
-                                {{/if}}
-                
-                <br/>
-              
-                
-                
-                {{> yield}}
+
+
+                {{#if isActivePath 'project\/?' }} normal start with ? {{/if}}
+
+                <br/>{{> yield}}
             </div>
         </div>
     </div>

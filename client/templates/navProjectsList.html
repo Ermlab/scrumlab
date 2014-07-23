@@ -1,9 +1,11 @@
-<template name="navProjectsDropdown">
+<template name="navProjectsList">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="min-width:120px">
         
-       
+        {{conlog 'Proj:'}}
+       {{ conlog project }}
         
         {{#if isActiveRoute '^project' }}
+         
         {{project.gitlab.name_with_namespace}}
         {{else}}
         Projects
@@ -11,17 +13,13 @@
         <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" role="menu">
-        
-        
+               
         
         {{#each projectNames}} 
         
-         {{ conlog gitlab }}
-        
-        
         
         {{#if enabled}}
-        <li><a href="{{ pathFor 'project' id=_id }}">{{gitlab.name_with_namespace}}</a>
+        <li><a href="{{ pathFor 'dashboardProject' id=_id }}">{{gitlab.name_with_namespace}}</a>
         </li>
         {{/if}} 
         

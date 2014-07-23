@@ -29,6 +29,15 @@ Meteor.publish('userProjects', function () {
 });
 
 
-Meteor.publish('issues', function (projectId) {
-    return Issues.find();
+
+Meteor.publish('sprints', function (projectId) {
+    return Sprints.find(projectId);
 });
+
+
+
+
+Meteor.publish('issues', function (projectId) {
+    return Issues.find(projectId);
+});
+

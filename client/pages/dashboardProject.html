@@ -1,0 +1,6 @@
+<template name="dashboardProject">
+    
+    {{#with project}} 
+    Dashboard for project: {{ _id }} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>)
+    {{/with}}
+</template>

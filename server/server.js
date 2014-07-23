@@ -27,7 +27,7 @@ Meteor.publish('userProjects', function () {
     if (this.userId) {
 
         return Projects.find({
-            member_ids: this.userId
+            //member_ids: this.userId
         });
     } else
         return null;
@@ -42,25 +42,40 @@ Meteor.publish('issues', function (projectId) {
 
 // Serverside functions
 Server = {
-
-    getAdminApi: function () {
-        Deprecated("getAdminApi", "getGitlabApi");
-        var server = GitlabServers.findOne();
-        return new GitLab({
-            url: server.url,
-            token: server.adminToken
-        });
-    },
-
     getGitlabApi: function (options) {
+        if (options.origin === undefined) {
+            throw new Error("Origin is not defined");
+        }
+
         return new GitLab(options);
     },
 
-    getUserApi: function (privateToken) {
-        Deprecated("getUserApi", "getGitlabApi");
-        return new GitLab({
-            url: Server.gitlabUrl,
-            token: privateToken
+    refreshUserProjects: function () {
+        var user = Meteor.user();
+
+        if (!user) {
+            return;
+        }
+
+        var server = GitlabServers.findOne(user.origin);
+        var api = Server.getGitlabApi({
+            url: server.url,
+            token: user.token,
+            origin: server._id
+        });
+        Server.fetchProjects(api, function (ids) {
+            Meteor.users.update(user._id, {
+                $set: {
+                    project_ids: ids
+                }
+            });
+
+            _.each(ids, function (id) {
+                // TODO: refactor, issues should be fetched when project is activated
+                Server.fetchProjectIssues(api, id);
+                Server.fetchProjectMembers(api, id);
+                Server.fetchProjectMilestones(api, id);
+            });
         });
     },
 
@@ -68,24 +83,26 @@ Server = {
         // Fetch all users from Gitlab server
         api.users.all(function (users) {
             Fiber(function () {
+                //console.log(users);
                 for (var i = 0; i < users.length; i++) {
                     // Check if user already exists, then update or insert
                     var existingUser = Meteor.users.findOne({
                         'gitlab.id': users[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
+                    console.log(existingUser);
                     if (existingUser !== undefined) {
                         Meteor.users.update(existingUser._id, {
                             $set: {
-                                username: users[i].username,
-                                gitlab: users[i],
+                                'username': users[i].username,
+                                'gitlab': users[i],
                             }
                         });
                     } else {
                         Meteor.users.insert({
-                            username: users[i].username,
-                            gitlab: users[i],
-                            origin: api.options._id
+                            'username': users[i].username,
+                            'gitlab': users[i],
+                            'origin': api.options.origin
                         });
                     }
                 }
@@ -93,69 +110,40 @@ Server = {
         });
     },
 
-    fetchProjects: function (api) {
+    fetchProjects: function (api, callback) {
         // Fetch all projects from Gitlab server
         api.projects.all(function (projects) {
+            var allProjectIds = [];
             Fiber(function () {
                 for (var i = 0; i < projects.length; i++) {
                     // Check if project already exists, then update or insert
                     var existingProject = Projects.findOne({
                         'gitlab.id': projects[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
 
+                    var projectId;
                     if (existingProject !== undefined) {
                         Projects.update(existingProject._id, {
                             $set: {
-                                gitlab: projects[i]
+                                'gitlab': projects[i]
                             }
                         });
+                        projectId = existingProject._id;
                     } else {
-                        Projects.insert({
-                            gitlab: projects[i],
-                            origin: api.options._id
+                        projectId = Projects.insert({
+                            'gitlab': projects[i],
+                            'origin': api.options.origin
                         });
                     }
-                }
-            }).run();
-        });
-    },
 
-    fetchAllIssues: function (api) {
-        // Fetch all issues from Gitlab server
-        api.projects.all(function (projects) {
-            Fiber(function () {
-                for (var i = 0; i < projects.length; i++) {
-                    api.projects.issues.list(projects[i].id, {}, function (issues) {
-                        Fiber(function () {
-                            if (issues.length > 0) var projectId = Projects.findOne({
-                                'gitlab.id': issues[0].project_id
-                            })._id;
-                            for (var i = 0; i < issues.length; i++) {
-                                // Check if issue already exists, then update or insert
-                                var existingIssue = Issues.findOne({
-                                    'gitlab.id': issues[i].id,
-                                    'origin': api.options._id
-                                });
-                                if (existingIssue !== undefined) {
-                                    Issues.update(existingIssue._id, {
-                                        $set: {
-                                            gitlab: issues[i]
-                                        }
-                                    });
-                                } else {
-                                    Issues.insert({
-                                        gitlab: issues[i],
-                                        origin: api.options._id,
-                                        // project_id from local Projects mongoDB
-                                        project_id: projectId
-                                    });
-                                }
-                            }
-                        }).run();
-                    });
+                    allProjectIds.push(projectId);
+                }
+                if (callback) {
+                    callback(allProjectIds);
                 }
             }).run();
+            console.log('fetchProjects ended');
         });
     },
 
@@ -167,19 +155,22 @@ Server = {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
                         'gitlab.id': issues[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
 
                     if (existingIssue !== undefined) {
                         Issues.update(existingIssue._id, {
                             $set: {
-                                gitlab: issues[i]
+                                'gitlab': issues[i]
                             }
                         });
                     } else {
                         Issues.insert({
-                            gitlab: issues[i],
-                            origin: api.options._id
+                            // TODO: nie wiemy z jakiego projektu jest to issue
+                            // 'project_id': ??????
+                            // Trzeba pobrac projekt na podstawie id i origin, a potem jego id
+                            'gitlab': issues[i],
+                            'origin': api.options.origin
                         });
                     }
                 }
@@ -187,59 +178,95 @@ Server = {
         });
     },
 
-
     fetchProjectIssues: function (api, projectId) {
+        var project = Projects.findOne(projectId);
+
         // Fetch all project issues from Gitlab server
-        api.projects.issues.list(projectId, {}, function (issues) {
+        api.projects.issues.list(project.gitlab.id, {}, function (issues) {
             Fiber(function () {
+                console.log(issues.length);
                 for (var i = 0; i < issues.length; i++) {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
                         'gitlab.id': issues[i].id,
-                        'origin': api.options._id
+                        'origin': api.options.origin
                     });
 
                     if (existingIssue !== undefined) {
                         Issues.update(existingIssue._id, {
                             $set: {
-                                gitlab: issues[i]
+                                'gitlab': issues[i]
                             }
                         });
                     } else {
                         Issues.insert({
-                            gitlab: issues[i],
-                            origin: api.options._id
+                            'project_id': projectId,
+                            'gitlab': issues[i],
+                            'origin': api.options.origin
                         });
                     }
                 }
             }).run();
         });
     },
+
+    fetchProjectMilestones: function (api, projectId) {
+        var project = Projects.findOne(projectId);
+
+        // Fetch all project issues from Gitlab server
+        api.projects.milestones.list(project.gitlab.id, function (milestones) {
+            Fiber(function () {
+                for (var i = 0; i < milestones.length; i++) {
+                    // Check if issue already exists, then update or insert
+                    var existingSprint = Sprints.findOne({
+                        'gitlab.id': milestones[i].id,
+                        'origin': api.options.origin
+                    });
+
+                    if (existingSprint !== undefined) {
+                        Sprints.update(existingSprint._id, {
+                            $set: {
+                                'gitlab': milestones[i]
+                            }
+                        });
+                    } else {
+                        Sprints.insert({
+                            'project_id': projectId,
+                            'gitlab': milestones[i],
+                            'origin': api.options.origin
+                        });
+                    }
+                }
+            }).run();
+        });
+    },
+
+    fetchProjectMembers: function (api, projectId) {
+
+    }
 };
 
 Meteor.startup(function () {
     // Fixtures 
-    if (GitlabServers.find().count() == 0) {
+    if (GitlabServers.find().count() === 0) {
         GitlabServers.insert({
             url: 'http://gitlab.ermlab.com/',
-            token: 'zEysg8PhvSYh2QRkYGz3'
+            token: '7d1dByE7ecRyBHKhieWR'
         });
     }
 
     // Fetch data from all servers
     _.each(GitlabServers.find().fetch(), function (server) {
-        var api = new GitLab(server);
+        server.origin = server._id;
+        var api = Server.getGitlabApi(server);
         Server.fetchUsers(api);
-        Server.fetchProjects(api);
-        Server.fetchAllIssues(api);
-        //Server.fetchUserIssues(api);
-        //Server.fetchProjectIssues(api);
+        //Server.fetchProjects(api);
     });
 });
 
 Accounts.registerLoginHandler(function (loginRequest) {
     // Use first available server if not specified in login request
-    if (loginRequest.gitlabServerId == undefined) {
+    if (loginRequest.gitlabServerId === undefined) {
         loginRequest.gitlabServerId = GitlabServers.findOne()._id;
     }
 
@@ -247,51 +274,55 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
     // Authorize user and update its profile
     var future = new Future();
-    Server.getGitlabApi(server).users.session(loginRequest.email, loginRequest.password, function (data) {
+
+    server.origin = server._id;
+    var api = Server.getGitlabApi(server);
+    api.users.session(loginRequest.email, loginRequest.password, function (data) {
         future.return(data);
     });
     var userData = future.wait();
 
 
-
-
-    var existingUser = Meteor.users.findOne({
-        'gitlab.username': userData.username,
-        'origin': server._id
-    });
-
-    var userId = null;
-
-
-    if (existingUser !== undefined) {
-
-
-        userId = existingUser._id;
-        Meteor.users.update({
-            _id: userId
-        }, {
-            $set: {
-                username: userData.username,
-                gitlab: userData
-            }
-        });
+    if (userData === true) {
+        // TODO: Gitlab auth failes
     } else {
-        userId = Meteor.users.insert({
-            username: userData.username,
-            gitlab: userData,
-            origin: server._id
+        // Gitlab auth successful
+        var existingUser = Meteor.users.findOne({
+            'gitlab.username': userData.username,
+            'origin': server._id
         });
-    }
 
-    if (userId !== null) {
-        return {
-            userId: userId,
-        };
+        if (existingUser) {
+            userId = existingUser._id;
+            Meteor.users.update({
+                _id: userId
+            }, {
+                $set: {
+                    username: userData.username,
+                    gitlab: userData,
+                    token: userData.private_token
+                }
+            });
+        } else {
+            userId = Meteor.users.insert({
+                username: userData.username,
+                gitlab: userData,
+                origin: server._id,
+                token: userData.private_token
+            });
+        }
 
+        // return id user to log in
+        if (userId !== null) {
+            return {
+                userId: userId,
+            };
+        }
     }
 });
 
 Accounts.onLogin(function (data) {
+    /*
 
     var user = data.user;
 
@@ -303,8 +334,9 @@ Accounts.onLogin(function (data) {
     var server = GitlabServers.findOne(user.origin);
     Server.getGitlabApi({
         url: server.url,
-        token: user.gitlab.private_token
+        token: user.token
     }).projects.all(function (projects) {
+        console.log(projects);
         projectsFuture.return(projects);
     });
 
@@ -319,10 +351,15 @@ Accounts.onLogin(function (data) {
         //update projects members field
         //find project and update its members property
 
-        var proj = Projects.findOne({
+
+        var search = {
             'gitlab.id': projects[i].id,
             'origin': user.origin
-        });
+        };
+
+        console.log(search);
+
+        var proj = Projects.findOne(search);
 
         Projects.update(proj._id, {
             $addToSet: {
@@ -338,9 +375,11 @@ Accounts.onLogin(function (data) {
                 project_ids: proj._id
             }
         });
+        
 
 
     }
+    */
 
 
 });

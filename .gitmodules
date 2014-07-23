@@ -1,0 +1,3 @@
+[submodule "packages/node_modules/node-gitlab"]
+	path = packages/node_modules/node-gitlab
+	url = git@github.com:Ermlab/node-gitlab.git

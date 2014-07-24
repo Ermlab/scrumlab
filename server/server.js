@@ -28,7 +28,6 @@ Server = {
         milestone_id (optional) - The ID of a milestone to assign issue
         labels (optional) - Comma-separated label names for an issue
         */
-        console.log('server call');
         var user = Meteor.user();
         if (!user) {
             return;
@@ -45,27 +44,13 @@ Server = {
             'description': issue.description,
             'assignee_id': issue.assignee_id
         };
-        console.dir(gitlabIssue);
-        api.issues.create({}, gitlabIssue);
-        // Retrieve the created issue from server
-        // Add retrieved issue to collection
-        api.projects.issues.list(issue.gitlab_project_id, {}, function (issues) {
-            Fiber(function () {
-                console.log('Inside fiber');
-                for (var i = 0; i < issues.length; i++) {
-                    if (issues[i].title == issue.title) {
-                        console.log(issues.length, 'Issue found');
-                        var finalIssue = _.extend(issues[i], {
-                            'estimate': issue.estimate,
-                            'project_id': issue.project_id,
-                            'state': issue.state,
-                            'assignee': issue.assignee
-                        });
-                        Issues.insert(finalIssue);
-                    }
-                }
-            }).run();
-        });
+        var link = "http://gitlab.ermlab.com/api/v3/projects/" + issue.gitlab_project_id + "/issues?private_token=" + user.token;
+        result = HTTP.post(
+            link, {
+                params: gitlabIssue
+            });
+        // Not working?
+        // api.issues.create(gitlabIssue);
     },
 
     refreshUserProjects: function () {

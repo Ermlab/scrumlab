@@ -63,7 +63,6 @@ Template.projectBacklogInput.events = {
         var type = document.getElementById("typeSelector");
         var typeName = type.options[type.selectedIndex].text;
         // Adding new story to database
-        alert('Function call');
         Meteor.call('insertIssue', {
             'estimate': time,
             'assignee_id': assigneeId,

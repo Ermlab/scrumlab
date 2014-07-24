@@ -1,5 +1,45 @@
 <template name="settingsProjects">
+
+    <div class="page-header">
+        <h1>Your gitlab projects</h1>
+      </div>
+    
     <ul class="list-group">
+
+        {{#each projects}}
+        <li style="list-style: none;">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+
+                    {{#if enabled}}
+                    <button type="button" class="deactivateProject btn-sm btn-success pull-right">Enabled</button>
+                    {{else}}
+                    <button type="button" class="activateProject btn-sm btn-default pull-right">Disabled</button>
+                    {{/if}}
+                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">
+            <a href="{{gitlab.web_url}}">{{gitlab.name_with_namespace}}</a></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-info">
+                        <p>{{gitlab.description}}</p>
+                    </div>
+                </div>
+
+                <div class="panel-footer"><small>Last activity: {{gitlab.last_activity_at}}</small>
+                </div>
+
+
+            </div>
+        </li>
+        {{else}}
+        <li class="list-group-item">
+            <p>No projects found. Head over to GitLab and create a project in there.</p>
+        </li>
+        {{/each}}
+    </ul>
+
+
+    <!--<ul class="list-group">
         {{#each projects}}
         <li class="list-group-item">
             {{#if enabled}}
@@ -18,5 +58,5 @@
             <p>No projects found. Head over to GitLab and create a project in there.</p>
         </li>
         {{/each}}
-    </ul>
+    </ul>-->
 </template>

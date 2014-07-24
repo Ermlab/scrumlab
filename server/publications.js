@@ -31,13 +31,16 @@ Meteor.publish('userProjects', function () {
 
 
 Meteor.publish('sprints', function (projectId) {
-    return Sprints.find(projectId);
+    return Sprints.find({
+        'project': projectId
+    });
 });
 
 
 
 
 Meteor.publish('issues', function (projectId) {
-    return Issues.find(projectId);
+    return Issues.find({
+        'project_id': projectId
+    });
 });
-

@@ -18,6 +18,56 @@ Server = {
         return new GitLab(options);
     },
 
+    createIssue: function (issue) {
+        // Create issue at GitLab server
+        /*
+        id (required) - The ID of a project
+        title (required) - The title of an issue
+        description (optional) - The description of an issue
+        assignee_id (optional) - The ID of a user to assign issue
+        milestone_id (optional) - The ID of a milestone to assign issue
+        labels (optional) - Comma-separated label names for an issue
+        */
+        console.log('server call');
+        var user = Meteor.user();
+        if (!user) {
+            return;
+        }
+        var server = GitlabServers.findOne(user.origin);
+        var api = Server.getGitlabApi({
+            url: server.url,
+            token: user.token,
+            origin: server._id
+        });
+        gitlabIssue = {
+            'id': issue.gitlab_project_id,
+            'title': issue.title,
+            'description': issue.description,
+            'assignee_id': issue.assignee_id
+        };
+        console.dir(gitlabIssue);
+        api.issues.create({}, gitlabIssue);
+        // Retrieve the created issue from server
+        // Add retrieved issue to collection
+        api.projects.issues.list(issue.gitlab_project_id, {}, function (issues) {
+            Fiber(function () {
+                console.log('Inside fiber');
+                for (var i = 0; i < issues.length; i++) {
+                    if (issues[i].title == issue.title) {
+                        console.log(issues.length, 'Issue found');
+                        var finalIssue = _.extend(issues[i], {
+                            'estimate': issue.estimate,
+                            'project_id': issue.project_id,
+                            'state': issue.state,
+                            'assignee': issue.assignee
+                        });
+                        Issues.insert(finalIssue);
+                    }
+                }
+            }).run();
+        });
+    },
+
     refreshUserProjects: function () {
         var user = Meteor.user();
 

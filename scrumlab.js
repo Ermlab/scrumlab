@@ -6,3 +6,5 @@ Issues = new Meteor.Collection("issues");
 Tasks = new Meteor.Collection("tasks");
 
 Assignees = new Meteor.Collection("assignees");
+
+//Users = new Meteor.Collection("users");

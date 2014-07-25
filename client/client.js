@@ -22,6 +22,11 @@ Meteor.loginWithGitlabAccount = function (email, password, callback) {
     });
 };
 
-Handlebars.registerHelper('conlog', function(thing) {
-  console.log(thing);
+
+//helper function for showing things (objects etc.) in broweser console, 
+//it can be used in templates: {{ conlog user}}
+Handlebars.registerHelper('conlog', function (thing) {
+
+    console.log("Template log:");
+    console.log(thing);
 });

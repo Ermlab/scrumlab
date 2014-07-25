@@ -2,122 +2,68 @@
     <!-- Used with datepicker control in Sprints -->
     <link type="text/css" rel="Stylesheet" href="http://ajax.microsoft.com/ajax/jquery.ui/1.8.6/themes/
 smoothness/jquery-ui.css" />
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header ">
+                <button type="button " class="navbar-toggle " data-toggle="collapse " data-target=".navbar-collapse">
+                    <span class="sr-only ">Toggle navigation</span>
+                    <span class="icon-bar "></span>
+                    <span class="icon-bar "></span>
+                    <span class="icon-bar "></span>
+                </button>
+
+                <a class="navbar-brand" href="#">Scrumlab</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="navbar-collapse collapse in">
+                <ul class="nav navbar-nav">
+                    <li class="{{ isActiveRoute '^home$' }}">
+                        <a href="{{ pathFor 'home' }}" class="glyphicon glyphicon-home"></a>
+                    </li>
+
+                    {{#if currentUser}}
+                    <li class="dropdown">
+                        {{> navProjectsList}}
+                    </li>
+
+
+                    {{#if isActivePath 'project\/' }}
+
+                    <li class="{{ isActiveRoute '^projectDashboard$' id=project._id }}">
+                        <a href="{{ pathFor 'projectDashboard' id=project._id }}">Overview</a>
+
+                    </li>
+
+                    <li class="{{ isActiveRoute '^projectBacklog$' }}">
+                        <a href="{{ pathFor 'projectBacklog' id=project._id }}">Backlog</a>
+                    </li>
+                    <li class="{{ isActiveRoute '^projectSprints$' }}">
+                        <a href="{{ pathFor 'projectSprints' id=project._id }}">Sprints</a>
+                    </li>
+                    {{/if}} {{else}}
+                    <li class="{{ isActiveRoute '^about$' }}">
+                        <a href="{{ pathFor 'about' }}">About</a>
+                    </li>
+                    {{/if}}
+                </ul>
+
+                {{> navUserLogin}}
+
+            </div>
+        </div>
+    </nav>
+
+
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <nav class="navbar navbar-default" role="navigation">
-
-
-                    <div class="container-fluid ">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header ">
-                            <button type="button " class="navbar-toggle " data-toggle="collapse " data-target="#navbar-collapse ">
-                                <span class="sr-only ">Toggle navigation</span>
-                                <span class="icon-bar "></span>
-                                <span class="icon-bar "></span>
-                                <span class="icon-bar "></span>
-                            </button>
-
-                            <a class="navbar-brand" href="#">Scrumlab</a>
-                        </div>
-
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse" id="navbar-collapse">
-                            <ul class="nav navbar-nav">
-                                <li class="{{ isActiveRoute '^dashboard$' }}">
-                                    <a href="{{ pathFor 'dashboard' }}" class="glyphicon glyphicon-home"></a>
-                                </li>
-                                
-                                 {{#if currentUser}}
-                                <li class="dropdown">
-                                    {{> navProjectsDropdown}}
-                                </li>
-                                {{/if}}
-
-                                {{#if isActiveRoute '^project' }}
-                                <li class="{{ isActiveRoute '^projectDashboard$' gitlabId=project.gitlab.id }}">
-                                    <a href="{{ pathFor 'project' gitlabId=project.gitlab.id }}">Overview</a>
-                                </li>
-
-                                <li class="{{ isActiveRoute '^projectBacklog$' }}">
-                                    <a href="{{ pathFor 'projectBacklog' gitlabId=project.gitlab.id }}">Backlog</a>
-                                </li>
-                                <li class="{{ isActiveRoute '^projectSprints$' }}">
-                                    <a href="{{ pathFor 'projectSprints' gitlabId=project.gitlab.id }}">Sprints</a>
-                                </li>
-                                {{else}}
-                                <li class="{{ isActiveRoute '^about$' }}">
-                                    <a href="{{ pathFor 'about' }}">About</a>
-                                </li>
-                                {{/if}}
-                            </ul>
-
-
-
-                            {{#if currentUser}} {{> masterLayoutConnected}} {{else}} {{#if loggingIn}} {{> masterLayoutLoadingForm}} {{else}} {{> masterLayoutLoginForm}} {{/if}} {{/if}}
-
-
-
-                        </div>
-                    </div>
-                </nav>
-
-            </div>
-        </div>
-        <div class="row ">
-            <div class="col-md-12 ">
-                {{> yield}}
-            </div>
+            {{> yield}}
         </div>
     </div>
-</template>
-
-<template name="masterLayoutLoginForm">
-
-    <div class="navbar-form navbar-right">
-
-        <div class="form-group">
-            <input class="form-control input-sm" id="iEmail" type="email" placeholder="Enter email ">
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control input-sm" id="inputPassword3" placeholder="Password">
-        </div>
-        <button type="button" class="btn btn-success btn-sm" id="signIn">Sign In</button>
-    </div>
-
-
 
 </template>
 
-<template name="masterLayoutLoadingForm">
-    <div class="navbar-right">
-        <p class="navbar-text">
-            Logging in...
-        </p>
-    </div>
-
-</template>
-
-<template name="masterLayoutConnected">
-
-    <ul class="nav navbar-nav navbar-right">
-
-        <li class="dropdown">
-            
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="{{currentUser.gitlab.avatar_url }}" class="img-rounded" alt="user avatar" style="height:32px; margin:-8px 0px" />
-             {{currentUser.gitlab.name}} <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Profile</a>
-                </li>
-                <li><a href="#">Settings</a>
-                </li>
-
-                <li class="divider"></li>
-                <li role="presentation"><a role="menuitem" id="userLogout" tabindex="-1" href="#">Sign out</a>
-                </li>
-            </ul>
-        </li>
-    </ul>
-
-</template>

@@ -1,11 +1,10 @@
-#spotkanie
-{
-    background-image: url('spotkanie.jpg');
-    background-repeat: repeat-x;
-    min-height:100%;
-    width:100%;
-    position:absolute;
+/* for fixed navigation */
+body {
+  min-height: 2000px;
+  padding-top: 70px;
 }
+
+
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;

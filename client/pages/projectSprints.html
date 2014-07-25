@@ -1,14 +1,15 @@
 <template name="projectSprints">
-    <input type="hidden" id="projectId" ref={{project._id}}>{{> projectSprintsInput}}
-    <div id="sprintBody">{{> projectSprintsList}}</div>
-    <div id="backlogItems" ref="0">
-        Unassgined backlog issues:
+    <input type="hidden" id="projectId" ref={{project._id}}>
+    <div id="sprints" class=".col-md-6">{{> projectSprintsList}}</div>
+    <div id="backlog" class=".col-md-6" ref="0">
+        <p id="addItem">New item</p>
         <br/>{{#each issues}}
         <p class="backlogItem" id={{_id}} ref={{sprint}}>
             <div class="backlogItemText">{{gitlab.title}}</div>
             <div class="backlogItemTime">{{estimate}}</div>
         </p>
         {{/each}}
+        <p id="backlogFooter">{{issuesStats}}</p>
     </div>
 </template>
 
@@ -27,17 +28,14 @@
         </div>
         {{/each}}
     </div>
-    {{/each}}
+    {{/each}} {{> projectSprintsInput}}
 </template>
 
 <template name="projectSprintsInput">
     <details id="addSprint">
-        <summary>Add new sprint</summary>
-        <input type="text" id="name" style="width: 95%" placeholder="Name" />
-        <br/>
-        <p>End date:
-            <input type="text" id="datepicker">
-            <input type="button" class="insert" value="Dodaj" style="float: right" />
-        </p>
+        <summary>New sprint</summary>
+        <input type="text" id="name" style="width: 98%; margin: 1%;" placeholder="Sprint title" />
+        <input type="text" id="datepicker" style="width: 66%; margin: 1%;" placeholder="End date" />
+        <input type="button" class="insert" style="width: 29%; margin: 1%;" value="Add" />
     </details>
 </template>

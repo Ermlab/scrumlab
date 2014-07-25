@@ -1,0 +1,9 @@
+<template name="workBoard">
+    {{#with project}}
+    <div class="page-header">
+        <h1>{{gitlab.name}} - Work Board</h1>
+    </div>
+
+    Work board for project: {{ _id }} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>)
+    {{/with}}
+</template>

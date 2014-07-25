@@ -16,7 +16,7 @@
     position: relative;
 }
 .story {
-    width: 70%;
+    width: 100%;
     height: auto;
     min-height: 40px;
     margin: 10px;
@@ -30,7 +30,6 @@
     box-shadow: 3px 3px 8px #888888;
     position: relative;
 }
-
 .storyTitle {
     width: 60%;
     font-weight: bold;

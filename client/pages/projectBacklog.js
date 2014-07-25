@@ -36,6 +36,13 @@ Template.projectBacklogAssignees.rendered = function () {
             };
             if (updateField == 'estimate') {
                 updateObject.description = issue.gitlab.description + "\n\nTime estimate: " + newValue;
+                Issues.update(issueId, {
+                    $set: {
+                        estimate: newValue
+                    }
+                }, {
+                    upsert: true
+                });
             } else {
                 updateObject[updateField] = newValue;
             }

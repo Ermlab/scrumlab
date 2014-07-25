@@ -34,17 +34,22 @@ smoothness/jquery-ui.css" />
 
                     {{#if isActivePath 'project\/' }}
 
-                    <li class="{{ isActiveRoute '^projectDashboard$' id=project._id }}">
-                        <a href="{{ pathFor 'projectDashboard' id=project._id }}">Overview</a>
+                    <li class="{{ isActiveRoute '^planBoard$' id=project._id }}">
+                        <a href="{{ pathFor 'planBoard' id=project._id }}">Plan</a>
 
                     </li>
 
-                    <li class="{{ isActiveRoute '^projectBacklog$' }}">
-                        <a href="{{ pathFor 'projectBacklog' id=project._id }}">Backlog</a>
+                    <li class="{{ isActiveRoute '^workBoard$' }}">
+                        <a href="{{ pathFor 'workBoard' id=project._id }}">Work</a>
                     </li>
+                    <li class="{{ isActiveRoute '^reportsBoard$' }}">
+                        <a href="{{ pathFor 'reportsBoard' id=project._id }}">Reports</a>
+                    </li>
+                    
                     <li class="{{ isActiveRoute '^projectSprints$' }}">
-                        <a href="{{ pathFor 'projectSprints' id=project._id }}">Sprints</a>
+                        <a href="{{ pathFor 'projectSprints' id=project._id }}">Temp:Sprints</a>
                     </li>
+                    
                     {{/if}} {{else}}
                     <li class="{{ isActiveRoute '^about$' }}">
                         <a href="{{ pathFor 'about' }}">About</a>

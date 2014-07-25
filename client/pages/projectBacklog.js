@@ -20,15 +20,27 @@ Template.projectBacklogAssignees.rendered = function () {
     $.fn.editable.defaults.emptytext = '(...)';
     $.fn.editable.defaults.toggle = 'dblclick';
     // Setting editable property to story elements
-    $('.storyTitle, .storyType, .storyText, .storyHours').editable({
+    $('.storyTitle, .storyText, .storyHours').editable({
         // Defining callback function to update story in database after in-place editing
         success: function (response, newValue) {
-            var storyId = this.parentElement.getAttribute("id");
-            var updateField = {};
-            updateField[this.getAttribute("ref")] = newValue;
-            Issues.update(storyId, {
-                $set: updateField
+            var issueId = this.parentElement.getAttribute("id");
+            var issue = Issues.findOne({
+                '_id': issueId
             });
+            var gitlabIssueId = issue.gitlab.id;
+            var gitlabProjectId = issue.gitlab.project_id;
+            var updateField = this.getAttribute("ref");
+            var updateObject = {
+                'id': gitlabProjectId,
+                'issue_id': gitlabIssueId
+            };
+            if (updateField == 'estimate') {
+                updateObject.description = issue.gitlab.description + "\n\nTime estimate: " + newValue;
+            } else {
+                updateObject[updateField] = newValue;
+            }
+            Meteor.call('editIssue', updateObject);
+            Meteor.call('refreshUserProjects');
         }
     });
     // Setting editable property to task elements
@@ -49,6 +61,9 @@ Template.projectBacklogInput.events = {
     'click input.insert': function () {
         // Gathering necessary new story data
         var projectId = document.getElementById("container").getAttribute("ref");
+        var gitlabProjectId = Projects.findOne({
+            '_id': projectId
+        }).gitlab.id;
         var name = document.getElementById("name");
         var desc = document.getElementById("description");
         var time = document.getElementById("estimate").value;
@@ -56,24 +71,21 @@ Template.projectBacklogInput.events = {
         var assigneeName = assignee.options[assignee.selectedIndex].text;
         var assigneeId = Meteor.users.findOne({
             username: assigneeName
-        })._id;
+        }).gitlab.id;
         var type = document.getElementById("typeSelector");
         var typeName = type.options[type.selectedIndex].text;
         // Adding new story to database
-        Issues.insert({
+        Meteor.call('insertIssue', {
             'estimate': time,
-            'sprint': '0',
             'assignee_id': assigneeId,
             'project_id': projectId,
-            'gitlab': {
-                'title': name.value,
-                'description': desc.value,
-                'state': typeName,
-                'assignee': {
-                    'username': assigneeName
-                }
-            }
+            'gitlab_project_id': gitlabProjectId,
+            'title': name.value,
+            'description': desc.value,
+            'state': typeName,
+            'assignee': assigneeName
         });
+        Meteor.call('refreshUserProjects');
         // Resetting the input fields
         name.value = '';
         desc.value = '';

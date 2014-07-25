@@ -66,9 +66,9 @@
     <div id="container" ref={{projectId}}>
         {{#each issues}}
         <div class="story" id={{_id}} ref={{gitlab.title}} objectType="issue">
-            <p class="storyTitle" ref="gitlab.title" data-type="text">{{gitlab.title}}</p>
-            <p class="storyType" ref="gitlab.state" data-type="text">{{gitlab.state}}</p>
-            <p class="storyText" ref="gitlab.description" data-type="textarea">{{gitlab.description}}</p>
+            <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
+            <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
+            <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
             <p class="storyHours" ref="estimate" data-type="text" data-placeholder="estimate">{{estimate}}</p>
             <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
             <p class="deleteButton"></p>
@@ -124,7 +124,6 @@
 </template>
 
 <template name="projectBacklogAssignees">
-    <option value="0">No assignment</option>
     {{#each assignees}}
     <option value={{_id}}>{{username}}</option>
     {{/each}}

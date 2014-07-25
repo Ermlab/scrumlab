@@ -20,15 +20,27 @@ Template.projectBacklogAssignees.rendered = function () {
     $.fn.editable.defaults.emptytext = '(...)';
     $.fn.editable.defaults.toggle = 'dblclick';
     // Setting editable property to story elements
-    $('.storyTitle, .storyType, .storyText, .storyHours').editable({
+    $('.storyTitle, .storyText, .storyHours').editable({
         // Defining callback function to update story in database after in-place editing
         success: function (response, newValue) {
-            var storyId = this.parentElement.getAttribute("id");
-            var updateField = {};
-            updateField[this.getAttribute("ref")] = newValue;
-            Issues.update(storyId, {
-                $set: updateField
+            var issueId = this.parentElement.getAttribute("id");
+            var issue = Issues.findOne({
+                '_id': issueId
             });
+            var gitlabIssueId = issue.gitlab.id;
+            var gitlabProjectId = issue.gitlab.project_id;
+            var updateField = this.getAttribute("ref");
+            var updateObject = {
+                'id': gitlabProjectId,
+                'issue_id': gitlabIssueId
+            };
+            if (updateField == 'estimate') {
+                updateObject.description = issue.gitlab.description + "\n\nTime estimate: " + newValue;
+            } else {
+                updateObject[updateField] = newValue;
+            }
+            Meteor.call('editIssue', updateObject);
+            Meteor.call('refreshUserProjects');
         }
     });
     // Setting editable property to task elements
@@ -73,6 +85,7 @@ Template.projectBacklogInput.events = {
             'state': typeName,
             'assignee': assigneeName
         });
+        Meteor.call('refreshUserProjects');
         // Resetting the input fields
         name.value = '';
         desc.value = '';

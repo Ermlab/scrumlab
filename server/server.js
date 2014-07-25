@@ -47,6 +47,32 @@ Server = {
         api.issues.create(issue.gitlab_project_id, gitlabIssue);
     },
 
+    editIssue: function (updateObject) {
+        // Edit issue at GitLab server
+        /*
+        id (required) - The ID of a project
+        issue_id (required) - The ID of a project's issue
+        title (optional) - The title of an issue
+        description (optional) - The description of an issue
+        assignee_id (optional) - The ID of a user to assign issue
+        milestone_id (optional) - The ID of a milestone to assign issue
+        labels (optional) - Comma-separated label names for an issue
+        state_event (optional) - The state event of an issue ('close' to close issue and 'reopen' to reopen it)
+        */
+        var user = Meteor.user();
+        if (!user) {
+            return;
+        }
+        console.dir(updateObject);
+        var server = GitlabServers.findOne(user.origin);
+        var api = Server.getGitlabApi({
+            url: server.url,
+            token: user.token,
+            origin: server._id
+        });
+        api.issues.edit(updateObject.id, updateObject.issue_id, updateObject);
+    },
+
     refreshUserProjects: function () {
         var user = Meteor.user();
 

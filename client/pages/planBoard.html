@@ -9,67 +9,20 @@
      {{/with}}
     
 
-    <!--glyphicon glyphicon-plus-->
-
-    <!--<style>
-        .double-input .form-control {
-            width: 40%;
-            border-right-width: 0px;
-        }
-        .double-input .form-control:focus {
-            border-right-width: 1px;
-        }
-    </style>-->
-
-
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <form class="form-horizontal">
-
-                <div class="form-group">
-
-                    <div class="input-group input-group-lg double-input">
-                        <input type="text" class="form-control" placeholder="Story title">
-                        <div class="input-group-btn">
-                            <button class="btn btn-success" type="button">Add</button>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="form-group">
-                    Details
-                </div>
-
-                <div class="form-group">
-                    <textarea rows="4" class="form-control" id="storyDesc" placeholder="Story description"></textarea>
-                </div>
-
-                <div class="form-group">
-
-                    <div class="row">
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control" placeholder="Team estimations: 4; 2; 3...">
-                        </div>
-
-                        <div class="col-xs-2">
-                            <label for="inputEst" class="control-label">Estimation:</label>
-
-                        </div>
-                        <div class="col-xs-2">
-                            <input type="number" class="form-control" id="inputEst">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+    {{> addIssueTmpl}} 
 
 
 
 
 
-    {{> projectBacklogInput}} {{> projectBacklogIssues}}
+  
+    
+    {{> projectBacklogIssues}}
 </template>
+
+
+
+
 
 <template name="projectBacklogIssues">
     <div id="container" ref={{projectId}}>
@@ -111,7 +64,7 @@
     </div>
 </template>
 
-<template name="projectBacklogInput">
+<!--<template name="projectBacklogInput">
     <details class="addStory">
         <summary>Add new issue</summary>
         <input type="text" id="name" style="width: 95%" placeholder="Name" />
@@ -130,7 +83,7 @@
         <select id="assigneeSelector" style="width: 20%">{{> projectBacklogAssignees}}</select>
         <input type="button" class="insert" value="Dodaj" style="float: right" />
     </details>
-</template>
+</template>-->
 
 <template name="projectBacklogAssignees">
     {{#each assignees}}

@@ -28,23 +28,39 @@ Server = {
         milestone_id (optional) - The ID of a milestone to assign issue
         labels (optional) - Comma-separated label names for an issue
         */
+
+        //TODO:permissions, who can create new stories?
         var user = Meteor.user();
         if (!user) {
             return;
         }
+
         var server = GitlabServers.findOne(user.origin);
         var api = Server.getGitlabApi({
             url: server.url,
             token: user.token,
             origin: server._id
         });
+
+        
+        var projectId = issue.projectId;
         gitlabIssue = {
-            'id': issue.gitlab_project_id,
+            'id': issue.gitlabProjectId,
             'title': issue.title,
             'description': issue.description,
-            'assignee_id': issue.assignee_id
+            'assignee_id': issue.assignee_id,
+            'labels': 'story, #' + issue.estimation
         };
-        api.issues.create(issue.gitlab_project_id, gitlabIssue);
+        api.issues.create(issue.gitlabProjectId, gitlabIssue, function (data) {
+            console.log("After creation of issue", data);
+
+            Issues.insert({
+                'project_id': projectId,
+                'gitlab': data,
+                'origin': api.options.origin
+            });
+
+        });
     },
 
     editIssue: function (updateObject) {
@@ -191,6 +207,8 @@ Server = {
                     });
 
                     if (existingIssue !== undefined) {
+                        
+                        //todo: check if setting whole gitlab field doesn't overwrite previous
                         Issues.update(existingIssue._id, {
                             $set: {
                                 'gitlab': issues[i]

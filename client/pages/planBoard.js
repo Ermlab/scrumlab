@@ -1,4 +1,4 @@
-Template.projectBacklogAssignees.rendered = function () {
+/*Template.projectBacklogAssignees.rendered = function () {
     // Setting sortable property to container
     $("#container").sortable({
         axis: 'y',
@@ -55,42 +55,9 @@ Template.projectBacklogAssignees.rendered = function () {
             });
         }
     });
-}
+}*/
 
-Template.projectBacklogInput.events = {
-    'click input.insert': function () {
-        // Gathering necessary new story data
-        var projectId = document.getElementById("container").getAttribute("ref");
-        var gitlabProjectId = Projects.findOne({
-            '_id': projectId
-        }).gitlab.id;
-        var name = document.getElementById("name");
-        var desc = document.getElementById("description");
-        var time = document.getElementById("estimate").value;
-        var assignee = document.getElementById("assigneeSelector");
-        var assigneeName = assignee.options[assignee.selectedIndex].text;
-        var assigneeId = Meteor.users.findOne({
-            username: assigneeName
-        }).gitlab.id;
-        var type = document.getElementById("typeSelector");
-        var typeName = type.options[type.selectedIndex].text;
-        // Adding new story to database
-        Meteor.call('insertIssue', {
-            'estimate': time,
-            'assignee_id': assigneeId,
-            'project_id': projectId,
-            'gitlab_project_id': gitlabProjectId,
-            'title': name.value,
-            'description': desc.value,
-            'state': typeName,
-            'assignee': assigneeName
-        });
-        Meteor.call('refreshUserProjects');
-        // Resetting the input fields
-        name.value = '';
-        desc.value = '';
-    }
-}
+
 
 Template.projectBacklogIssues.events = {
     'click .insertTask': function (event) {
@@ -145,9 +112,9 @@ Template.projectBacklogIssues.events = {
     }
 }
 
-Template.projectBacklogAssignees.assignees = function () {
+/*Template.projectBacklogAssignees.assignees = function () {
     return Meteor.users.find().fetch();
-}
+}*/
 
 Template.projectBacklogIssues.tasks = function (id) {
     return Tasks.find({

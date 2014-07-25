@@ -44,13 +44,15 @@ Server = {
             'description': issue.description,
             'assignee_id': issue.assignee_id
         };
+        /*
         var link = "http://gitlab.ermlab.com/api/v3/projects/" + issue.gitlab_project_id + "/issues?private_token=" + user.token;
         result = HTTP.post(
             link, {
                 params: gitlabIssue
             });
+            */
         // Not working?
-        // api.issues.create(gitlabIssue);
+        api.issues.create(issue.gitlab_project_id, gitlabIssue);
     },
 
     refreshUserProjects: function () {

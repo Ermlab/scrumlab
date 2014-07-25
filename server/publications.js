@@ -32,7 +32,7 @@ Meteor.publish('userProjects', function () {
 
 Meteor.publish('sprints', function (projectId) {
     return Sprints.find({
-        'project': projectId
+        'project_id': projectId
     });
 });
 

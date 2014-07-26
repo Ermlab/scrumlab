@@ -1,20 +1,7 @@
-/*Template.projectBacklogAssignees.rendered = function () {
-    // Setting sortable property to container
-    $("#container").sortable({
-        axis: 'y',
-        // Saving new issues order in database
-        stop: function (event, ui) {
-            var data = $("#container").sortable("toArray");
-            for (var i = 0; i < data.length; i++) {
-                Issues.update(data[i], {
-                    $set: {
-                        position: i
-                    }
-                });
-            }
-        }
-    });
-    $("#container").disableSelection();
+
+Template.planBoardAssignees.rendered = function () {
+    $("#backlog").disableSelection();
+
     // Setting default values for x-editable
     $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.emptytext = '(...)';
@@ -55,15 +42,80 @@
             });
         }
     });
-}*/
 
 
-<<<<<<< HEAD
+    $("#backlog, .sprint").sortable({
+        stop: function (event, ui) {
+            // Getting the element id and containing sprint's id (or a backlogItems container)
+            var ownerId = ui.item.parent().attr("id");
+            var selfId = ui.item.attr("id");
+            var previousId = ui.item.attr("ref");
+            // If no owner is specified or element was returned to backlog container ownerId is set to 0
+            if (ownerId == 'backlog') ownerId = '0';
+            // If no previous owner present, previousId is set to 0
+            if (typeof (previousId) == 'undefined') previousId = '0';
+            // Check if the item was dropped back in container it was taken from by
+            // comparing parent id with original parent id stored in "ref" variable
+            if (ownerId != previousId) {
+                // Check if owner is actually a sprint
+                if (ownerId != 0) {
+                    Issues.update(selfId, {
+                        $set: {
+                            sprint: ownerId
+                        }
+                    });
+                    // Recalculate the time estimate of a sprint 
+                    var sum = 0;
+                    var data = Issues.find({
+                        sprint: ownerId
+                    }).fetch();
+                    while (data.length > 0) sum += parseInt(data.pop().time);
+                    if (isNaN(sum)) sum = 0;
+                    // Update the time estimate
+                    Sprints.update(ownerId, {
+                        $set: {
+                            time: sum
+                        }
+                    });
+                } else {
+                    // If ownerId = 0, the field sprint is removed, resulting in element being unassigned
+                    // no time estimate recalculation needed
+                    Issues.update(selfId, {
+                        $unset: {
+                            sprint: ""
+                        }
+                    });
+                }
+                // Get previous owner id to allow time estimate recalculation
+                var previousOwnerId = ui.item.attr("ref");
+                // Check if previous owner is actually a sprint
+                if (previousOwnerId != 0) {
+                    // Recalculate the time estimate of a sprint 
+                    var sum = 0;
+                    var data = Issues.find({
+                        sprint: previousOwnerId
+                    }).fetch();
+                    while (data.length > 0) sum += parseInt(data.pop().time);
+                    // Update the time estimate
+                    Issues.update(previousOwnerId, {
+                        $set: {
+                            time: sum
+                        }
+                    });
+                }
+                // Getting rid of duplicated ui item
+                ui.item.remove();
+            }
+        },
+        connectWith: "#backlog, .sprint",
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton"
+    }).disableSelection();
+    // Setting datepicker property for easy date selection
+    $("#datepicker").datepicker();
+}
 
-=======
->>>>>>> 57e82c1e87afd42c324df43dfdcd3c2bd14451ea
 
-Template.projectBacklogIssues.events = {
+Template.planBoardSprints.events = {
     'click .insertTask': function (event) {
         // Gathering necessary new task data
         var task = event.currentTarget.parentElement;
@@ -116,12 +168,64 @@ Template.projectBacklogIssues.events = {
     }
 }
 
-/*Template.projectBacklogAssignees.assignees = function () {
-    return Meteor.users.find().fetch();
-}*/
 
-Template.projectBacklogIssues.tasks = function (id) {
+Template.planBoardAssignees.assignees = function () {
+    return Meteor.users.find().fetch();
+}
+
+Template.planBoardSprints.tasks = function (id) {
     return Tasks.find({
         issueId: id
     });
+}
+
+Template.planBoardSprintsList.assignedItems = function (ownerId) {
+    return Issues.find({
+        sprint: ownerId
+    }, {
+        sort: {
+            position: 1
+        }
+    });
+}
+
+Template.planBoardSprintsList.events = {
+    'click .startButton': function (event) {
+        // Get selected sprint data
+        var parentId = event.currentTarget.parentElement.getAttribute("id");
+        var sprint = Sprints.findOne({
+            _id: parentId
+        });
+        // Check if sprint is ready to start
+        if (sprint.status == 'ready') {
+            // Check if sprint is not overdue already
+            var finish = sprint.endDate;
+            if (CheckDate(sprint.endDate) == true) {
+                // Update sprint status
+                Sprints.update(parentId, {
+                    $set: {
+                        status: 'in progress'
+                    }
+                });
+            } else alert('Sprint is already overdue.');
+        } else if (sprint.status == 'in progress') alert('Sprint already in progress');
+        else if (sprint.status == 'closed') alert('This sprint has already finished');
+    }
+}
+
+Template.planBoardSprintsInput.events = {
+    'click input.insert': function (event) {
+        var name = document.getElementById("name");
+        var date = document.getElementById("datepicker");
+        var projectId = document.getElementById("projectId").getAttribute("ref");
+        Sprints.insert({
+            name: name.value,
+            endDate: date.value,
+            project_id: projectId,
+            time: '0',
+            status: 'ready'
+        });
+        name.value = '';
+        date.value = '';
+    }
 }

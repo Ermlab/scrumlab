@@ -1,4 +1,4 @@
-Template.projectBacklogAssignees.rendered = function () {
+/*Template.projectBacklogAssignees.rendered = function () {
     // Setting sortable property to container
     $("#container").sortable({
         axis: 'y',
@@ -55,9 +55,13 @@ Template.projectBacklogAssignees.rendered = function () {
             });
         }
     });
-}
+}*/
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 57e82c1e87afd42c324df43dfdcd3c2bd14451ea
 
 Template.projectBacklogIssues.events = {
     'click .insertTask': function (event) {

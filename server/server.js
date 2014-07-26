@@ -49,7 +49,7 @@ Server = {
             'title': issue.title,
             'description': issue.description,
             'assignee_id': issue.assignee_id,
-            'labels': 'story, ' + issue.estimation
+            'labels': 'story, #' + issue.estimation
         };
         api.issues.create(issue.gitlabProjectId, gitlabIssue, function (data) {
             console.log("After creation of issue", data);

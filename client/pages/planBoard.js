@@ -1,4 +1,4 @@
-/*Template.projectBacklogAssignees.rendered = function () {
+Template.projectBacklogAssignees.rendered = function () {
     // Setting sortable property to container
     $("#container").sortable({
         axis: 'y',
@@ -55,7 +55,7 @@
             });
         }
     });
-}*/
+}
 
 
 

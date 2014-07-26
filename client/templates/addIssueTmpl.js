@@ -32,22 +32,15 @@ Template.addIssueTmpl.events = {
 
     },
 
-    'click #toogleDetails': function(e) {
+    'click #toogleDetails': function (e) {
         e.preventDefault();
 
-        
-        var $this = $(this);
-        var $collapse = $this.closest('#addStoryForm').find('.collapse');
-        $collapse.collapse('toggle');
+        console.log('click');
 
-/*
-        $('#make_hide_button').on('click', function () {
-            $('#target_area').hide().find('input, textarea').prop('disabled', true);
-        });
 
-        $('#make_show_button').on('click', function () {
-            $('#target_area').show().find('input, textarea').prop('disabled', false);
-        });*/
+        //$('#addStoryForm .collapse').find('input, textarea, button, select').prop("disabled", false);
+
+        $('#addStoryForm .collapse').collapse('toggle');        
 
     },
 }

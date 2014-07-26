@@ -337,6 +337,9 @@ Server = {
 };
 
 Meteor.startup(function () {
+    
+     
+    
     // Fixtures 
     if (GitlabServers.find().count() === 0) {
         GitlabServers.insert({
@@ -345,6 +348,7 @@ Meteor.startup(function () {
         });
     }
 
+    
     // Fetch data from all servers
     _.each(GitlabServers.find().fetch(), function (server) {
         server.origin = server._id;
@@ -352,6 +356,8 @@ Meteor.startup(function () {
         Server.fetchUsers(api);
         //Server.fetchProjects(api);
     });
+    
+    
 });
 
 Accounts.registerLoginHandler(function (loginRequest) {

@@ -28,24 +28,56 @@ Server = {
         milestone_id (optional) - The ID of a milestone to assign issue
         labels (optional) - Comma-separated label names for an issue
         */
+
+        //TODO:permissions, who can create new stories?
         var user = Meteor.user();
         if (!user) {
             return;
         }
+
         var server = GitlabServers.findOne(user.origin);
         var api = Server.getGitlabApi({
             url: server.url,
             token: user.token,
             origin: server._id
         });
+
+
+        var projectId = issue.project_id;
         gitlabIssue = {
-            'id': issue.gitlab_project_id,
+            'id': issue.gitlabProjectId, //id of a gitlab project!
             'title': issue.title,
             'description': issue.description,
-            'assignee_id': issue.assignee_id
+            'assignee_id': issue.assignee_id,
+            'labels': 'story, #' + issue.estimation
         };
-        api.issues.create(issue.gitlab_project_id, gitlabIssue);
-    },
+        
+        
+        api.issues.create(issue.gitlabProjectId, gitlabIssue, function (glIssue) {
+            Fiber(function () {
+                console.log("After creation of issue", glIssue);
+
+
+               /* var new_issue = {
+                    'project_id': projectId, //mongo project_id
+                    'gitlab': glIssue,
+                    'origin': api.options.origin,
+                    'estimation': issue.
+                    'created_at': issue.created_at
+                };*/
+                
+                
+                var new_issue = BuildAnIssue(issue,glIssue);
+                
+                console.log('issue on server \n', new_issue);
+
+                return Issues.insert(new_issue);
+
+            }).run(); //end fiber
+
+        }); //end api.issue.create
+
+    }, //end issue create
 
     editIssue: function (updateObject) {
         // Edit issue at GitLab server
@@ -70,7 +102,13 @@ Server = {
             token: user.token,
             origin: server._id
         });
-        api.issues.edit(updateObject.id, updateObject.issue_id, updateObject);
+        api.issues.edit(updateObject.id, updateObject.issue_id, updateObject, function (data) {
+
+            console.log("After editing issue", data);
+
+
+
+        });
     },
 
     refreshUserProjects: function () {
@@ -121,12 +159,34 @@ Server = {
                     });
 
                     if (existingUser !== undefined) {
+
+                        /* console.log("!!! Existing\n",existingUser.gitlab);                    
+                        console.log("from gitlab \n",users[i]);*/
+
+
+                        //we extends existed user by the new information which comes from gitlab
+                        //the fields in existing user are overwritten by the gitlab users[i], fields
+                        //that didn't appear in gitlab user object stays untouch
+                        var usrUpdated = _.extend(existingUser.gitlab, users[i]);
+
+                        //console.log("merged \n",usrUpdated);
+
                         Meteor.users.update(existingUser._id, {
+                            $set: {
+                                'username': users[i].username,
+                                'gitlab': usrUpdated,
+                            }
+                        });
+
+                        //todo: gitlab object is overwritten, possible data loss!
+                        //use _.extend method form underscore.js
+                        /*Meteor.users.update(existingUser._id, {
                             $set: {
                                 'username': users[i].username,
                                 'gitlab': users[i],
                             }
-                        });
+                        });*/
+
                     } else {
                         Meteor.users.insert({
                             'username': users[i].username,
@@ -152,13 +212,16 @@ Server = {
                         'origin': api.options.origin
                     });
 
-                    var projectId;
+                    var projectId = null;
 
                     //todo: refactor to update with upsert parameter
                     if (existingProject !== undefined) {
+
+                        //todo: better way for dealing with updates
+                        var projUpdated = _.extend(existingProject.gitlab, projects[i]);
                         Projects.update(existingProject._id, {
                             $set: {
-                                'gitlab': projects[i]
+                                'gitlab': projUpdated,
                             }
                         });
                         projectId = existingProject._id;
@@ -175,7 +238,7 @@ Server = {
                     callback(allProjectIds);
                 }
             }).run();
-            console.log('fetchProjects ended');
+
         });
     },
 
@@ -183,6 +246,8 @@ Server = {
         // Fetch all user issues from Gitlab server
         api.issues.all(function (issues) {
             Fiber(function () {
+
+                //todo: the same logic as in fetchProjectIssues
                 for (var i = 0; i < issues.length; i++) {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
@@ -191,9 +256,13 @@ Server = {
                     });
 
                     if (existingIssue !== undefined) {
+
+
+                        var issueUpdated = _.extend(existingIssue.gitlab, issues[i]);
+
                         Issues.update(existingIssue._id, {
                             $set: {
-                                'gitlab': issues[i]
+                                'gitlab': issueUpdated
                             }
                         });
                     } else {
@@ -217,6 +286,8 @@ Server = {
         api.projects.issues.list(project.gitlab.id, {}, function (issues) {
             Fiber(function () {
 
+                //todo: the same logic as in fetchUserIssues
+
                 for (var i = 0; i < issues.length; i++) {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
@@ -225,11 +296,15 @@ Server = {
                     });
 
                     if (existingIssue !== undefined) {
+
+                        var issueUpdated = _.extend(existingIssue.gitlab, issues[i]);
+
                         Issues.update(existingIssue._id, {
                             $set: {
-                                'gitlab': issues[i]
+                                'gitlab': issueUpdated
                             }
                         });
+
                     } else {
                         Issues.insert({
                             'project_id': projectId,
@@ -319,6 +394,9 @@ Server = {
 };
 
 Meteor.startup(function () {
+
+
+
     // Fixtures 
     if (GitlabServers.find().count() === 0) {
         GitlabServers.insert({
@@ -327,6 +405,7 @@ Meteor.startup(function () {
         });
     }
 
+
     // Fetch data from all servers
     _.each(GitlabServers.find().fetch(), function (server) {
         server.origin = server._id;
@@ -334,6 +413,8 @@ Meteor.startup(function () {
         Server.fetchUsers(api);
         //Server.fetchProjects(api);
     });
+
+
 });
 
 Accounts.registerLoginHandler(function (loginRequest) {
@@ -364,17 +445,21 @@ Accounts.registerLoginHandler(function (loginRequest) {
             'origin': server._id
         });
 
+        var userId = null;
+
         if (existingUser) {
             userId = existingUser._id;
-            Meteor.users.update({
-                _id: userId
-            }, {
+
+            //we merged the gitlab fields with those in existing user
+            var usrUpdated = _.extend(existingUser.gitlab, userData);
+            Meteor.users.update(existingUser._id, {
                 $set: {
                     username: userData.username,
-                    gitlab: userData,
-                    token: userData.private_token
+                    token: userData.private_token,
+                    gitlab: usrUpdated,
                 }
             });
+
         } else {
             userId = Meteor.users.insert({
                 username: userData.username,
@@ -394,74 +479,5 @@ Accounts.registerLoginHandler(function (loginRequest) {
 });
 
 Accounts.onLogin(function (data) {
-    /*
-
-    var user = data.user;
-
-    // get all projects available for current user
-    var projectsFuture = new Future();
-
-    //majac usera, znajde jego origin, origin = id servera
-
-    var server = GitlabServers.findOne(user.origin);
-    Server.getGitlabApi({
-        url: server.url,
-        token: user.token
-    }).projects.all(function (projects) {
-        console.log(projects);
-        projectsFuture.return(projects);
-    });
-
-    var projects = projectsFuture.wait();
-
-
-    console.log('from gitlab');
-    console.log(projects);
-
-
-    console.log('user ');
-    console.log(user);
-
-    var in_projects = [];
-
-    for (var i = 0; i < projects.length; i++) {
-        in_projects.push(projects[i].id);
-
-
-        //update projects members field
-        //find project and update its members property
-
-
-
-        var search = {
-            'gitlab.id': projects[i].id,
-            'origin': user.origin
-        };
-
-        console.log(search);
-
-        var proj = Projects.findOne(search);
-
-
-        Projects.update(proj._id, {
-            $addToSet: {
-                member_ids: user._id
-            }
-        });
-
-        //update user in_projects field
-        Meteor.users.update({
-            _id: user._id
-        }, {
-            $addToSet: {
-                project_ids: proj._id
-            }
-        });
-        
-
-
-    }
-    */
-
 
 });

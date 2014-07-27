@@ -21,8 +21,8 @@ Template.planBoardAssignees.rendered = function () {
                 'id': gitlabProjectId,
                 'issue_id': gitlabIssueId
             };
-            if (updateField == 'estimate') {
-                updateObject.description = issue.gitlab.description + "\n\nTime estimate: " + newValue;
+            if (updateField == 'estimation') {
+                updateObject.description = issue.gitlab.description + "\n\nTime estimation: " + newValue;
             } else {
                 updateObject[updateField] = newValue;
             }
@@ -64,14 +64,14 @@ Template.planBoardAssignees.rendered = function () {
                             sprint: ownerId
                         }
                     });
-                    // Recalculate the time estimate of a sprint 
+                    // Recalculate the time estimation of a sprint 
                     var sum = 0;
                     var data = Issues.find({
                         sprint: ownerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
                     if (isNaN(sum)) sum = 0;
-                    // Update the time estimate
+                    // Update the time estimation
                     Sprints.update(ownerId, {
                         $set: {
                             time: sum
@@ -79,24 +79,24 @@ Template.planBoardAssignees.rendered = function () {
                     });
                 } else {
                     // If ownerId = 0, the field sprint is removed, resulting in element being unassigned
-                    // no time estimate recalculation needed
+                    // no time estimation recalculation needed
                     Issues.update(selfId, {
                         $unset: {
                             sprint: ""
                         }
                     });
                 }
-                // Get previous owner id to allow time estimate recalculation
+                // Get previous owner id to allow time estimation recalculation
                 var previousOwnerId = ui.item.attr("ref");
                 // Check if previous owner is actually a sprint
                 if (previousOwnerId != 0) {
-                    // Recalculate the time estimate of a sprint 
+                    // Recalculate the time estimation of a sprint 
                     var sum = 0;
                     var data = Issues.find({
                         sprint: previousOwnerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
-                    // Update the time estimate
+                    // Update the time estimation
                     Issues.update(previousOwnerId, {
                         $set: {
                             time: sum
@@ -135,7 +135,7 @@ Template.planBoardSprints.events = {
                 'issueId': issueId,
                 'name': name.value,
                 'description': desc.value,
-                'estimate': hours,
+                'estimation': hours,
                 'assignee': assigneeName,
                 'assignee_id': assigneeId
             });

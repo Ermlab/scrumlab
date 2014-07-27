@@ -6,7 +6,8 @@
       "bootstrap-3": {},
       "iron-router-active": {},
       "x-editable-bootstrap": {},
-      "jquery-ui": {}
+      "jquery-ui": {},
+      "spin": {}
     },
     "packages": {
       "iron-router": {
@@ -33,6 +34,11 @@
         "git": "https://github.com/TimHeckel/meteor-jquery-ui.git",
         "tag": "v1.9.2",
         "commit": "c437d45edcf1367df8d5ffa8bad2867758030bd2"
+      },
+      "spin": {
+        "git": "https://github.com/SachaG/meteor-spin.git",
+        "tag": "v2.0.3",
+        "commit": "23c1145472a710d5c93fa4beaca4e576caeb2f24"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",

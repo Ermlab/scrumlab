@@ -16,16 +16,16 @@ Template.addIssueTmpl.events = {
             estimation: $(e.target).find('[name=estimation]').val().trim(),
         }
 
-        console.log(issue);
-
 
         Meteor.call('createIssue', issue, function (error, result) {
             console.log("m_call_err", error);
             console.log("m_call_err", result);
 
+            //reset the from
             $(e.target).each(function () {
                 this.reset();
             });
+            //set focus on story title textbox
             $(e.target).find('[name=title]').focus();
 
         });

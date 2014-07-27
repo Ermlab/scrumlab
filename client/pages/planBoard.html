@@ -32,7 +32,7 @@
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-            <p class="storyHours" ref="estimate" data-type="text" data-placeholder="estimate">{{estimate}}</p>
+            <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
             <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
             <p class="deleteButton"></p>
             <div>
@@ -41,7 +41,7 @@
                     {{#each tasks _id}}
                     <div class="task" id={{_id}} ref={{name}} objectType="task">
                         <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
-                        <p class="taskHours" ref="estimate" data-type="text">{{estimate}}</p>
+                        <p class="taskHours" ref="estimation" data-type="text">{{estimation}}</p>
                         <p class="taskText" ref="description" data-type="textarea">{{description}}</p>
                         <p class="taskAssignee" ref="assignee" data-type="text">Assigned to: {{assignee}}</p>
                         <p class="deleteButton"></p>
@@ -80,7 +80,7 @@
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-            <p class="storyHours" ref="estimate" data-type="text" data-placeholder="estimate">{{estimate}}</p>
+            <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
             <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
         </div>
         {{/each}}

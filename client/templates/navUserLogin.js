@@ -25,12 +25,7 @@ Template.navUserLogin.events = {
         }
         return true;
     },
-   /* 'click #login-buttons-logout': function () {
-        Template.LoginForm.style.visibility = "visible";
-    },*/
     'click #userLogout': function () {
-        conlog('logout');
         Meteor.logout();
-        
     }
 };

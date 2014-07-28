@@ -45,11 +45,7 @@ smoothness/jquery-ui.css" />
                     <li class="{{ isActiveRoute '^reportsBoard$' }}">
                         <a href="{{ pathFor 'reportsBoard' id=project._id }}">Reports</a>
                     </li>
-                    
-                    <li class="{{ isActiveRoute '^projectSprints$' }}">
-                        <a href="{{ pathFor 'projectSprints' id=project._id }}">Temp:Sprints</a>
-                    </li>
-                    
+
                     {{/if}} {{else}}
                     <li class="{{ isActiveRoute '^about$' }}">
                         <a href="{{ pathFor 'about' }}">About</a>
@@ -65,9 +61,9 @@ smoothness/jquery-ui.css" />
 
 
     <div class="container">
-        
-            {{> yield}}
-        
+
+        {{> yield}}
+
     </div>
 
 </template>

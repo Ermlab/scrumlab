@@ -107,7 +107,7 @@ Template.planBoardAssignees.rendered = function () {
             }
         },
         connectWith: "#backlog, .sprint",
-        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, #backlogFooter"
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, #backlogFooter, .sprintsFooter"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
@@ -167,33 +167,81 @@ Template.planBoardSprints.events = {
     }
 }
 
-UI.registerHelper('issuesStats', function () {
-    var unestimated = Issues.find({
-        $or: [{
-            estimation: {
-                $exists: false
-            }
+Template.planBoardSprintsList.helpers({
+    'sprintsStats': function (sprint_id) {
+        var unestimated = Issues.find({
+            $and: [{
+                sprint: sprint_id
             }, {
-            estimate: ''
-            }]
-    }).fetch();
-    var estimated = Issues.find({
-        $and: [{
-            estimation: {
-                $exists: true
-            }
+                $or: [{
+                    estimation: {
+                        $exists: false
+                    }
             }, {
-            estimation: {
-                $ne: ''
-            }
+                    estimation: ''
             }]
-    }).fetch();
-    var totalStories = estimated.length + unestimated.length;
-    var totalTime = _.reduce(_.pluck(estimated, 'estimate'), function (sum, val) {
-        return sum + parseInt(val);
-    }, 0);
-    return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
-})
+            }]
+        }).fetch();
+        var estimated = Issues.find({
+            $and: [{
+                estimation: {
+                    $exists: true
+                }
+            }, {
+                estimation: {
+                    $ne: ''
+                }
+            }, {
+                sprint: sprint_id
+            }]
+        }).fetch();
+        var totalStories = estimated.length + unestimated.length;
+        var totalTime = _.reduce(_.pluck(estimated, 'estimate'), function (sum, val) {
+            return sum + parseInt(val);
+        }, 0);
+        return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
+    }
+});
+
+Template.planBoardSprints.helpers({
+    'issuesStats': function () {
+        var unestimated = Issues.find({
+            $and: [{
+                sprint: {
+                    $exists: false
+                }
+            }, {
+                $or: [{
+                    estimation: {
+                        $exists: false
+                    }
+            }, {
+                    estimation: ''
+            }]
+            }]
+        }).fetch();
+        var estimated = Issues.find({
+            $and: [{
+                estimation: {
+                    $exists: true
+                }
+            }, {
+                estimation: {
+                    $ne: ''
+                }
+            }, {
+                sprint: {
+                    $exists: false
+                }
+            }]
+        }).fetch();
+        var totalStories = estimated.length + unestimated.length;
+        var totalTime = _.reduce(_.pluck(estimated, 'estimate'), function (sum, val) {
+            return sum + parseInt(val);
+        }, 0);
+        return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
+    }
+});
 
 Template.planBoardAssignees.assignees = function () {
     return Meteor.users.find().fetch();

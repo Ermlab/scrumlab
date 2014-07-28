@@ -134,3 +134,19 @@
     width: 16px;
     background-image: url('delete.png');
 }
+#backlogFooter {
+    width: auto;
+    margin: 5px;
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+}
+.sprintsFooter {
+    width: auto;
+    margin: 5px;
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+}

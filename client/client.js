@@ -30,3 +30,39 @@ Handlebars.registerHelper('conlog', function (thing) {
     console.log("Template log:");
     console.log(thing);
 });
+
+
+Client = {
+
+    createIssue: function (issue) {
+
+        var user = Meteor.user();
+        if (!user) {
+            return;
+        }
+
+
+        var gitlabIssue = {
+            'project_id': issue.gitlabProjectId,
+            'title': issue.title,
+            'description': issue.description,
+        };
+
+
+        /*   var new_issue = {
+            'project_id': issue.project_id,
+            'gitlab': gitlabIssue,
+            'origin': user.origin,
+            'created_at' : issue.created_at,
+            'team_estimation': issue.teamEst,
+            'estimation': issue.estimation,
+        };*/
+
+
+        var new_issue = BuildAnIssue(issue, gitlabIssue);
+
+        console.log(' issue on client \n', new_issue);
+        return Issues.insert(new_issue);
+
+    }
+}

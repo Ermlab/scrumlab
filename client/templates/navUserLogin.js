@@ -29,6 +29,8 @@ Template.navUserLogin.events = {
         Template.LoginForm.style.visibility = "visible";
     },*/
     'click #userLogout': function () {
+        conlog('logout');
         Meteor.logout();
+        
     }
 };

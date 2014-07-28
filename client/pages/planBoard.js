@@ -1,5 +1,6 @@
 Template.planBoardAssignees.rendered = function () {
     $("#backlog").disableSelection();
+
     // Setting default values for x-editable
     $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.emptytext = '(...)';
@@ -19,15 +20,8 @@ Template.planBoardAssignees.rendered = function () {
                 'id': gitlabProjectId,
                 'issue_id': gitlabIssueId
             };
-            if (updateField == 'estimate') {
-                updateObject.description = issue.gitlab.description + "\n\nTime estimate: " + newValue;
-                Issues.update(issueId, {
-                    $set: {
-                        estimate: newValue
-                    }
-                }, {
-                    upsert: true
-                });
+            if (updateField == 'estimation') {
+                updateObject.description = issue.gitlab.description + "\n\nTime estimation: " + newValue;
             } else {
                 updateObject[updateField] = newValue;
             }
@@ -47,6 +41,8 @@ Template.planBoardAssignees.rendered = function () {
             });
         }
     });
+
+
     $("#backlog, .sprint").sortable({
         stop: function (event, ui) {
             // Getting the element id and containing sprint's id (or a backlogItems container)
@@ -67,14 +63,14 @@ Template.planBoardAssignees.rendered = function () {
                             sprint: ownerId
                         }
                     });
-                    // Recalculate the time estimate of a sprint 
+                    // Recalculate the time estimation of a sprint 
                     var sum = 0;
                     var data = Issues.find({
                         sprint: ownerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
                     if (isNaN(sum)) sum = 0;
-                    // Update the time estimate
+                    // Update the time estimation
                     Sprints.update(ownerId, {
                         $set: {
                             time: sum
@@ -82,24 +78,24 @@ Template.planBoardAssignees.rendered = function () {
                     });
                 } else {
                     // If ownerId = 0, the field sprint is removed, resulting in element being unassigned
-                    // no time estimate recalculation needed
+                    // no time estimation recalculation needed
                     Issues.update(selfId, {
                         $unset: {
                             sprint: ""
                         }
                     });
                 }
-                // Get previous owner id to allow time estimate recalculation
+                // Get previous owner id to allow time estimation recalculation
                 var previousOwnerId = ui.item.attr("ref");
                 // Check if previous owner is actually a sprint
                 if (previousOwnerId != 0) {
-                    // Recalculate the time estimate of a sprint 
+                    // Recalculate the time estimation of a sprint 
                     var sum = 0;
                     var data = Issues.find({
                         sprint: previousOwnerId
                     }).fetch();
                     while (data.length > 0) sum += parseInt(data.pop().time);
-                    // Update the time estimate
+                    // Update the time estimation
                     Issues.update(previousOwnerId, {
                         $set: {
                             time: sum
@@ -117,40 +113,6 @@ Template.planBoardAssignees.rendered = function () {
     $("#datepicker").datepicker();
 }
 
-Template.planBoardInput.events = {
-    'click input.insert': function () {
-        // Gathering necessary new story data
-        var projectId = document.getElementById("container").getAttribute("ref");
-        var gitlabProjectId = Projects.findOne({
-            '_id': projectId
-        }).gitlab.id;
-        var name = document.getElementById("name");
-        var desc = document.getElementById("description");
-        var time = document.getElementById("estimate").value;
-        var assignee = document.getElementById("assigneeSelector");
-        var assigneeName = assignee.options[assignee.selectedIndex].text;
-        var assigneeId = Meteor.users.findOne({
-            username: assigneeName
-        }).gitlab.id;
-        var type = document.getElementById("typeSelector");
-        var typeName = type.options[type.selectedIndex].text;
-        // Adding new story to database
-        Meteor.call('insertIssue', {
-            'estimate': time,
-            'assignee_id': assigneeId,
-            'project_id': projectId,
-            'gitlab_project_id': gitlabProjectId,
-            'title': name.value,
-            'description': desc.value,
-            'state': typeName,
-            'assignee': assigneeName
-        });
-        Meteor.call('refreshUserProjects');
-        // Resetting the input fields
-        name.value = '';
-        desc.value = '';
-    }
-}
 
 Template.planBoardSprints.events = {
     'click .insertTask': function (event) {
@@ -172,7 +134,7 @@ Template.planBoardSprints.events = {
                 'issueId': issueId,
                 'name': name.value,
                 'description': desc.value,
-                'estimate': hours,
+                'estimation': hours,
                 'assignee': assigneeName,
                 'assignee_id': assigneeId
             });
@@ -204,6 +166,7 @@ Template.planBoardSprints.events = {
         }
     }
 }
+
 
 Template.planBoardAssignees.assignees = function () {
     return Meteor.users.find().fetch();

@@ -68,6 +68,8 @@
         </div>
         <button type="button" class="startButton" id={{_id}}>Start
         </button>
+        <button type="button" class="stopButton" id={{_id}}>Stop
+        </button>
         {{#each assignedItems _id}}
         <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>

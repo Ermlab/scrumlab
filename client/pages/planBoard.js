@@ -111,7 +111,7 @@ Template.planBoardAssignees.rendered = function () {
             }
         },
         connectWith: "#backlog, .sprint",
-        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, #backlogFooter, .sprintsFooter"
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
@@ -288,7 +288,22 @@ Template.planBoardSprintsList.events = {
             } else alert('Sprint is already overdue.');
         } else if (sprint.status == 'in progress') alert('Sprint already in progress');
         else if (sprint.status == 'closed') alert('This sprint has already finished');
-    }
+    },
+    'click .stopButton': function (event) {
+        // Get selected sprint data
+        var parentId = event.currentTarget.parentElement.getAttribute("id");
+        var sprint = Sprints.findOne({
+            _id: parentId
+        });
+        // Check if sprint is in progress
+        if (sprint.status == 'in progress') {
+            Sprints.update(parentId, {
+                $set: {
+                    status: 'ready'
+                }
+            });
+        };
+    },
 }
 
 Template.planBoardSprintsInput.events = {

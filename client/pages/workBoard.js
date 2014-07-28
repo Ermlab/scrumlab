@@ -15,7 +15,7 @@ Template.workBoard.rendered = function () {
             }
         },
         connectWith: "#unassigned, #todo, #inprogress, #done",
-        cancel: ""
+        cancel: ".footer"
     }).disableSelection();
 }
 
@@ -72,11 +72,30 @@ Template.workBoard.helpers({
                 sprint: sprintId
             }]
         }).fetch();
+        var closed = Issues.find({
+            $and: [{
+                estimation: {
+                    $exists: true
+                }
+            }, {
+                estimation: {
+                    $ne: ''
+                }
+            }, {
+                sprint: sprintId
+            }, {
+                work_state: 'done'
+            }]
+        }).fetch();
         var totalStories = estimated.length + unestimated.length;
+        var doneStories = closed.length;
         var totalTime = _.reduce(_.pluck(estimated, 'estimation'), function (sum, val) {
             return sum + parseInt(val);
         }, 0);
-        return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
+        var doneTime = _.reduce(_.pluck(closed, 'estimation'), function (sum, val) {
+            return sum + parseInt(val);
+        }, 0);
+        return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated) - ' + doneStories + ' stories closed (' + ~~(doneTime / totalTime * 100) + '% sprint completion)';
     },
     'boardStats': function (sprintId, type) {
         var unestimated = Issues.find({

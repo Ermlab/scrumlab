@@ -7,6 +7,7 @@ Template.planBoardAssignees.rendered = function () {
     $.fn.editable.defaults.emptytext = '(...)';
     $.fn.editable.defaults.toggle = 'dblclick';
     // Setting editable property to story elements
+    
     $('.storyTitle, .storyText, .storyHours').editable({
         // Defining callback function to update story in database after in-place editing
         success: function (response, newValue) {
@@ -30,6 +31,7 @@ Template.planBoardAssignees.rendered = function () {
             Meteor.call('refreshUserProjects');
         }
     });
+    
     // Setting editable property to task elements
     $('.taskTitle, .taskText, .taskHours').editable({
         // Defining callback function to update task in database after in-place editing
@@ -44,7 +46,7 @@ Template.planBoardAssignees.rendered = function () {
     });
 
 
-    $("#backlog, .sprint").sortable({
+    $("#backlog ul, .sprint").sortable({
         stop: function (event, ui) {
             // Getting the element id and containing sprint's id (or a backlogItems container)
             var ownerId = ui.item.parent().attr("id");

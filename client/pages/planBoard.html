@@ -27,6 +27,9 @@
     <input type="hidden" id="projectId" ref={{project._id}}>
     <div id="sprints" class=".col-md-6">{{> planBoardSprintsList}}</div>
     <div id="backlog" class=".col-md-6" ref="0">
+    
+        {{> issuesListTmpl issues}}
+        
         {{#each issues}}
         <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>

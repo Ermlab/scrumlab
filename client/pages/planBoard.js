@@ -21,12 +21,16 @@ Template.planBoardAssignees.rendered = function () {
                 'issue_id': gitlabIssueId
             };
             if (updateField == 'estimation') {
-                updateObject.description = issue.gitlab.description + "\n\nTime estimation: " + newValue;
+                Issues.update(issueId, {
+                    $set: {
+                        estimation: newValue
+                    }
+                });
             } else {
                 updateObject[updateField] = newValue;
+                Meteor.call('editIssue', updateObject);
+                Meteor.call('refreshUserProjects');
             }
-            Meteor.call('editIssue', updateObject);
-            Meteor.call('refreshUserProjects');
         }
     });
     // Setting editable property to task elements
@@ -68,7 +72,7 @@ Template.planBoardAssignees.rendered = function () {
                     var data = Issues.find({
                         sprint: ownerId
                     }).fetch();
-                    while (data.length > 0) sum += parseInt(data.pop().time);
+                    while (data.length > 0) sum += parseInt(data.pop().estimation);
                     if (isNaN(sum)) sum = 0;
                     // Update the time estimation
                     Sprints.update(ownerId, {
@@ -94,9 +98,9 @@ Template.planBoardAssignees.rendered = function () {
                     var data = Issues.find({
                         sprint: previousOwnerId
                     }).fetch();
-                    while (data.length > 0) sum += parseInt(data.pop().time);
+                    while (data.length > 0) sum += parseInt(data.pop().estimation);
                     // Update the time estimation
-                    Issues.update(previousOwnerId, {
+                    Sprints.update(previousOwnerId, {
                         $set: {
                             time: sum
                         }
@@ -196,7 +200,7 @@ Template.planBoardSprintsList.helpers({
             }]
         }).fetch();
         var totalStories = estimated.length + unestimated.length;
-        var totalTime = _.reduce(_.pluck(estimated, 'estimate'), function (sum, val) {
+        var totalTime = _.reduce(_.pluck(estimated, 'estimation'), function (sum, val) {
             return sum + parseInt(val);
         }, 0);
         return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
@@ -236,7 +240,7 @@ Template.planBoardSprints.helpers({
             }]
         }).fetch();
         var totalStories = estimated.length + unestimated.length;
-        var totalTime = _.reduce(_.pluck(estimated, 'estimate'), function (sum, val) {
+        var totalTime = _.reduce(_.pluck(estimated, 'estimation'), function (sum, val) {
             return sum + parseInt(val);
         }, 0);
         return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';

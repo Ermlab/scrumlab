@@ -49,26 +49,26 @@ Server = {
             'title': issue.title,
             'description': issue.description,
             'assignee_id': issue.assignee_id,
-            'labels': 'story, #' + issue.estimation
+            'labels': 'story'
         };
-        
-        
+
+
         api.issues.create(issue.gitlabProjectId, gitlabIssue, function (glIssue) {
             Fiber(function () {
                 console.log("After creation of issue", glIssue);
 
 
-               /* var new_issue = {
+                /* var new_issue = {
                     'project_id': projectId, //mongo project_id
                     'gitlab': glIssue,
                     'origin': api.options.origin,
                     'estimation': issue.
                     'created_at': issue.created_at
                 };*/
-                
-                
-                var new_issue = BuildAnIssue(issue,glIssue);
-                
+
+
+                var new_issue = BuildAnIssue(issue, glIssue);
+
                 console.log('issue on server \n', new_issue);
 
                 return Issues.insert(new_issue);

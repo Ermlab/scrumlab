@@ -3,9 +3,11 @@ Template.workBoard.rendered = function () {
         stop: function (event, ui) {
             var selfId = ui.item.attr("id");
             var parentType = ui.item.parent().attr("id");
-            if (Issues.findOne({
+            var actualState = Issues.findOne({
                 _id: selfId
-            }).work_state != parentType) {
+            }).work_state;
+            if (actualState == undefined) actualState == 'unassigned';
+            if (actualState != parentType) {
                 Issues.update(selfId, {
                     $set: {
                         work_state: parentType
@@ -98,36 +100,82 @@ Template.workBoard.helpers({
         return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated) - ' + doneStories + ' stories closed (' + ~~(doneTime / totalTime * 100) + '% sprint completion)';
     },
     'boardStats': function (sprintId, type) {
-        var unestimated = Issues.find({
-            $and: [{
-                sprint: sprintId
+        if (type == 'unassigned') {
+            var unestimated = Issues.find({
+                $and: [{
+                    sprint: sprintId
             }, {
-                work_state: type
+                    $or: [{
+                        work_state: type
+                    }, {
+                        work_state: {
+                            $exists: false
+                        }
+                    }]
             }, {
-                $or: [{
+                    $or: [{
+                        estimation: {
+                            $exists: false
+                        }
+            }, {
+                        estimation: ''
+            }]
+            }]
+            }).fetch();
+            var estimated = Issues.find({
+                $and: [{
                     estimation: {
-                        $exists: false
+                        $exists: true
                     }
             }, {
-                    estimation: ''
+                    estimation: {
+                        $ne: ''
+                    }
+            }, {
+                    sprint: sprintId
+            }, {
+                    $or: [{
+                        work_state: type
+                    }, {
+                        work_state: {
+                            $exists: false
+                        }
+                    }]
+            }]
+            }).fetch();
+        } else {
+            var unestimated = Issues.find({
+                $and: [{
+                    sprint: sprintId
+            }, {
+                    work_state: type
+                }, {
+                    $or: [{
+                        estimation: {
+                            $exists: false
+                        }
+            }, {
+                        estimation: ''
             }]
             }]
-        }).fetch();
-        var estimated = Issues.find({
-            $and: [{
-                estimation: {
-                    $exists: true
-                }
+            }).fetch();
+            var estimated = Issues.find({
+                $and: [{
+                        estimation: {
+                            $exists: true
+                        }
             }, {
-                estimation: {
-                    $ne: ''
-                }
+                        estimation: {
+                            $ne: ''
+                        }
             }, {
-                sprint: sprintId
+                        sprint: sprintId
             }, {
-                work_state: type
-            }]
-        }).fetch();
+                        work_state: type
+                    }
+            ]
+            }).fetch();
+        }
         var totalStories = estimated.length + unestimated.length;
         var totalTime = _.reduce(_.pluck(estimated, 'estimation'), function (sum, val) {
             return sum + parseInt(val);

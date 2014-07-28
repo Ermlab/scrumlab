@@ -1,5 +1,4 @@
-Template.planBoardAssignees.rendered = function () {
-    $("#backlog").disableSelection();
+Template.planBoardSprintsInput.rendered = function () {
 
     // Setting default values for x-editable
     $.fn.editable.defaults.mode = 'inline';
@@ -45,7 +44,6 @@ Template.planBoardAssignees.rendered = function () {
             });
         }
     });
-
 
     $("#backlog, .sprint").sortable({
         stop: function (event, ui) {

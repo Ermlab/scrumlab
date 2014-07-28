@@ -107,7 +107,7 @@ Template.planBoardAssignees.rendered = function () {
             }
         },
         connectWith: "#backlog, .sprint",
-        cancel: ".sprintTimeMarker, .sprintInfo, .startButton"
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, #backlogFooter"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
@@ -167,6 +167,33 @@ Template.planBoardSprints.events = {
     }
 }
 
+UI.registerHelper('issuesStats', function () {
+    var unestimated = Issues.find({
+        $or: [{
+            estimation: {
+                $exists: false
+            }
+            }, {
+            estimate: ''
+            }]
+    }).fetch();
+    var estimated = Issues.find({
+        $and: [{
+            estimation: {
+                $exists: true
+            }
+            }, {
+            estimation: {
+                $ne: ''
+            }
+            }]
+    }).fetch();
+    var totalStories = estimated.length + unestimated.length;
+    var totalTime = _.reduce(_.pluck(estimated, 'estimate'), function (sum, val) {
+        return sum + parseInt(val);
+    }, 0);
+    return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
+})
 
 Template.planBoardAssignees.assignees = function () {
     return Meteor.users.find().fetch();

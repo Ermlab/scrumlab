@@ -6,14 +6,7 @@
         <h1>{{gitlab.name}} - Plan your work</h1>
     </div>
 
-    {{/with}}
-
-
-    {{> addIssueTmpl}} 
-
-  
-    
-    {{> planBoardSprints}}
+    {{/with}} {{> addIssueTmpl}} {{> planBoardSprints}}
 </template>
 
 
@@ -76,7 +69,7 @@
         <button type="button" class="startButton" id={{_id}}>Start
         </button>
         {{#each assignedItems _id}}
-        <div class="story" id={{_id}} ref={{gitlab.title}} objectType="issue">
+        <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>

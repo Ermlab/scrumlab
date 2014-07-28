@@ -85,33 +85,7 @@ Template.projectSprints.rendered = function () {
     $("#datepicker").datepicker();
 }
 
-UI.registerHelper('issuesStats', function () {
-    var unestimated = Issues.find({
-        $or: [{
-            estimate: {
-                $exists: false
-            }
-            }, {
-            estimate: ''
-            }]
-    }).fetch();
-    var estimated = Issues.find({
-        $and: [{
-            estimate: {
-                $exists: true
-            }
-            }, {
-            estimate: {
-                $ne: ''
-            }
-            }]
-    }).fetch();
-    var totalStories = estimated.length + unestimated.length;
-    var totalTime = _.reduce(_.pluck(estimated, 'estimate'), function (sum, val) {
-        return sum + parseInt(val);
-    }, 0);
-    return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
-})
+
 
 Template.projectSprintsList.assignedItems = function (ownerId) {
     return Issues.find({

@@ -27,19 +27,16 @@
 .storyText {
     margin: 10px;
     clear: both;
- 
 }
 .storyHours {
-    
-    float: right;
-    margin: 5px;
-    width: auto;
-    text-align: right;
-    height: 40px;
-    font-size: 30px;
+    /*    float:right;
+    margin:5px;
+    width:auto;
+    text-align:right;
+    height:40px;
+    font-size:30px;*/
 }
 .storyAssignee {
-   
     right: 10px;
     bottom: 5px;
     width: auto;
@@ -106,6 +103,15 @@
 .deleteButton {
     height: 16px;
     width: 16px;
-    background-image: url('delete.png');
-    float: right;
+    color: #F3E9E8
+}
+.right_icons {
+    width: 16px;
+    opacity: 0.5;
+}
+div.story:hover .right_icons {
+    opacity: 1;
+}
+div.story:hover {
+    background-color: #fafafa;
 }

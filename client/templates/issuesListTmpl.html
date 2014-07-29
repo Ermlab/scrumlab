@@ -1,20 +1,46 @@
 <template name="issuesListTmpl">
-    <h2>Issues</h2>
 
-    <ul class="list-group">
-        {{#each this}}
-        <li class="list-group-item">
 
-            {{> issueItem }}
+    {{#each this}} {{> issueItem }} {{/each}}
 
-        </li>
-        {{/each}}
 
-    </ul>
 </template>
 
 
 
+
+
+
+<template name="issueItem">
+
+
+    <div style="border-radius:0px; border-left: 4px #49bf67 solid; padding:10px; min-height:50px;margin:5px 1px" id={{_id}} ref={{sprint}} objectType="issue" class="story list-group-item state_{{gitlab.state}}">
+
+
+        <div style="width: 16px" class="pull-right">
+            <span class="deleteButton glyphicon glyphicon-remove"></span>
+            <span class="glyphicon glyphicon-th"></span>
+
+        </div>
+
+
+        <span class="label label-warning pull-left" style="backgroupnd-color:#f0ad4e;font-size:150%">{{estimation}}</span>
+        <h4 class="list-group-item-heading" style="color:#444;margin:0px 15px 0px 50px">
+            
+                {{gitlab.title}} </h4>
+
+
+        <p ref="description" data-type="textarea" class="list-group-item-text" style="display:none">{{gitlab.description}}</p>
+
+    </div>
+
+
+
+</template>
+
+
+
+<!--
 <template name="issueItem">
 
     
@@ -42,7 +68,7 @@
     </div>
     
 
-</template>
+</template>-->
 
 <!--
 <template name="issueItem">

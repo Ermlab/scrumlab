@@ -124,14 +124,14 @@ Template.planBoardSprints.events = {
         var parentId = event.currentTarget.parentElement.getAttribute("id");
         var parentTitle = event.currentTarget.parentElement.getAttribute("ref");
         if (parentType == 'issue') {
-            var choice = confirm('Confirm deletion of issue: ' + parentTitle);
+            var choice = confirm('Confirm deletion of issue: ' + parentId);
             if (choice == true) {
                 Issues.remove({
                     _id: parentId
                 });
             }
         } else if (parentType = 'task') {
-            var choice = confirm('Confirm deletion of task: ' + parentTitle);
+            var choice = confirm('Confirm deletion of task: ' + parentId);
             if (choice == true) {
                 Tasks.remove({
                     _id: parentId

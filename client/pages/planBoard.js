@@ -1,5 +1,4 @@
 Template.planBoardSprintsInput.rendered = function () {
-
     // Setting default values for x-editable
     $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.emptytext = '(...)';
@@ -65,50 +64,21 @@ Template.planBoardSprintsInput.rendered = function () {
                             sprint: ownerId
                         }
                     });
-                    // Recalculate the time estimation of a sprint 
-                    var sum = 0;
-                    var data = Issues.find({
-                        sprint: ownerId
-                    }).fetch();
-                    while (data.length > 0) sum += parseInt(data.pop().estimation);
-                    if (isNaN(sum)) sum = 0;
-                    // Update the time estimation
-                    Sprints.update(ownerId, {
-                        $set: {
-                            time: sum
-                        }
-                    });
                 } else {
-                    // If ownerId = 0, the field sprint is removed, resulting in element being unassigned
-                    // no time estimation recalculation needed
+                    // If ownerId = 0, the field sprint is removed
+                    // resulting in element becoming unassigned
                     Issues.update(selfId, {
                         $unset: {
                             sprint: ""
                         }
                     });
                 }
-                // Get previous owner id to allow time estimation recalculation
-                var previousOwnerId = ui.item.attr("ref");
-                // Check if previous owner is actually a sprint
-                if (previousOwnerId != 0) {
-                    // Recalculate the time estimation of a sprint 
-                    var sum = 0;
-                    var data = Issues.find({
-                        sprint: previousOwnerId
-                    }).fetch();
-                    while (data.length > 0) sum += parseInt(data.pop().estimation);
-                    // Update the time estimation
-                    Sprints.update(previousOwnerId, {
-                        $set: {
-                            time: sum
-                        }
-                    });
-                }
-                // Getting rid of duplicated ui item
+                // Getting rid of the duplicated ui item
                 ui.item.remove();
             }
         },
         connectWith: "#backlog, .sprint",
+        // Elements to exclude from sortable list
         cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter"
     }).disableSelection();
     // Setting datepicker property for easy date selection
@@ -321,7 +291,6 @@ Template.planBoardSprintsInput.events = {
             name: name.value,
             endDate: date.value,
             project_id: projectId,
-            time: '0',
             status: 'ready'
         });
         name.value = '';

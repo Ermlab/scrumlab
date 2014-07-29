@@ -1,0 +1,41 @@
+<template name="issueItemTmpl">
+
+<div class="story" id={{_id}} ref={{sprint}} objectType="issue">
+            
+            <p class="deleteButton"></p>
+            <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
+            <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
+            
+            <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
+            <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
+            
+            <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
+            
+            <div>
+                <details>
+                    <summary>Tasks</summary>
+                    {{#each tasks _id}}
+                    <div class="task" id={{_id}} ref={{name}} objectType="task">
+                        <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
+                        <p class="taskHours" ref="estimation" data-type="text">{{estimation}}</p>
+                        <p class="taskText" ref="description" data-type="textarea">{{description}}</p>
+                        <p class="taskAssignee" ref="assignee" data-type="text">Assigned to: {{assignee}}</p>
+                        <p class="deleteButton"></p>
+                    </div>
+                    {{/each}}
+                    <details class="addTask">
+                        <summary>Add task</summary>
+                        <input type="text" class="tName" style="width: 95%" placeholder="Name" />
+                        <br/>
+                        <input type="text" class="tDescription" style="width: 95%" placeholder="Description" />
+                        <br/>Estimated time:
+                        <input type="number" class="tTime" style="width: 10%" />
+                        <br/>Assigned to:
+                        <select class="tAssigneeSelector" style="width: 30%">{{> planBoardAssignees}}</select>
+                        <input type="button" class="insertTask" value="Dodaj" style="float: right" />
+                    </details>
+                </details>
+            </div>
+        </div>
+    
+    </template>

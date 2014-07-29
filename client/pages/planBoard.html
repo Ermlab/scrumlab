@@ -39,13 +39,16 @@
         <button type="button" class="stopButton" id={{_id}}>Stop
         </button>
         {{#each assignedItems _id}}
-        <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
+        
+        
+        {{> issueItemTmpl}}
+       <!-- <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
             <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
             <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
-        </div>
+        </div>-->
         {{/each}}
         <p class="sprintsFooter">{{sprintsStats _id}}</p>
     </div>

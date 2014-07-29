@@ -46,7 +46,7 @@ Template.planBoardAssignees.rendered = function () {
     });
 
 
-    $("#backlog ul, .sprint").sortable({
+    $("#backlog, .sprint").sortable({
         stop: function (event, ui) {
             // Getting the element id and containing sprint's id (or a backlogItems container)
             var ownerId = ui.item.parent().attr("id");

@@ -1,0 +1,64 @@
+<template name="issuesListTmpl">
+    <h2>Issues</h2>
+
+    <ul class="list-group">
+        {{#each this}}
+        <li class="list-group-item">
+
+            {{> issueItem }}
+
+        </li>
+        {{/each}}
+
+    </ul>
+</template>
+
+
+
+<template name="issueItem">
+
+    
+    <div style="border-radius:0px; border-left: 4px green solid" id={{_id}} ref={{sprint}} objectType="issue" class="panel panel-default  state_{{gitlab.state}}">
+       
+        <div class="panel-heading">
+            <span class="badge pull-right" style="font-size:18px">{{estimation}}</span>
+            <h3 class="panel-title" ref="title" data-type="text">
+                <span class="badge pull-right" style="font-size:18px">{{estimation}}</span>
+                {{gitlab.title}} 
+              </h3>
+            
+        </div>
+
+        <div class="panel-body" style="display:none">
+            <p ref="description" data-type="textarea">{{gitlab.description}}</p>
+        </div>
+        
+        <div class="progress" style="display:none;height:5px; margin-bottom:0px; padding-bottom:0px">
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+            <span class="sr-only">60% Complete</span>
+        </div>
+    </div>
+        
+    </div>
+    
+
+</template>
+
+<!--
+<template name="issueItem">
+
+    <span class="badge" style="font-size:18px">{{estimation}}</span>
+    <div id={{_id}} ref={{sprint}} objectType="issue" class="state_{{gitlab.state}}">
+        
+        <h3 ref="title" data-type="text">{{gitlab.title}} </h3>
+        <p ref="description" data-type="textarea">{{gitlab.description}}</p>
+
+    </div>
+    <div class="progress" style="height:5px">
+        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+            <span class="sr-only">60% Complete</span>
+        </div>
+    </div>
+
+</template>
+-->

@@ -7,7 +7,6 @@ var Future = Npm.require('fibers/future');
 
 
 
-
 // Serverside functions
 Server = {
     getGitlabApi: function (options) {
@@ -49,26 +48,26 @@ Server = {
             'title': issue.title,
             'description': issue.description,
             'assignee_id': issue.assignee_id,
-            'labels': 'story, #' + issue.estimation
+            'labels': 'story'
         };
-        
-        
+
+
         api.issues.create(issue.gitlabProjectId, gitlabIssue, function (glIssue) {
             Fiber(function () {
                 console.log("After creation of issue", glIssue);
 
 
-               /* var new_issue = {
+                /* var new_issue = {
                     'project_id': projectId, //mongo project_id
                     'gitlab': glIssue,
                     'origin': api.options.origin,
                     'estimation': issue.
                     'created_at': issue.created_at
                 };*/
-                
-                
-                var new_issue = BuildAnIssue(issue,glIssue);
-                
+
+
+                var new_issue = BuildAnIssue(issue, glIssue);
+
                 console.log('issue on server \n', new_issue);
 
                 return Issues.insert(new_issue);
@@ -391,6 +390,7 @@ Server = {
         }); //end api
 
     } //end func
+
 };
 
 Meteor.startup(function () {
@@ -415,6 +415,33 @@ Meteor.startup(function () {
     });
 
 
+    // Set schedule to check if sprint has ended
+    // Schedule to fire every day at 1:00 am
+    // parser.text('at 1:00 am');
+    // Schedule to fire every 10 seconds
+    // parser.recur().every(10).second();
+    SyncedCron.add({
+        name: 'Sprint ending schedule',
+        schedule: function (parser) {
+            // parser is a later.parse object
+            return parser.text('at 1:00 am');
+        },
+        job: function () {
+            var sprints = Sprints.find({
+                status: 'in progress'
+            }).fetch();
+            _.each(sprints, function (spr) {
+                if (CheckDate(spr.endDate) == false) {
+                    Sprints.update(spr._id, {
+                        $set: {
+                            'status': 'finished'
+                        }
+                    });
+                }
+            });
+        }
+    });
+    SyncedCron.start();
 });
 
 Accounts.registerLoginHandler(function (loginRequest) {

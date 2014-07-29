@@ -5,6 +5,7 @@
     "iron-router-active": {},
     "x-editable-bootstrap": {},
     "jquery-ui": {},
-    "spin": {}
+    "spin": {},
+    "synced-cron": {}
   }
 }

@@ -268,8 +268,8 @@ Template.planBoardSprintsList.assignedItems = function (ownerId) {
 Template.planBoardSprintsList.events = {
     'click .startButton': function (event) {
         // Check if current user is the owner of the project
-        var ownerId = document.getElementById("ownerId").getAttribute("ref");
-        if (Meteor.user().gitlab.id == ownerId) {
+        var projectId = document.getElementById("projectId").getAttribute("ref");
+        if (CheckIfOwner(projectId)) {
             // Get selected sprint data
             var parentId = event.currentTarget.parentElement.getAttribute("id");
             var sprint = Sprints.findOne({
@@ -293,8 +293,8 @@ Template.planBoardSprintsList.events = {
     },
     'click .stopButton': function (event) {
         // Check if current user is the owner of the project
-        var ownerId = document.getElementById("ownerId").getAttribute("ref");
-        if (Meteor.user().gitlab.id == ownerId) {
+        var projectId = document.getElementById("projectId").getAttribute("ref");
+        if (CheckIfOwner(projectId)) {
             // Get selected sprint data
             var parentId = event.currentTarget.parentElement.getAttribute("id");
             var sprint = Sprints.findOne({
@@ -308,7 +308,7 @@ Template.planBoardSprintsList.events = {
                     }
                 });
             };
-        } else alert('Only owner can start a sprint');
+        } else alert('Only owner can stop a sprint');
     },
 }
 

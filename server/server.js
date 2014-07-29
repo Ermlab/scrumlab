@@ -163,9 +163,9 @@ Server = {
                         console.log("from gitlab \n",users[i]);*/
 
 
-                        //we extends existed user by the new information which comes from gitlab
+                        //we extend existed user by the new information which comes from gitlab
                         //the fields in existing user are overwritten by the gitlab users[i], fields
-                        //that didn't appear in gitlab user object stays untouch
+                        //that didn't appear in gitlab user object stay untouched
                         var usrUpdated = _.extend(existingUser.gitlab, users[i]);
 
                         //console.log("merged \n",usrUpdated);
@@ -204,6 +204,7 @@ Server = {
         api.projects.all(function (projects) {
             var allProjectIds = [];
             Fiber(function () {
+                console.log('Projects: ' + projects.length);
                 for (var i = 0; i < projects.length; i++) {
                     // Check if project already exists, then update or insert
                     var existingProject = Projects.findOne({
@@ -351,44 +352,82 @@ Server = {
         var project = Projects.findOne(projectId);
 
         if (!project)
-            throw new Error("Project with id=" + projectId + " not exists, so I cant find its members");
+            throw new Error("Project with id=" + projectId + " does not exist, so I cant find its members");
+        if (project.gitlab.owner != undefined) {
+            // If project has an owner list of members is taken from project members
+            api.projects.members.list(project.gitlab.id, function (members) {
 
-        api.projects.members.list(project.gitlab.id, function (members) {
+                //async code which updates collections have to run in Fiber
+                Fiber(function () {
 
-            //async code which updates collections have to run in Fiber
-            Fiber(function () {
-
-                //choose from the array of objects (members) only member id (gitlab id)
-                var usersGlIds = _.pluck(members, 'id');
+                    //choose from the array of objects (members) only member id (gitlab id)
+                    var usersGlIds = _.pluck(members, 'id');
 
 
-                //update project collection, add members id to member_ids array
+                    //update project collection, add members id to member_ids array
 
-                var usersMongoIds = Meteor.users.find({
-                    'gitlab.id': {
-                        $in: usersGlIds
-                    },
-                    'origin': project.origin
-                }, {
-                    fields: {
-                        'origin': 1
-                    }
-                }).fetch();
+                    var usersMongoIds = Meteor.users.find({
+                        'gitlab.id': {
+                            $in: usersGlIds
+                        },
+                        'origin': project.origin
+                    }, {
+                        fields: {
+                            'origin': 1
+                        }
+                    }).fetch();
 
-                //choose from the array of objects (users) only mongo user id
-                usersMongoIds = _.pluck(usersMongoIds, '_id');
+                    //choose from the array of objects (users) only mongo user id
+                    usersMongoIds = _.pluck(usersMongoIds, '_id');
 
-                Projects.update(project._id, {
-                    $set: {
-                        'member_ids': usersMongoIds
-                    }
-                });
+                    Projects.update(project._id, {
+                        $set: {
+                            'member_ids': usersMongoIds
+                        }
+                    });
 
-                console.log('mongo---', usersMongoIds);
-            }).run();
+                    console.log('mongo---', usersMongoIds);
+                }).run();
 
-        }); //end api
+            }); //end api
 
+        } else {
+            // If project has no owner list of members is taken only from the group
+            api.groups.listMembers(project.gitlab.namespace.id, function (members) {
+
+                //async code which updates collections have to run in Fiber
+                Fiber(function () {
+                    //choose from the array of objects (members) only member id (gitlab id)
+                    var usersGlIds = _.pluck(members, 'id');
+
+
+                    //update project collection, add members id to member_ids array
+
+                    var usersMongoIds = Meteor.users.find({
+                        'gitlab.id': {
+                            $in: usersGlIds
+                        },
+                        'origin': project.origin
+                    }, {
+                        fields: {
+                            'origin': 1
+                        }
+                    }).fetch();
+
+                    //choose from the array of objects (users) only mongo user id
+                    usersMongoIds = _.pluck(usersMongoIds, '_id');
+
+                    Projects.update(project._id, {
+                        $set: {
+                            'member_ids': usersMongoIds
+                        }
+                    });
+
+                    console.log('mongo---', usersMongoIds);
+                }).run();
+
+            }); //end api
+        }
     } //end func
 
 };
@@ -411,7 +450,7 @@ Meteor.startup(function () {
         server.origin = server._id;
         var api = Server.getGitlabApi(server);
         Server.fetchUsers(api);
-        //Server.fetchProjects(api);
+        Server.fetchProjects(api);
     });
 
 

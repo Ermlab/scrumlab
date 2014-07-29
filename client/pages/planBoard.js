@@ -79,7 +79,7 @@ Template.planBoardSprintsInput.rendered = function () {
         },
         connectWith: "#backlog, .sprint",
         // Elements to exclude from sortable list
-        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter"
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter, .addTask"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();

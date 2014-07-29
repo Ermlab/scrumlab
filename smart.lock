@@ -7,7 +7,8 @@
       "iron-router-active": {},
       "x-editable-bootstrap": {},
       "jquery-ui": {},
-      "spin": {}
+      "spin": {},
+      "synced-cron": {}
     },
     "packages": {
       "iron-router": {
@@ -39,6 +40,11 @@
         "git": "https://github.com/SachaG/meteor-spin.git",
         "tag": "v2.0.3",
         "commit": "23c1145472a710d5c93fa4beaca4e576caeb2f24"
+      },
+      "synced-cron": {
+        "git": "https://github.com/percolatestudio/meteor-synced-cron.git",
+        "tag": "v0.1.1",
+        "commit": "c731ab04e7bf2b0aa7a7e3c4f4750c8c648b791d"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",

@@ -1,19 +1,10 @@
 <template name="planBoard">
-
-
     {{#with project}}
     <div class="page-header">
         <h1>{{gitlab.name}} - Plan your work</h1>
+        <input type="hidden" id="projectId" ref={{_id}}>
     </div>
-
-    {{/with}}
-
-
-    {{> addIssueTmpl}} 
-
-  
-    
-    {{> planBoardSprints}}
+    {{/with}} {{> addIssueTmpl}} {{> planBoardSprints}}
 </template>
 
 
@@ -24,7 +15,6 @@
 </template>
 
 <template name="planBoardSprints">
-    <input type="hidden" id="projectId" ref={{project._id}}>
     <div id="sprints" class=".col-md-6">{{> planBoardSprintsList}}</div>
     <div id="backlog" class=".col-md-6" ref="0">
         {{#each issues}}
@@ -75,8 +65,10 @@
         </div>
         <button type="button" class="startButton" id={{_id}}>Start
         </button>
+        <button type="button" class="stopButton" id={{_id}}>Stop
+        </button>
         {{#each assignedItems _id}}
-        <div class="story" id={{_id}} ref={{gitlab.title}} objectType="issue">
+        <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
@@ -84,6 +76,7 @@
             <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
         </div>
         {{/each}}
+        <p class="sprintsFooter">{{sprintsStats _id}}</p>
     </div>
     {{/each}} {{> planBoardSprintsInput}}
 </template>

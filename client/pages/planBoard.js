@@ -1,7 +1,4 @@
-
-Template.planBoardAssignees.rendered = function () {
-    $("#backlog").disableSelection();
-
+Template.planBoardSprintsInput.rendered = function () {
     // Setting default values for x-editable
     $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.emptytext = '(...)';
@@ -22,12 +19,16 @@ Template.planBoardAssignees.rendered = function () {
                 'issue_id': gitlabIssueId
             };
             if (updateField == 'estimation') {
-                updateObject.description = issue.gitlab.description + "\n\nTime estimation: " + newValue;
+                Issues.update(issueId, {
+                    $set: {
+                        estimation: newValue
+                    }
+                });
             } else {
                 updateObject[updateField] = newValue;
+                Meteor.call('editIssue', updateObject);
+                Meteor.call('refreshUserProjects');
             }
-            Meteor.call('editIssue', updateObject);
-            Meteor.call('refreshUserProjects');
         }
     });
     // Setting editable property to task elements
@@ -42,7 +43,6 @@ Template.planBoardAssignees.rendered = function () {
             });
         }
     });
-
 
     $("#backlog, .sprint").sortable({
         stop: function (event, ui) {
@@ -64,51 +64,22 @@ Template.planBoardAssignees.rendered = function () {
                             sprint: ownerId
                         }
                     });
-                    // Recalculate the time estimation of a sprint 
-                    var sum = 0;
-                    var data = Issues.find({
-                        sprint: ownerId
-                    }).fetch();
-                    while (data.length > 0) sum += parseInt(data.pop().time);
-                    if (isNaN(sum)) sum = 0;
-                    // Update the time estimation
-                    Sprints.update(ownerId, {
-                        $set: {
-                            time: sum
-                        }
-                    });
                 } else {
-                    // If ownerId = 0, the field sprint is removed, resulting in element being unassigned
-                    // no time estimation recalculation needed
+                    // If ownerId = 0, the field sprint is removed
+                    // resulting in element becoming unassigned
                     Issues.update(selfId, {
                         $unset: {
                             sprint: ""
                         }
                     });
                 }
-                // Get previous owner id to allow time estimation recalculation
-                var previousOwnerId = ui.item.attr("ref");
-                // Check if previous owner is actually a sprint
-                if (previousOwnerId != 0) {
-                    // Recalculate the time estimation of a sprint 
-                    var sum = 0;
-                    var data = Issues.find({
-                        sprint: previousOwnerId
-                    }).fetch();
-                    while (data.length > 0) sum += parseInt(data.pop().time);
-                    // Update the time estimation
-                    Issues.update(previousOwnerId, {
-                        $set: {
-                            time: sum
-                        }
-                    });
-                }
-                // Getting rid of duplicated ui item
+                // Getting rid of the duplicated ui item
                 ui.item.remove();
             }
         },
         connectWith: "#backlog, .sprint",
-        cancel: ".sprintTimeMarker, .sprintInfo, .startButton"
+        // Elements to exclude from sortable list
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
@@ -168,6 +139,81 @@ Template.planBoardSprints.events = {
     }
 }
 
+Template.planBoardSprintsList.helpers({
+    'sprintsStats': function (sprint_id) {
+        var unestimated = Issues.find({
+            $and: [{
+                sprint: sprint_id
+            }, {
+                $or: [{
+                    estimation: {
+                        $exists: false
+                    }
+            }, {
+                    estimation: ''
+            }]
+            }]
+        }).fetch();
+        var estimated = Issues.find({
+            $and: [{
+                estimation: {
+                    $exists: true
+                }
+            }, {
+                estimation: {
+                    $ne: ''
+                }
+            }, {
+                sprint: sprint_id
+            }]
+        }).fetch();
+        var totalStories = estimated.length + unestimated.length;
+        var totalTime = _.reduce(_.pluck(estimated, 'estimation'), function (sum, val) {
+            return sum + parseInt(val);
+        }, 0);
+        return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
+    }
+});
+
+Template.planBoardSprints.helpers({
+    'issuesStats': function () {
+        var unestimated = Issues.find({
+            $and: [{
+                sprint: {
+                    $exists: false
+                }
+            }, {
+                $or: [{
+                    estimation: {
+                        $exists: false
+                    }
+            }, {
+                    estimation: ''
+            }]
+            }]
+        }).fetch();
+        var estimated = Issues.find({
+            $and: [{
+                estimation: {
+                    $exists: true
+                }
+            }, {
+                estimation: {
+                    $ne: ''
+                }
+            }, {
+                sprint: {
+                    $exists: false
+                }
+            }]
+        }).fetch();
+        var totalStories = estimated.length + unestimated.length;
+        var totalTime = _.reduce(_.pluck(estimated, 'estimation'), function (sum, val) {
+            return sum + parseInt(val);
+        }, 0);
+        return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
+    }
+});
 
 Template.planBoardAssignees.assignees = function () {
     return Meteor.users.find().fetch();
@@ -191,26 +237,49 @@ Template.planBoardSprintsList.assignedItems = function (ownerId) {
 
 Template.planBoardSprintsList.events = {
     'click .startButton': function (event) {
-        // Get selected sprint data
-        var parentId = event.currentTarget.parentElement.getAttribute("id");
-        var sprint = Sprints.findOne({
-            _id: parentId
-        });
-        // Check if sprint is ready to start
-        if (sprint.status == 'ready') {
-            // Check if sprint is not overdue already
-            var finish = sprint.endDate;
-            if (CheckDate(sprint.endDate) == true) {
-                // Update sprint status
+        // Check if current user is the owner of the project
+        var projectId = document.getElementById("projectId").getAttribute("ref");
+        if (CheckIfOwner(projectId)) {
+            // Get selected sprint data
+            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var sprint = Sprints.findOne({
+                _id: parentId
+            });
+            // Check if sprint is ready to start
+            if (sprint.status == 'ready') {
+                // Check if sprint is not overdue already
+                var finish = sprint.endDate;
+                if (CheckDate(sprint.endDate) == true) {
+                    // Update sprint status
+                    Sprints.update(parentId, {
+                        $set: {
+                            status: 'in progress'
+                        }
+                    });
+                } else alert('Sprint is already overdue.');
+            } else if (sprint.status == 'in progress') alert('Sprint already in progress');
+            else if (sprint.status == 'closed') alert('This sprint has already finished');
+        } else alert('Only owner can start a sprint');
+    },
+    'click .stopButton': function (event) {
+        // Check if current user is the owner of the project
+        var projectId = document.getElementById("projectId").getAttribute("ref");
+        if (CheckIfOwner(projectId)) {
+            // Get selected sprint data
+            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var sprint = Sprints.findOne({
+                _id: parentId
+            });
+            // Check if sprint is in progress
+            if (sprint.status == 'in progress') {
                 Sprints.update(parentId, {
                     $set: {
-                        status: 'in progress'
+                        status: 'ready'
                     }
                 });
-            } else alert('Sprint is already overdue.');
-        } else if (sprint.status == 'in progress') alert('Sprint already in progress');
-        else if (sprint.status == 'closed') alert('This sprint has already finished');
-    }
+            };
+        } else alert('Only owner can stop a sprint');
+    },
 }
 
 Template.planBoardSprintsInput.events = {
@@ -222,7 +291,6 @@ Template.planBoardSprintsInput.events = {
             name: name.value,
             endDate: date.value,
             project_id: projectId,
-            time: '0',
             status: 'ready'
         });
         name.value = '';

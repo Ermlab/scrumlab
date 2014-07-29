@@ -1,11 +1,10 @@
 <template name="planBoard">
-
-
     {{#with project}}
     <div class="page-header">
         <h1>{{gitlab.name}} - Plan your work</h1>
+        <input type="hidden" id="ownerId" ref={{gitlab.owner.id}}>
+        <input type="hidden" id="projectId" ref={{_id}}>
     </div>
-
     {{/with}} {{> addIssueTmpl}} {{> planBoardSprints}}
 </template>
 
@@ -17,7 +16,6 @@
 </template>
 
 <template name="planBoardSprints">
-    <input type="hidden" id="projectId" ref={{project._id}}>
     <div id="sprints" class=".col-md-6">{{> planBoardSprintsList}}</div>
     <div id="backlog" class=".col-md-6" ref="0">
         {{#each issues}}

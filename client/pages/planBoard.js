@@ -267,40 +267,48 @@ Template.planBoardSprintsList.assignedItems = function (ownerId) {
 
 Template.planBoardSprintsList.events = {
     'click .startButton': function (event) {
-        // Get selected sprint data
-        var parentId = event.currentTarget.parentElement.getAttribute("id");
-        var sprint = Sprints.findOne({
-            _id: parentId
-        });
-        // Check if sprint is ready to start
-        if (sprint.status == 'ready') {
-            // Check if sprint is not overdue already
-            var finish = sprint.endDate;
-            if (CheckDate(sprint.endDate) == true) {
-                // Update sprint status
-                Sprints.update(parentId, {
-                    $set: {
-                        status: 'in progress'
-                    }
-                });
-            } else alert('Sprint is already overdue.');
-        } else if (sprint.status == 'in progress') alert('Sprint already in progress');
-        else if (sprint.status == 'closed') alert('This sprint has already finished');
+        // Check if current user is the owner of the project
+        var ownerId = document.getElementById("ownerId").getAttribute("ref");
+        if (Meteor.user().gitlab.id == ownerId) {
+            // Get selected sprint data
+            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var sprint = Sprints.findOne({
+                _id: parentId
+            });
+            // Check if sprint is ready to start
+            if (sprint.status == 'ready') {
+                // Check if sprint is not overdue already
+                var finish = sprint.endDate;
+                if (CheckDate(sprint.endDate) == true) {
+                    // Update sprint status
+                    Sprints.update(parentId, {
+                        $set: {
+                            status: 'in progress'
+                        }
+                    });
+                } else alert('Sprint is already overdue.');
+            } else if (sprint.status == 'in progress') alert('Sprint already in progress');
+            else if (sprint.status == 'closed') alert('This sprint has already finished');
+        } else alert('Only owner can start a sprint');
     },
     'click .stopButton': function (event) {
-        // Get selected sprint data
-        var parentId = event.currentTarget.parentElement.getAttribute("id");
-        var sprint = Sprints.findOne({
-            _id: parentId
-        });
-        // Check if sprint is in progress
-        if (sprint.status == 'in progress') {
-            Sprints.update(parentId, {
-                $set: {
-                    status: 'ready'
-                }
+        // Check if current user is the owner of the project
+        var ownerId = document.getElementById("ownerId").getAttribute("ref");
+        if (Meteor.user().gitlab.id == ownerId) {
+            // Get selected sprint data
+            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var sprint = Sprints.findOne({
+                _id: parentId
             });
-        };
+            // Check if sprint is in progress
+            if (sprint.status == 'in progress') {
+                Sprints.update(parentId, {
+                    $set: {
+                        status: 'ready'
+                    }
+                });
+            };
+        } else alert('Only owner can start a sprint');
     },
 }
 

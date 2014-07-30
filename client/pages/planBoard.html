@@ -9,34 +9,43 @@
 
 
 <template name="planBoardSprints">
-    <div id="sprints" class=".col-md-6">{{> planBoardSprintsList}}</div>
-    <div id="backlog" class=".col-md-6 list-group" ref="0">
-        {{> issuesListTmpl issues}}
-        <p id="backlogFooter">{{issuesStats}}</p>
+    <div class="row">
+        <div id="backlog" class="col-md-6">
+            {{> issuesListTmpl issues}}
+            <p id="backlogFooter">{{issuesStats}}</p>
+        </div>
+        <div id="sprints" class="col-md-6 list-group">
+            {{> planBoardSprintsList}}
+        </div>
     </div>
 </template>
 
-
+<!-- To jest ten po prawej -->
 <template name="planBoardSprintsList">
+
     {{#each sprints}}
-    <div class="sprint" id={{_id}} ref={{time}}>
-        <div class="sprintInfo"><b>{{name}}</b> End date: {{endDate}} Status: {{status}}
-            <div class="sprintTimeMarker">{{time}}</div>
+    <div class="alert alert-dismissable alert-warning">
+
+        <div>
+            <span class="label label-success">Status: {{status}}</span>
+
+            <span class="label label-warning">Ramaing ( 7 ) days</span>
+
+            <span class="label label-primary">End date: {{endDate}}</span>
+
+            <span class="text-right" style="float:right;">
+                <button type="button" class="btn btn-success btn-sm">Start this sprint</button>
+            </span>
+
         </div>
-        <button type="button" class="startButton" id={{_id}}>Start
-        </button>
-        <button type="button" class="stopButton" id={{_id}}>Stop
-        </button>
-        {{#each assignedItems _id}} {{> issueItemTmpl}}
-        <!-- <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
-            <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
-            <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
-            <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-            <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
-            <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
-        </div>-->
-        {{/each}}
-        <p class="sprintsFooter">{{sprintsStats _id}}</p>
+
+        <div class="well well-sm text-left" style="margin-top:8px;">
+            <h5><Strong>{{name}}</Strong></h5>
+        </div>
+
+        <div class="sprint" id={{_id}} style="min-height: 15px">
+            {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
+        </div>
     </div>
     {{/each}} {{> planBoardSprintsInput}}
 </template>

@@ -14,22 +14,6 @@
     border-width: 1px;
     border-color: lightgray;
 }
-#backlog {
-    width: 49%;
-    float: left;
-    border-style: solid;
-    border-width: 1px;
-    border-color: lightgray;
-    min-height: 100%;
-}
-#sprints {
-    width: 49%;
-    float: right;
-    border-style: solid;
-    border-width: 1px;
-    border-color: lightgray;
-    min-height: 100%;
-}
 #addItem {
     width: auto;
     margin: 5px;
@@ -60,14 +44,6 @@
     margin-left: 3%;
     border-radius: 5px;
     min-height: 100px;
-}
-.sprint {
-    width: 100%;
-    border-radius: 5px;
-    background: #dcf2b2;
-    padding: 10px;
-    margin: 10px;
-    position: relative;
 }
 .sprintClosed {
     width: 100%;

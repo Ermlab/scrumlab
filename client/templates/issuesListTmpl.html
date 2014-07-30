@@ -19,12 +19,12 @@
 
         <div style="width: 16px" class="pull-right">
             <span class="deleteButton glyphicon glyphicon-remove"></span>
-            <span class="glyphicon glyphicon-th"></span>
+            <span class="glyphicon glyphicon-th-list"></span>
 
         </div>
 
 
-        <span class="label label-warning pull-left" style="backgroupnd-color:#f0ad4e;font-size:150%">{{estimation}}</span>
+        <span class="label label-warning pull-left" style="background-color:#f0ad4e;font-size:150%">{{#if estimation}}{{estimation}}{{else}}<span class="glyphicon glyphicon-time" style="width: 16px; height: 16px; margin-left: -4px"></span>{{/if}}</span>
         <h4 class="list-group-item-heading" style="color:#444;margin:0px 15px 0px 50px">
             
                 {{gitlab.title}} </h4>

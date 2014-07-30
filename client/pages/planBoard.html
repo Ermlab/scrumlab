@@ -8,18 +8,10 @@
 </template>
 
 
-<template name="planBoardAssignees">
-    {{#each assignees}}
-    <option value={{_id}}>{{username}}</option>
-    {{/each}}
-</template>
-
 <template name="planBoardSprints">
     <div id="sprints" class=".col-md-6">{{> planBoardSprintsList}}</div>
     <div id="backlog" class=".col-md-6 list-group" ref="0">
-
-
-        {{> issuesListTmpl issues}} {{#each issues}} {{> issueItemTmpl}} {{/each}}
+        {{> issuesListTmpl issues}}
         <p id="backlogFooter">{{issuesStats}}</p>
     </div>
 </template>
@@ -57,4 +49,11 @@
         <input type="text" id="datepicker" style="width: 66%; margin: 1%;" placeholder="End date" />
         <input type="button" class="insert" style="width: 29%; margin: 1%;" value="Add" />
     </details>
+</template>
+
+
+<template name="planBoardAssignees">
+    {{#each assignees}}
+    <option value={{_id}}>{{username}}</option>
+    {{/each}}
 </template>

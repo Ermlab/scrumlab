@@ -4,7 +4,6 @@ Template.planBoardSprintsInput.rendered = function () {
     $.fn.editable.defaults.emptytext = '(...)';
     $.fn.editable.defaults.toggle = 'dblclick';
     // Setting editable property to story elements
-
     $('.storyTitle, .storyText, .storyHours').editable({
         // Defining callback function to update story in database after in-place editing
         success: function (response, newValue) {
@@ -34,7 +33,7 @@ Template.planBoardSprintsInput.rendered = function () {
     });
 
     // Setting editable property to task elements
-    $('.taskTitle, .taskText, .taskHours').editable({
+    $('.taskTitle, .taskHours').editable({
         // Defining callback function to update task in database after in-place editing
         success: function (response, newValue) {
             var taskId = this.parentElement.getAttribute("id");
@@ -96,7 +95,6 @@ Template.planBoardSprints.events = {
         var issueId = issue.getAttribute("id");
         var projectId = document.getElementById("projectId").getAttribute("ref");
         var name = task.getElementsByClassName("tName")[0];
-        var desc = task.getElementsByClassName("tDescription")[0];
         var hours = task.getElementsByClassName("tTime")[0].value;
         var assignee = task.getElementsByClassName("tAssigneeSelector")[0];
         var assigneeName = assignee.options[assignee.selectedIndex].text;
@@ -109,7 +107,6 @@ Template.planBoardSprints.events = {
                 'project_id': projectId,
                 'issue_id': issueId,
                 'name': name.value,
-                'description': desc.value,
                 'estimation': hours,
                 'assignee': assigneeName,
                 'assignee_id': assigneeId
@@ -221,12 +218,6 @@ Template.planBoardSprints.helpers({
 
 Template.planBoardAssignees.assignees = function () {
     return Meteor.users.find().fetch();
-}
-
-Template.issueItem.tasks = function (id) {
-    return Tasks.find({
-        issue_id: id
-    });
 }
 
 Template.planBoardSprintsList.assignedItems = function (ownerId) {

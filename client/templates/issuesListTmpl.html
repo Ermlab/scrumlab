@@ -1,25 +1,14 @@
 <template name="issuesListTmpl">
-
-
-    {{#each this}} {{> issueItem }} {{/each}}
-
-
+    {{#each this}} {{> issueItemTmpl}} {{/each}}
 </template>
 
-
-
-
-
-
 <template name="issueItem">
-
-
     <div style="border-radius:0px; border-left: 4px #49bf67 solid; padding:10px; min-height:50px;margin:5px 1px" id={{_id}} title={{gitlab.title}} ref={{sprint}} objectType="issue" class="story list-group-item" state={{gitlab.state}}>
 
 
-        <div style="width: 16px" class="pull-right">
-            <span class="deleteButton glyphicon glyphicon-remove"></span>
+        <div class="pull-right">
             <span class="glyphicon glyphicon-th-list" style="color: #F3E9E8"></span>
+            <span class="deleteButton glyphicon glyphicon-remove"></span> 
         </div>
 
 
@@ -30,13 +19,12 @@
 
 
 
-        <div class="collapse">
+        <div class="collapse" style="clear:both">
             <h5 ref="description" data-type="textarea" class="list-group-item-text">{{gitlab.description}}</h5>
             {{#each tasks _id}}
             <div class="task" id={{_id}} ref={{name}} objectType="task">
                 <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
                 <p class="taskHours" ref="estimation" data-type="text">{{estimation}}</p>
-                <p class="taskText" ref="description" data-type="textarea">{{description}}</p>
                 <p class="taskAssignee" ref="assignee" data-type="text">Assigned to: {{assignee}}</p>
                 <p class="deleteButton"></p>
             </div>
@@ -44,8 +32,6 @@
             <details class="addTask">
                 <summary>Add task</summary>
                 <input type="text" class="tName" style="width: 95%" placeholder="Name" />
-                <br/>
-                <input type="text" class="tDescription" style="width: 95%" placeholder="Description" />
                 <br/>Estimated time:
                 <input type="number" class="tTime" style="width: 10%" />
                 <br/>Assigned to:

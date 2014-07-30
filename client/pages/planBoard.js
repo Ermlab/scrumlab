@@ -31,8 +31,9 @@ Template.planBoardSprintsInput.rendered = function () {
             }
         }
     });
+
     // Setting editable property to task elements
-    $('.taskTitle, .taskText, .taskHours').editable({
+    $('.taskTitle, .taskHours').editable({
         // Defining callback function to update task in database after in-place editing
         success: function (response, newValue) {
             var taskId = this.parentElement.getAttribute("id");
@@ -79,7 +80,7 @@ Template.planBoardSprintsInput.rendered = function () {
         },
         connectWith: "#backlog, .sprint",
         // Elements to exclude from sortable list
-        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter"
+        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter, .addTask"
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
@@ -90,22 +91,22 @@ Template.planBoardSprints.events = {
     'click .insertTask': function (event) {
         // Gathering necessary new task data
         var task = event.currentTarget.parentElement;
-        var issue = task.parentElement.parentElement.parentElement;
+        var issue = task.parentElement.parentElement;
         var issueId = issue.getAttribute("id");
+        var projectId = document.getElementById("projectId").getAttribute("ref");
         var name = task.getElementsByClassName("tName")[0];
-        var desc = task.getElementsByClassName("tDescription")[0];
         var hours = task.getElementsByClassName("tTime")[0].value;
         var assignee = task.getElementsByClassName("tAssigneeSelector")[0];
         var assigneeName = assignee.options[assignee.selectedIndex].text;
         var assigneeId = Meteor.users.findOne({
-            username: assgineeName
+            username: assigneeName
         })._id;
         // Adding task to database
         if (name != '') {
             Tasks.insert({
-                'issueId': issueId,
+                'project_id': projectId,
+                'issue_id': issueId,
                 'name': name.value,
-                'description': desc.value,
                 'estimation': hours,
                 'assignee': assigneeName,
                 'assignee_id': assigneeId
@@ -118,9 +119,9 @@ Template.planBoardSprints.events = {
 
     'click .deleteButton': function (event) {
         // Retrieve class and id of parent element
-        var parentType = event.currentTarget.parentElement.getAttribute("objectType");
-        var parentId = event.currentTarget.parentElement.getAttribute("id");
-        var parentTitle = event.currentTarget.parentElement.getAttribute("ref");
+        var parentType = event.currentTarget.parentElement.parentElement.getAttribute("objectType");
+        var parentId = event.currentTarget.parentElement.parentElement.getAttribute("id");
+        var parentTitle = event.currentTarget.parentElement.parentElement.getAttribute("title");
         if (parentType == 'issue') {
             var choice = confirm('Confirm deletion of issue: ' + parentTitle);
             if (choice == true) {
@@ -217,12 +218,6 @@ Template.planBoardSprints.helpers({
 
 Template.planBoardAssignees.assignees = function () {
     return Meteor.users.find().fetch();
-}
-
-Template.planBoardSprints.tasks = function (id) {
-    return Tasks.find({
-        issueId: id
-    });
 }
 
 Template.planBoardSprintsList.assignedItems = function (ownerId) {

@@ -8,75 +8,44 @@
 </template>
 
 
-<template name="planBoardAssignees">
-    {{#each assignees}}
-    <option value={{_id}}>{{username}}</option>
-    {{/each}}
-</template>
-
 <template name="planBoardSprints">
-    <div id="sprints" class=".col-md-6">{{> planBoardSprintsList}}</div>
-    <div id="backlog" class=".col-md-6" ref="0">
-        {{#each issues}}
-        <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
-            <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
-            <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
-            <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-            <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
-            <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
-            <p class="deleteButton"></p>
-            <div>
-                <details>
-                    <summary>Tasks</summary>
-                    {{#each tasks _id}}
-                    <div class="task" id={{_id}} ref={{name}} objectType="task">
-                        <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
-                        <p class="taskHours" ref="estimation" data-type="text">{{estimation}}</p>
-                        <p class="taskText" ref="description" data-type="textarea">{{description}}</p>
-                        <p class="taskAssignee" ref="assignee" data-type="text">Assigned to: {{assignee}}</p>
-                        <p class="deleteButton"></p>
-                    </div>
-                    {{/each}}
-                    <details class="addTask">
-                        <summary>Add task</summary>
-                        <input type="text" class="tName" style="width: 95%" placeholder="Name" />
-                        <br/>
-                        <input type="text" class="tDescription" style="width: 95%" placeholder="Description" />
-                        <br/>Estimated time:
-                        <input type="number" class="tTime" style="width: 10%" />
-                        <br/>Assigned to:
-                        <select class="tAssigneeSelector" style="width: 30%">{{> planBoardAssignees}}</select>
-                        <input type="button" class="insertTask" value="Dodaj" style="float: right" />
-                    </details>
-                </details>
-            </div>
+    <div class="row">
+        <div id="backlog" class="col-md-6">
+            {{> issuesListTmpl issues}}
+            <p id="backlogFooter">{{issuesStats}}</p>
         </div>
-        {{/each}}
-        <p id="backlogFooter">{{issuesStats}}</p>
+        <div id="sprints" class="col-md-6 list-group">
+            {{> planBoardSprintsList}}
+        </div>
     </div>
 </template>
 
-
+<!-- To jest ten po prawej -->
 <template name="planBoardSprintsList">
+
     {{#each sprints}}
-    <div class="sprint" id={{_id}} ref={{time}}>
-        <div class="sprintInfo"><b>{{name}}</b> End date: {{endDate}} Status: {{status}}
-            <div class="sprintTimeMarker">{{time}}</div>
+    <div class="alert alert-dismissable alert-warning">
+
+        <div>
+            <span class="label label-success">Status: {{status}}</span>
+
+            <span class="label label-warning">Ramaing ( 7 ) days</span>
+
+            <span class="label label-primary">End date: {{endDate}}</span>
+
+            <span class="text-right" style="float:right;">
+                <button type="button" class="btn btn-success btn-sm">Start this sprint</button>
+            </span>
+
         </div>
-        <button type="button" class="startButton" id={{_id}}>Start
-        </button>
-        <button type="button" class="stopButton" id={{_id}}>Stop
-        </button>
-        {{#each assignedItems _id}}
-        <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
-            <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
-            <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
-            <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-            <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
-            <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
+
+        <div class="well well-sm text-left" style="margin-top:8px;">
+            <h5><Strong>{{name}}</Strong></h5>
         </div>
-        {{/each}}
-        <p class="sprintsFooter">{{sprintsStats _id}}</p>
+
+        <div class="sprint" id={{_id}} style="min-height: 15px">
+            {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
+        </div>
     </div>
     {{/each}} {{> planBoardSprintsInput}}
 </template>
@@ -89,4 +58,11 @@
         <input type="text" id="datepicker" style="width: 66%; margin: 1%;" placeholder="End date" />
         <input type="button" class="insert" style="width: 29%; margin: 1%;" value="Add" />
     </details>
+</template>
+
+
+<template name="planBoardAssignees">
+    {{#each assignees}}
+    <option value={{_id}}>{{username}}</option>
+    {{/each}}
 </template>

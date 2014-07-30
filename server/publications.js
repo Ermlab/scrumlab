@@ -15,7 +15,6 @@ Meteor.publish("userData", function () {
     }
 });
 
-
 //TODO: it should return only logged user projects
 Meteor.publish('userProjects', function () {
 
@@ -28,19 +27,20 @@ Meteor.publish('userProjects', function () {
         return null;
 });
 
-
-
 Meteor.publish('sprints', function (projectId) {
     return Sprints.find({
         'project_id': projectId
     });
 });
 
-
-
-
 Meteor.publish('issues', function (projectId) {
     return Issues.find({
+        'project_id': projectId
+    });
+});
+
+Meteor.publish('tasks', function (projectId) {
+    return Tasks.find({
         'project_id': projectId
     });
 });

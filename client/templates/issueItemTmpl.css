@@ -1,11 +1,13 @@
 .deleteButton {
     height: 16px;
     width: 16px;
-    color: #F3E9E8
+    color: red;
 }
 .right_icons {
+    margin-top: -5px;
     width: 16px;
-    opacity: 0.5;
+    opacity: 0.2;
+    color: black;
 }
 div.story:hover .right_icons {
     opacity: 1;

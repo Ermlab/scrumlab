@@ -10,43 +10,41 @@
             <h3>{{sprint.name}}: End date: {{sprint.endDate}}</h3>
         </div>
         <div id="unassigned" class="col-md-3">Unassigned: {{#each issueList sprint._id 'unassigned'}}
-            <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
-                <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
-                <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
-                <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-                <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
-                <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
-            </div>{{/each}}
+           
+            {{>issueItemTmpl}}
+            
+            
+            
+            {{/each}}
             <p class="footer">{{boardStats sprint._id 'unassigned'}}</p>
         </div>
-        <div id="todo" class="col-md-3">To do: {{#each issueList sprint._id 'todo'}}
-            <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
-                <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
-                <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
-                <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-                <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
-                <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
-            </div>{{/each}}
+        <div id="todo" class="col-md-3">To do: 
+            {{#each issueList sprint._id 'todo'}}
+            
+            {{>issueItemTmpl}}
+            
+          
+            {{/each}}
             <p class="footer">{{boardStats sprint._id 'todo'}}</p>
         </div>
         <div id="inprogress" class="col-md-3">In progress: {{#each issueList sprint._id 'inprogress'}}
-            <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
-                <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
-                <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
-                <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-                <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
-                <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
-            </div>{{/each}}
+            
+            {{>issueItemTmpl}}
+            
+            
+           
+            
+            {{/each}}
             <p class="footer">{{boardStats sprint._id 'inprogress'}}</p>
         </div>
         <div id="done" class="col-md-3">Done: {{#each issueList sprint._id 'done'}}
-            <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
-                <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
-                <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
-                <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>
-                <p class="storyHours" ref="estimation" data-type="text" data-placeholder="estimation">{{estimation}}</p>
-                <p class="storyAssignee" ref="gitlab.assignee.username" data-type="text">Assigned to: {{gitlab.assignee.username}}</p>
-            </div>{{/each}}
+            
+            
+            {{>issueItemTmpl}}
+            
+           
+            
+            {{/each}}
             <p class="footer">{{boardStats sprint._id 'done'}}</p>
         </div>
         <div id="stats" class="col-md-12">{{sprintStats sprint._id}}</div>

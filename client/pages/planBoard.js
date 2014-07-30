@@ -4,6 +4,7 @@ Template.planBoardSprintsInput.rendered = function () {
     $.fn.editable.defaults.emptytext = '(...)';
     $.fn.editable.defaults.toggle = 'dblclick';
     // Setting editable property to story elements
+    
     $('.storyTitle, .storyText, .storyHours').editable({
         // Defining callback function to update story in database after in-place editing
         success: function (response, newValue) {
@@ -31,6 +32,7 @@ Template.planBoardSprintsInput.rendered = function () {
             }
         }
     });
+    
     // Setting editable property to task elements
     $('.taskTitle, .taskText, .taskHours').editable({
         // Defining callback function to update task in database after in-place editing
@@ -122,14 +124,14 @@ Template.planBoardSprints.events = {
         var parentId = event.currentTarget.parentElement.getAttribute("id");
         var parentTitle = event.currentTarget.parentElement.getAttribute("ref");
         if (parentType == 'issue') {
-            var choice = confirm('Confirm deletion of issue: ' + parentTitle);
+            var choice = confirm('Confirm deletion of issue: ' + parentId);
             if (choice == true) {
                 Issues.remove({
                     _id: parentId
                 });
             }
         } else if (parentType = 'task') {
-            var choice = confirm('Confirm deletion of task: ' + parentTitle);
+            var choice = confirm('Confirm deletion of task: ' + parentId);
             if (choice == true) {
                 Tasks.remove({
                     _id: parentId

@@ -14,24 +14,45 @@
 <template name="issueItem">
 
 
-    <div style="border-radius:0px; border-left: 4px #49bf67 solid; padding:10px; min-height:50px;margin:5px 1px" id={{_id}} title={{gitlab.title}} ref={{sprint}} objectType="issue" class="story list-group-item state_{{gitlab.state}}">
+    <div style="border-radius:0px; border-left: 4px #49bf67 solid; padding:10px; min-height:50px;margin:5px 1px" id={{_id}} title={{gitlab.title}} ref={{sprint}} objectType="issue" class="story list-group-item" state={{gitlab.state}}>
 
 
         <div style="width: 16px" class="pull-right">
             <span class="deleteButton glyphicon glyphicon-remove"></span>
-            <span class="glyphicon glyphicon-th-list"></span>
-
+            <span class="glyphicon glyphicon-th-list" style="color: #F3E9E8"></span>
         </div>
 
 
-        <span class="label label-warning pull-left" style="background-color:#f0ad4e;font-size:150%">{{#if estimation}}{{estimation}}{{else}}<span class="glyphicon glyphicon-time" style="width: 16px; height: 16px; margin-left: -4px"></span>{{/if}}</span>
-        <h4 class="list-group-item-heading" style="color:#444;margin:0px 15px 0px 50px">
+        <span class="label label-warning pull-left" style="background-color:#f0ad4e;font-size:150%;height:31px;">{{#if estimation}}{{estimation}}{{else}}<span class="glyphicon glyphicon-time" style="width: 16px;  margin-left: -4px"></span>{{/if}}</span>
+        <h4 class="list-group-item-heading" style="color:#444;margin:6px 15px 0px 50px">
             
                 {{gitlab.title}} </h4>
 
 
-        <p ref="description" data-type="textarea" class="list-group-item-text" style="display:none">{{gitlab.description}}</p>
 
+        <div class="collapse">
+            <h5 ref="description" data-type="textarea" class="list-group-item-text">{{gitlab.description}}</h5>
+            {{#each tasks _id}}
+            <div class="task" id={{_id}} ref={{name}} objectType="task">
+                <p class="taskTitle" ref="name" data-type="text">{{name}}</p>
+                <p class="taskHours" ref="estimation" data-type="text">{{estimation}}</p>
+                <p class="taskText" ref="description" data-type="textarea">{{description}}</p>
+                <p class="taskAssignee" ref="assignee" data-type="text">Assigned to: {{assignee}}</p>
+                <p class="deleteButton"></p>
+            </div>
+            {{/each}}
+            <details class="addTask">
+                <summary>Add task</summary>
+                <input type="text" class="tName" style="width: 95%" placeholder="Name" />
+                <br/>
+                <input type="text" class="tDescription" style="width: 95%" placeholder="Description" />
+                <br/>Estimated time:
+                <input type="number" class="tTime" style="width: 10%" />
+                <br/>Assigned to:
+                <select class="tAssigneeSelector" style="width: 30%">{{> planBoardAssignees}}</select>
+                <input type="button" class="insertTask" value="Dodaj" style="float: right" />
+            </details>
+        </div>
     </div>
 
 

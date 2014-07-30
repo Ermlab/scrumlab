@@ -92,20 +92,22 @@ Template.planBoardSprints.events = {
     'click .insertTask': function (event) {
         // Gathering necessary new task data
         var task = event.currentTarget.parentElement;
-        var issue = task.parentElement.parentElement.parentElement;
+        var issue = task.parentElement.parentElement;
         var issueId = issue.getAttribute("id");
+        var projectId = document.getElementById("projectId").getAttribute("ref");
         var name = task.getElementsByClassName("tName")[0];
         var desc = task.getElementsByClassName("tDescription")[0];
         var hours = task.getElementsByClassName("tTime")[0].value;
         var assignee = task.getElementsByClassName("tAssigneeSelector")[0];
         var assigneeName = assignee.options[assignee.selectedIndex].text;
         var assigneeId = Meteor.users.findOne({
-            username: assgineeName
+            username: assigneeName
         })._id;
         // Adding task to database
         if (name != '') {
             Tasks.insert({
-                'issueId': issueId,
+                'project_id': projectId,
+                'issue_id': issueId,
                 'name': name.value,
                 'description': desc.value,
                 'estimation': hours,
@@ -221,9 +223,9 @@ Template.planBoardAssignees.assignees = function () {
     return Meteor.users.find().fetch();
 }
 
-Template.planBoardSprints.tasks = function (id) {
+Template.issueItem.tasks = function (id) {
     return Tasks.find({
-        issueId: id
+        issue_id: id
     });
 }
 

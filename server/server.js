@@ -51,24 +51,24 @@ Server = {
             'assignee_id': issue.assignee_id,
             'labels': 'story, #' + issue.estimation
         };
-        
-        
+
+
         api.issues.create(issue.gitlabProjectId, gitlabIssue, function (glIssue) {
             Fiber(function () {
                 console.log("After creation of issue", glIssue);
 
 
-               /* var new_issue = {
+                /* var new_issue = {
                     'project_id': projectId, //mongo project_id
                     'gitlab': glIssue,
                     'origin': api.options.origin,
                     'estimation': issue.
                     'created_at': issue.created_at
                 };*/
-                
-                
-                var new_issue = BuildAnIssue(issue,glIssue);
-                
+
+
+                var new_issue = BuildAnIssue(issue, glIssue);
+
                 console.log('issue on server \n', new_issue);
 
                 return Issues.insert(new_issue);
@@ -315,6 +315,66 @@ Server = {
                 }
             }).run();
         });
+    },
+
+    synchronizingIssues: function (respIncome, servInfo) {
+
+        var hookIssue = respIncome.body.object_attributes;
+
+        var finder = Issues.findOne({
+            "gitlab.id": hookIssue.id,
+            "origin": servInfo._id,
+        });
+
+        if (finder == undefined) {
+
+            var proj = Projects.findOne({
+                "gitlab.id": hookIssue.project_id,
+                "origin": servInfo._id,
+            });
+
+            var new_issue = {
+                'project_id': proj._id, //mongo project_id
+                'origin': servInfo._id,
+                'created_at': hookIssue.created_at,
+                'gitlab': hookIssue //client and server should update this field
+            };
+
+            //mongo issue id
+            var issueId = Issues.insert(new_issue);
+
+            // Function for update exist issue. First must build SHOW function in API
+            /*api.issues.show(ProjectId, issueId, function (glIssue) {
+                Fiber(function () {
+                    // Here we must update exist issue in mongoDB
+                }).run();
+            });*/
+
+        } else {
+
+            gitlabObject = finder.gitlab;
+
+            gitlabObject = _.extend(gitlabObject, hookIssue);
+
+            gitlabObject = _.omit(gitlabObject, 'assignee_id', 'author_id', 'branch_name', 'milestone_id');
+
+            Issues.update(
+                finder._id, {
+                    $set: {
+                        'gitlab': gitlabObject,
+                    }
+                });
+
+            Issues.update({
+                _id: finder._id
+            }, {
+                $addToSet: {
+                    'gitlab.labels': {
+                        $each: [hookIssue.labels]
+                    }
+                }
+            })
+        }
     },
 
     fetchProjectMilestones: function (api, projectId) {

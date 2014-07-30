@@ -17,13 +17,9 @@
 <template name="planBoardSprints">
     <div id="sprints" class=".col-md-6">{{> planBoardSprintsList}}</div>
     <div id="backlog" class=".col-md-6 list-group" ref="0">
-    
-        
-        {{> issuesListTmpl issues}}
-        
-        {{#each issues}}
-        {{> issueItemTmpl}}
-        {{/each}}
+
+
+        {{> issuesListTmpl issues}} {{#each issues}} {{> issueItemTmpl}} {{/each}}
         <p id="backlogFooter">{{issuesStats}}</p>
     </div>
 </template>
@@ -39,11 +35,8 @@
         </button>
         <button type="button" class="stopButton" id={{_id}}>Stop
         </button>
-        {{#each assignedItems _id}}
-        
-        
-        {{> issueItemTmpl}}
-       <!-- <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
+        {{#each assignedItems _id}} {{> issueItemTmpl}}
+        <!-- <div class="story" id={{_id}} ref={{sprint}} objectType="issue">
             <p class="storyTitle" ref="title" data-type="text">{{gitlab.title}}</p>
             <p class="storyType" ref="state" data-type="text">{{gitlab.state}}</p>
             <p class="storyText" ref="description" data-type="textarea">{{gitlab.description}}</p>

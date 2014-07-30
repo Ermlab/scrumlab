@@ -4,7 +4,7 @@ Template.planBoardSprintsInput.rendered = function () {
     $.fn.editable.defaults.emptytext = '(...)';
     $.fn.editable.defaults.toggle = 'dblclick';
     // Setting editable property to story elements
-    
+
     $('.storyTitle, .storyText, .storyHours').editable({
         // Defining callback function to update story in database after in-place editing
         success: function (response, newValue) {
@@ -32,7 +32,7 @@ Template.planBoardSprintsInput.rendered = function () {
             }
         }
     });
-    
+
     // Setting editable property to task elements
     $('.taskTitle, .taskText, .taskHours').editable({
         // Defining callback function to update task in database after in-place editing
@@ -120,18 +120,18 @@ Template.planBoardSprints.events = {
 
     'click .deleteButton': function (event) {
         // Retrieve class and id of parent element
-        var parentType = event.currentTarget.parentElement.getAttribute("objectType");
-        var parentId = event.currentTarget.parentElement.getAttribute("id");
-        var parentTitle = event.currentTarget.parentElement.getAttribute("ref");
+        var parentType = event.currentTarget.parentElement.parentElement.getAttribute("objectType");
+        var parentId = event.currentTarget.parentElement.parentElement.getAttribute("id");
+        var parentTitle = event.currentTarget.parentElement.parentElement.getAttribute("title");
         if (parentType == 'issue') {
-            var choice = confirm('Confirm deletion of issue: ' + parentId);
+            var choice = confirm('Confirm deletion of issue: ' + parentTitle);
             if (choice == true) {
                 Issues.remove({
                     _id: parentId
                 });
             }
         } else if (parentType = 'task') {
-            var choice = confirm('Confirm deletion of task: ' + parentId);
+            var choice = confirm('Confirm deletion of task: ' + parentTitle);
             if (choice == true) {
                 Tasks.remove({
                     _id: parentId

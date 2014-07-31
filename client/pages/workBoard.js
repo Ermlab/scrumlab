@@ -1,5 +1,5 @@
 Template.workBoard.rendered = function () {
-    $("#unassigned, #todo, #inprogress, #done").sortable({
+    $(".story, #todo, #inprogress, #done").sortable({
         stop: function (event, ui) {
             var selfId = ui.item.attr("id");
             var parentType = ui.item.parent().attr("id");
@@ -16,7 +16,7 @@ Template.workBoard.rendered = function () {
                 ui.item.remove();
             }
         },
-        connectWith: "#unassigned, #todo, #inprogress, #done",
+        connectWith: ".story, #todo, #inprogress, #done",
         cancel: ".footer"
     }).disableSelection();
 }

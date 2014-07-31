@@ -1,4 +1,5 @@
 Template.planBoardSprintsInput.rendered = function () {
+    Meteor.setTimeout(function() {
     // Setting default values for x-editable
     $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.emptytext = '(...)';
@@ -84,6 +85,7 @@ Template.planBoardSprintsInput.rendered = function () {
     }).disableSelection();
     // Setting datepicker property for easy date selection
     $("#datepicker").datepicker();
+    }, 500);
 }
 
 
@@ -113,7 +115,6 @@ Template.planBoardSprints.events = {
             });
             // Resetting the input fields
             name.value = '';
-            desc.value = '';
         }
     },
 

@@ -17,9 +17,7 @@ Meteor.publish("userData", function () {
 
 //TODO: it should return only logged user projects
 Meteor.publish('userProjects', function () {
-
     if (this.userId) {
-
         return Projects.find({
             member_ids: this.userId
         });

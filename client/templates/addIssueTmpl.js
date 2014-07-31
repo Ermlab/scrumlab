@@ -3,7 +3,6 @@ Template.addIssueTmpl.events = {
     'submit form': function (e) {
         e.preventDefault();
 
-
         var projectId = $(e.target).find('[name=projectId]').val().trim();
         var gitlabProjectId = $(e.target).find('[name=glProjectId]').val().trim();
 
@@ -16,6 +15,7 @@ Template.addIssueTmpl.events = {
             estimation: $(e.target).find('[name=estimation]').val().trim(),
         }
 
+        console.log("Witam");
 
         Meteor.call('createIssue', issue, function (error, result) {
             console.log("m_call_err", error);
@@ -40,7 +40,7 @@ Template.addIssueTmpl.events = {
 
         //$('#addStoryForm .collapse').find('input, textarea, button, select').prop("disabled", false);
 
-        $('#addStoryForm .collapse').collapse('toggle');        
+        $('#addStoryForm .collapse').collapse('toggle');
 
     },
 }

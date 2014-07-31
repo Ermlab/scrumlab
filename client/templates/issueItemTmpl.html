@@ -16,16 +16,14 @@
         </h4>
         <div class="collapse">
             <p ref="description" data-type="textarea" class="list-group-item-text">{{gitlab.description}}</p>
-            {{> tasksListTmpl tasks _id}}
-            <details class="addTask">
-                <summary>Add task</summary>
-                <input type="text" class="tName" style="width: 95%" placeholder="Name" />
-                <br/>Estimated time:
-                <input type="number" class="tTime" style="width: 10%" />
-                <br/>Assigned to:
-                <select class="tAssigneeSelector" style="width: 30%">{{> planBoardAssignees}}</select>
-                <input type="button" class="insertTask" value="Dodaj" style="float: right" />
-            </details>
+            <div class="" style="clear:both">
+                <form class="form-horizontal" id="{{_id}}">
+                    <p>
+                        <input type="text" class="form-control" name="title" placeholder="Add new task and press enter" tabindex="1">
+                    </p>
+                </form>
+                {{> tasksListTmpl tasks _id}}
+            </div>
         </div>
     </div>
 </template>

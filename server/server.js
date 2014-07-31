@@ -431,7 +431,7 @@ Server = {
     } //end func
 
 };
-
+/*
 Meteor.startup(function () {
 
 
@@ -546,4 +546,4 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
 Accounts.onLogin(function (data) {
 
-});
+});*/

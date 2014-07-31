@@ -1,0 +1,16 @@
+.task.list-group-item {
+    border-radius: 0px;
+    border-left: 4px #ed4848 solid;
+    padding: 10px;
+    min-height: 30px;
+    margin: 5px 1px;
+}
+.task-name.list-group-item-heading {
+    color: #444;
+    margin: 6px 15px 0px 50px;
+}
+.task-estimation.label.label-warning.pull-left {
+    background-color: #f0ad4e;
+    font-size: 150%;
+    height: 31px;
+}

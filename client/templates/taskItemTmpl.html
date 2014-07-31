@@ -1,0 +1,8 @@
+<template name="taskItemTmpl">
+    <div class="task list-group-item" id={{_id}} ref={{name}} objectType="task">
+        <p class="task-name list-group-item-heading" ref="name" data-type="text">{{name}}</p>
+        <p class="task-estimation label label-warning pull-left" ref="estimation" data-type="text">{{estimation}}</p>
+        <p class="taskAssignee" ref="assignee" data-type="text">(todo: rework) Assigned to: {{assignee}}</p>
+        <p class="deleteButton glyphicon glyphicon-remove"></p>
+    </div>
+</template>

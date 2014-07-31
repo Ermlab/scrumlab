@@ -15,3 +15,23 @@ div.story:hover .right_icons {
 div.story:hover {
     background-color: #fafafa;
 }
+.story.list-group-item {
+    border-radius: 0px;
+    border-left: 4px #49bf67 solid;
+    padding: 10px;
+    min-height: 55px;
+    margin: 5px 1px;
+}
+.label.label-warning.pull-left {
+    background-color: #f0ad4e;
+    font-size: 150%;
+    height: 31px;
+}
+.glyphicon.glyphicon-time {
+    width: 16px;
+    margin-left: -4px;
+}
+.title.list-group-item-heading {
+    color: #444;
+    margin: 6px 15px 0px 50px;
+}

@@ -1,27 +1,36 @@
 Template.workBoard.rendered = function () {
-    Meteor.setTimeout(function(){
-    $(".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3").sortable({
-        stop: function (event, ui) {
-            var selfId = ui.item.attr("id");
-            var parentType = ui.item.parent().attr("class").split(' ')[0];
-            var actualState = Tasks.findOne({
-                _id: selfId
-            }).status;
-            if(parentType == 'inprogress') parentType = 'inProgress';
-            else if(parentType == 'todo') parentType = 'toDo';
-            if (actualState != parentType) {
-                Tasks.update(selfId, {
-                    $set: {
-                        status: parentType
+    Meteor.setTimeout(function () {
+        $(".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3").sortable({
+            stop: function (event, ui) {
+                // Check if task was moved to another issue
+                var issueId = ui.item.attr("issueId");
+                var parentId = ui.item.parent().attr("id");
+                if (issueId != parentId) {
+                    event.preventDefault();
+                } else {
+                    var selfId = ui.item.attr("id");
+                    var parentType = ui.item.parent().attr("class").split(' ')[0];
+                    var actualState = Tasks.findOne({
+                        _id: selfId
+                    }).status;
+                    if (parentType == 'inprogress') parentType = 'inProgress';
+                    else if (parentType == 'todo') parentType = 'toDo';
+                    if (actualState != parentType) {
+                        Tasks.update(selfId, {
+                            $set: {
+                                status: parentType
+                            }
+                        });
+                        ui.item.remove();
                     }
-                });
-                ui.item.remove();
-            }
-        },
-        connectWith: ".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3",
-        cancel: ".footer",
-        placeholder: "placeholder"
-    }).disableSelection();
+                };
+            },
+            delay: '100',
+            opacity: '0.7',
+            connectWith: ".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3",
+            cancel: ".footer",
+            placeholder: "placeholder"
+        }).disableSelection();
     }, 500);
 }
 

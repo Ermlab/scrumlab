@@ -79,6 +79,7 @@ Template.planBoardSprintsInput.rendered = function () {
                 ui.item.remove();
             }
         },
+        delay: '100',
         connectWith: "#backlog, .sprint",
         // Elements to exclude from sortable list
         cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter, .addTask"

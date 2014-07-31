@@ -20,17 +20,17 @@
         <div class="col-md-3">
             {{>issueItemTmpl}}
         </div>
-        <div class="todo col-md-3">
+        <div class="todo col-md-3" id="{{_id}}">
             {{#each taskList _id 'toDo'}}
                 {{>taskItemTmpl}}
             {{/each}}
         </div>
-        <div class="inprogress col-md-3">
+        <div class="inprogress col-md-3" id="{{_id}}">
             {{#each taskList _id 'inProgress'}}
                 {{>taskItemTmpl}}
             {{/each}}
         </div>
-        <div class="done col-md-3">
+        <div class="done col-md-3" id="{{_id}}">
             {{#each taskList _id 'done'}}
                 {{>taskItemTmpl}}
             {{/each}}
@@ -39,8 +39,8 @@
     {{/each}}
     <div class="row">
         <p class="footer col-md-3">{{boardStats sprint._id 'unassigned'}}</p>
-        <p class="footer col-md-3">{{boardStats sprint._id 'todo'}}</p>
-        <p class="footer col-md-3">{{boardStats sprint._id 'inprogress'}}</p>
+        <p class="footer col-md-3">{{boardStats sprint._id 'toDo'}}</p>
+        <p class="footer col-md-3">{{boardStats sprint._id 'inProgress'}}</p>
         <p class="footer col-md-3">{{boardStats sprint._id 'done'}}</p>
         <div id="stats" class="col-md-12">{{sprintStats sprint._id}}</div>
     </div>

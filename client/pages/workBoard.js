@@ -1,51 +1,39 @@
 Template.workBoard.rendered = function () {
-    $(".story, #todo, #inprogress, #done").sortable({
+    Meteor.setTimeout(function(){
+    $(".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3").sortable({
         stop: function (event, ui) {
             var selfId = ui.item.attr("id");
-            var parentType = ui.item.parent().attr("id");
-            var actualState = Issues.findOne({
+            var parentType = ui.item.parent().attr("class").split(' ')[0];
+            var actualState = Tasks.findOne({
                 _id: selfId
-            }).work_state;
-            if (actualState == undefined) actualState == 'unassigned';
+            }).status;
+            if(parentType == 'inprogress') parentType = 'inProgress';
+            else if(parentType == 'todo') parentType = 'toDo';
             if (actualState != parentType) {
-                Issues.update(selfId, {
+                Tasks.update(selfId, {
                     $set: {
-                        work_state: parentType
+                        status: parentType
                     }
                 });
                 ui.item.remove();
             }
         },
-        connectWith: ".story, #todo, #inprogress, #done",
-        cancel: ".footer"
+        connectWith: ".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3",
+        cancel: ".footer",
+        placeholder: "placeholder"
     }).disableSelection();
+    }, 500);
 }
 
 Template.workBoard.helpers({
-    'issueList': function (sprintId, type) {
-        if (type == 'unassigned') {
-            return Issues.find({
-                $and: [{
-                        'sprint': sprintId
-            },
-                    {
-                        $or: [{
-                            'work_state': 'unassigned'
-                    }, {
-                            'work_state': {
-                                $exists: false
-                            }
-                    }]
-                    }]
-            });
-        } else
-            return Issues.find({
-                $and: [{
-                    'sprint': sprintId
-            }, {
-                    'work_state': type
+    'taskList': function (issueId, status) {
+        return Tasks.find({
+            $and: [{
+                'issue_id': issueId
+                }, {
+                'status': status
             }]
-            });
+        });
     },
     'sprintStats': function (sprintId) {
         var unestimated = Issues.find({

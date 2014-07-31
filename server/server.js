@@ -435,52 +435,51 @@ Server = {
 Meteor.startup(function () {
 
 
+/*// Fixtures 
+if (GitlabServers.find().count() === 0) {
+    GitlabServers.insert({
+        url: 'http://gitlab.ermlab.com/',
+        token: '7d1dByE7ecRyBHKhieWR'
+    });
+}
 
-    // Fixtures 
-    if (GitlabServers.find().count() === 0) {
-        GitlabServers.insert({
-            url: 'http://gitlab.ermlab.com/',
-            token: '7d1dByE7ecRyBHKhieWR'
+
+// Fetch data from all servers
+_.each(GitlabServers.find().fetch(), function (server) {
+    server.origin = server._id;
+    var api = Server.getGitlabApi(server);
+    Server.fetchUsers(api);
+    Server.fetchProjects(api);
+});
+
+
+// Set schedule to check if sprint has ended
+// Schedule to fire every day at 1:00 am
+// parser.text('at 1:00 am');
+// Schedule to fire every 10 seconds
+// parser.recur().every(10).second();
+SyncedCron.add({
+    name: 'Sprint ending schedule',
+    schedule: function (parser) {
+        // parser is a later.parse object
+        return parser.text('at 1:00 am');
+    },
+    job: function () {
+        var sprints = Sprints.find({
+            status: 'in progress'
+        }).fetch();
+        _.each(sprints, function (spr) {
+            if (CheckDate(spr.endDate) == false) {
+                Sprints.update(spr._id, {
+                    $set: {
+                        'status': 'finished'
+                    }
+                });
+            }
         });
     }
-
-
-    // Fetch data from all servers
-    _.each(GitlabServers.find().fetch(), function (server) {
-        server.origin = server._id;
-        var api = Server.getGitlabApi(server);
-        Server.fetchUsers(api);
-        Server.fetchProjects(api);
-    });
-
-
-    // Set schedule to check if sprint has ended
-    // Schedule to fire every day at 1:00 am
-    // parser.text('at 1:00 am');
-    // Schedule to fire every 10 seconds
-    // parser.recur().every(10).second();
-    SyncedCron.add({
-        name: 'Sprint ending schedule',
-        schedule: function (parser) {
-            // parser is a later.parse object
-            return parser.text('at 1:00 am');
-        },
-        job: function () {
-            var sprints = Sprints.find({
-                status: 'in progress'
-            }).fetch();
-            _.each(sprints, function (spr) {
-                if (CheckDate(spr.endDate) == false) {
-                    Sprints.update(spr._id, {
-                        $set: {
-                            'status': 'finished'
-                        }
-                    });
-                }
-            });
-        }
-    });
-    SyncedCron.start();
+});
+SyncedCron.start();*/
 });
 
 Accounts.registerLoginHandler(function (loginRequest) {

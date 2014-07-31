@@ -1,0 +1,15 @@
+.todo.col-md-3 {
+    min-height: 55px;
+}
+.inprogress.col-md-3 {
+    min-height: 55px;
+}
+.done.col-md-3 {
+    min-height: 55px;
+}
+.placeholder {
+    border-style: dotted;
+    border-width: 1px;
+    border-color: lightgray;
+    min-height: 55px;
+}

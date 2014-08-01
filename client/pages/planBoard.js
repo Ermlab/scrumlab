@@ -137,6 +137,14 @@ Template.planBoardSprintsList.helpers({
     'checkIfReady': function (status) {
         if(status == 'in progress') return false;
         else return true;
+    },
+    
+    'sprintStatus': function (sprintStatus, input) {
+        if (sprintStatus == input) {
+            return true;
+        } else {
+            return false;
+        }
     }
 });
 

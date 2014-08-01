@@ -49,7 +49,17 @@ Template.issueItemTmpl.events = {
             });
             // Resetting the input fields
             title.value = '';
-
+            // Removing placeholder task if exists
+            var placeholder = Tasks.findOne({
+                $and: [{
+                    'issue_id': issueId
+                }, {
+                    'placeholder': true
+                }]
+            });
+            if (placeholder != undefined) Tasks.remove(placeholder._id, {
+                justOne: true
+            });
             $(e.target).each(function () {
                 this.reset();
             });

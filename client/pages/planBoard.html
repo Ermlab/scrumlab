@@ -26,8 +26,18 @@
     {{#each sprints}}
     <div class="alert alert-dismissable alert-warning">
         <div>
-            <span class="label label-success">Status: {{status}}</span>
-            <span class="label label-primary">End date: {{endDate}}</span>
+            {{#if sprintStatus status 'finished'}}
+            <span class="label label-danger" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-default">End date: {{endDate}} </span>
+            {{/if}}
+            {{#if sprintStatus status 'ready'}}
+            <span class="label label-success" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-primary">End date: {{endDate}} </span>
+            {{/if}}
+            {{#if sprintStatus status 'in progress'}}
+            <span class="label label-warning" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-primary">End date: {{endDate}} </span>
+            {{/if}}
             <span class="text-right" style="float:right;">
                 {{#if checkIfReady status}}
                 <button type="button" class="btn btn-success btn-sm">Start</button>

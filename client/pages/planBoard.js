@@ -181,7 +181,7 @@ Template.planBoardSprintsList.assignedItems = function (ownerId) {
     }, {
         sort: {
             position: 1,
-            created_at: -1            
+            created_at: -1
         }
     });
 }
@@ -230,5 +230,21 @@ Template.planBoardSprintsList.events = {
                 });
             };
         } else alert('Only owner can stop a sprint');
-    },
+    }
+}
+
+Template.planBoardSprintsInput.events = {
+    'click input.insert': function (event) {
+        var name = document.getElementById("name");
+        var date = document.getElementById("datepicker");
+        var projectId = document.getElementById("projectId").getAttribute("ref");
+        Sprints.insert({
+            name: name.value,
+            endDate: date.value,
+            project_id: projectId,
+            status: 'ready'
+        });
+        name.value = '';
+        date.value = '';
+    }
 }

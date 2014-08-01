@@ -34,21 +34,34 @@ Template.workBoard.rendered = function () {
                             });
                         }
                         ui.item.remove();
-                        // Check if all tasks are done
-                        var tasks = Tasks.find({
-                            $and: [{
-                                issue_id: issueId
+                        if (parentType == 'done') {
+                            // Check if all tasks are done
+                            var tasks = Tasks.find({
+                                $and: [{
+                                    issue_id: issueId
                                 }, {
-                                $or: [{
-                                    status: 'inProgress'
+                                    $or: [{
+                                        status: 'inProgress'
                                 }, {
-                                    status: 'toDo'
+                                        status: 'toDo'
                                 }]
                                 }]
-                        }).fetch();
-                        if (tasks.length == 0) {
-                            // TODO: mark issue as closed both on client and server sides
-                            
+                            }).fetch();
+                            if (tasks.length == 0) {
+                                // TODO: mark issue as closed both on client and server sides
+                                Issues.update(issueId, {
+                                    $set: {
+                                        'gitlab.state': 'closed'
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            Issues.update(issueId, {
+                                    $set: {
+                                        'gitlab.state': 'opened'
+                                    }
+                                });
                         }
                     }
                 };
@@ -111,7 +124,7 @@ Template.workBoard.helpers({
             }, {
                 sprint: sprintId
             }, {
-                work_state: 'done'
+                'gitlab.state': 'closed'
             }]
         }).fetch();
         var totalStories = estimated.length + unestimated.length;

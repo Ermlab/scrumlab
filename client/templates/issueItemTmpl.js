@@ -4,12 +4,30 @@ Template.issueItemTmpl.tasks = function (id) {
     });
 }
 
+Template.issueItemTmpl.helpers({
+    'checkIfDone': function (id) {
+        var tasks = Tasks.find({
+            $and: [{
+                issue_id: id
+            }, {
+                $or: [{
+                    status: 'inProgress'
+                }, {
+                    status: 'toDo'
+                }]
+            }]
+        }).fetch();
+        if (tasks.length == 0) return true;
+        else return false;
+    }
+});
+
 Template.issueItemTmpl.events = {
     'click .glyphicon-th-list': function (e) {
         e.preventDefault();
         $('#' + e.currentTarget.parentElement.parentElement.getAttribute("id") + ' .collapse').collapse('toggle');
     },
-    
+
     'submit form': function (e) {
         e.preventDefault();
 
@@ -37,14 +55,14 @@ Template.issueItemTmpl.events = {
             });
         }
     },
-    
+
     'click .deleteButton': function (event) {
         var parentId = event.currentTarget.getAttribute("id");
         var choice = confirm('Do you want to remove selected issue?');
-            if (choice == true) {
-                Issues.remove({
-                    _id: parentId
-                });
-            }
+        if (choice == true) {
+            Issues.remove({
+                _id: parentId
+            });
+        }
     }
 }

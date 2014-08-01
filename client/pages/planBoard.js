@@ -132,6 +132,11 @@ Template.planBoardSprintsList.helpers({
             return sum + parseInt(val);
         }, 0);
         return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
+    },
+    
+    'checkIfReady': function (status) {
+        if(status == 'in progress') return false;
+        else return true;
     }
 });
 

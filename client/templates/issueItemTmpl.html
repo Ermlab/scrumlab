@@ -11,9 +11,15 @@
             <span class="glyphicon glyphicon-time"></span>
         {{/if}}
         </span>
+        {{#unless checkIfDone _id}}
         <h4 class="title list-group-item-heading">
                 {{gitlab.title}}
         </h4>
+        {{else}}
+        <h4 class="title list-group-item-heading" style="text-decoration: line-through;">
+                {{gitlab.title}}
+        </h4>
+        {{/unless}}
         <div class="details collapse">
             <p ref="description" data-type="textarea" class="description list-group-item-text">{{gitlab.description}}</p>
             <div style="clear:both">

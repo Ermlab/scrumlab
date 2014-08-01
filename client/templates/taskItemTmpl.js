@@ -3,6 +3,11 @@ Template.taskItemTmpl.helpers({
         if(status == 'toDo') return "To do";
         if(status == 'inProgress') return "In progress";
         if(status == 'done') return "Done";
+    },
+    
+    'statusCheck': function (status) {
+        if(status == 'done') return false;
+        else return true;
     }
 });
 

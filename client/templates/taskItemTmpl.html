@@ -5,6 +5,10 @@
             {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
             <span class="deleteButton glyphicon glyphicon-remove pull-right" id={{_id}}></span> 
         </div>
+        {{#if statusCheck status}}
         <p>{{name}}</p>
+        {{else}}
+        <p style="text-decoration: line-through">{{name}}</p>
+        {{/if}}
     </li> 
 </template>

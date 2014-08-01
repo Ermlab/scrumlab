@@ -13,14 +13,23 @@ Template.workBoard.rendered = function () {
                     var actualState = Tasks.findOne({
                         _id: selfId
                     }).status;
+                    var avatar = Meteor.user().gitlab.avatar_url;
+                    var username = Meteor.user().gitlab.username;
                     if (parentType == 'inprogress') parentType = 'inProgress';
                     else if (parentType == 'todo') parentType = 'toDo';
                     if (actualState != parentType) {
                         Tasks.update(selfId, {
                             $set: {
-                                status: parentType
+                                'status': parentType,
+                                'user_avatar': avatar,
+                                'username': username
                             }
                         });
+                        if(parentType == 'toDo') {
+                            Tasks.update(selfId, {
+                                $unset: {'user_avatar': '', 'username': ''}
+                            });
+                        }
                         ui.item.remove();
                     }
                 };

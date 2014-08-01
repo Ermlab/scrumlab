@@ -1,7 +1,7 @@
 <template name="issueItemTmpl">
     <div id={{_id}} title={{gitlab.title}} ref={{sprint}} objectType="issue" class="list-group-item story" state={{gitlab.state}}>
         <div class="pull-right right_icons">
-            <span class="deleteButton glyphicon glyphicon-remove"></span> 
+            <span class="deleteButton glyphicon glyphicon-remove" id={{_id}}></span> 
             <span class="glyphicon glyphicon-th-list"></span>
         </div>
         <span class="label label-warning pull-left">
@@ -16,7 +16,7 @@
         </h4>
         <div class="details collapse">
             <p ref="description" data-type="textarea" class="list-group-item-text">{{gitlab.description}}</p>
-            <div class="" style="clear:both">
+            <div style="clear:both">
                 <form class="form-horizontal" id="{{_id}}">
                     <p>
                         <input type="text" class="form-control" name="title" placeholder="Add new task and press enter" tabindex="1">

@@ -10,3 +10,12 @@
     font-size: 150%;
     height: 31px;
 }
+.deleteButton.glyphicon.glyphicon-remove.pull-right {
+    top: 5px;
+    opacity: 0.5;
+}
+.deleteButton.glyphicon.glyphicon-remove.pull-right:hover {
+    opacity: 1;
+}
+.avatar{
+}

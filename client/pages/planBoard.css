@@ -17,3 +17,9 @@
 #ui-datepicker-div {
     display: none;
 }
+.placeholder {
+    border-style: dotted;
+    border-width: 1px;
+    border-color: lightgray;
+    min-height: 55px;
+}

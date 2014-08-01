@@ -36,5 +36,15 @@ Template.issueItemTmpl.events = {
                 this.reset();
             });
         }
+    },
+    
+    'click .deleteButton': function (event) {
+        var parentId = event.currentTarget.getAttribute("id");
+        var choice = confirm('Do you want to remove selected issue?');
+            if (choice == true) {
+                Issues.remove({
+                    _id: parentId
+                });
+            }
     }
 }

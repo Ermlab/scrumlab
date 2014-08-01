@@ -1,6 +1,10 @@
 <template name="taskItemTmpl">
     <li class="task list-group-item list-group-item-info" id={{_id}} issueId={{issue_id}}>
-        <span class="label label-warning" style="margin-right:5px;">{{taskState status}}</span>
-        {{name}}
-    </li>
+        <div>
+        <span class="label label-warning">{{taskState status}}</span>
+            {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
+            <span class="deleteButton glyphicon glyphicon-remove pull-right" id={{_id}}></span> 
+        </div>
+        <p>{{name}}</p>
+    </li> 
 </template>

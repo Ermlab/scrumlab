@@ -91,7 +91,8 @@ Template.planBoardSprintsInput.rendered = function () {
             delay: '100',
             connectWith: "#backlog, .sprint",
             // Elements to exclude from sortable list
-            cancel: ""
+            cancel: ".form-control",
+            placeholder: "placeholder"
         }).disableSelection();
         // Setting datepicker property for easy date selection
         $("#datepicker").datepicker();
@@ -127,28 +128,6 @@ Template.planBoardSprints.events = {
             name.value = '';
         }
     },
-
-    'click .deleteButton': function (event) {
-        // Retrieve class and id of parent element
-        var parentType = event.currentTarget.parentElement.parentElement.getAttribute("objectType");
-        var parentId = event.currentTarget.parentElement.parentElement.getAttribute("id");
-        var parentTitle = event.currentTarget.parentElement.parentElement.getAttribute("title");
-        if (parentType == 'issue') {
-            var choice = confirm('Confirm deletion of issue: ' + parentTitle);
-            if (choice == true) {
-                Issues.remove({
-                    _id: parentId
-                });
-            }
-        } else if (parentType = 'task') {
-            var choice = confirm('Confirm deletion of task: ' + parentTitle);
-            if (choice == true) {
-                Tasks.remove({
-                    _id: parentId
-                });
-            }
-        }
-    }
 }
 
 Template.planBoardSprintsList.helpers({

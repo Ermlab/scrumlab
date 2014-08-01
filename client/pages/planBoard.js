@@ -99,37 +99,6 @@ Template.planBoardSprintsInput.rendered = function () {
     }, 500);
 }
 
-
-Template.planBoardSprints.events = {
-    'click .insertTask': function (event) {
-        // Gathering necessary new task data
-        var task = event.currentTarget.parentElement;
-        var issue = task.parentElement.parentElement;
-        var issueId = issue.getAttribute("id");
-        var projectId = document.getElementById("projectId").getAttribute("ref");
-        var name = task.getElementsByClassName("tName")[0];
-        var hours = task.getElementsByClassName("tTime")[0].value;
-        var assignee = task.getElementsByClassName("tAssigneeSelector")[0];
-        var assigneeName = assignee.options[assignee.selectedIndex].text;
-        var assigneeId = Meteor.users.findOne({
-            username: assigneeName
-        })._id;
-        // Adding task to database
-        if (name != '') {
-            Tasks.insert({
-                'project_id': projectId,
-                'issue_id': issueId,
-                'name': name.value,
-                'estimation': hours,
-                'assignee': assigneeName,
-                'assignee_id': assigneeId
-            });
-            // Resetting the input fields
-            name.value = '';
-        }
-    },
-}
-
 Template.planBoardSprintsList.helpers({
     'sprintsStats': function (sprint_id) {
         var unestimated = Issues.find({
@@ -206,16 +175,13 @@ Template.planBoardSprints.helpers({
     }
 });
 
-Template.planBoardAssignees.assignees = function () {
-    return Meteor.users.find().fetch();
-}
-
 Template.planBoardSprintsList.assignedItems = function (ownerId) {
     return Issues.find({
         sprint: ownerId
     }, {
         sort: {
-            position: 1
+            position: 1,
+            created_at: -1            
         }
     });
 }
@@ -265,20 +231,4 @@ Template.planBoardSprintsList.events = {
             };
         } else alert('Only owner can stop a sprint');
     },
-}
-
-Template.planBoardSprintsInput.events = {
-    'click input.insert': function (event) {
-        var name = document.getElementById("name");
-        var date = document.getElementById("datepicker");
-        var projectId = document.getElementById("projectId").getAttribute("ref");
-        Sprints.insert({
-            name: name.value,
-            endDate: date.value,
-            project_id: projectId,
-            status: 'ready'
-        });
-        name.value = '';
-        date.value = '';
-    }
 }

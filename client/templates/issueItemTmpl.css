@@ -44,3 +44,6 @@ div.story:hover {
 .details.collapse.in{
     clear:both;
 }
+.description.list-group-item-text {
+    color: black;
+}

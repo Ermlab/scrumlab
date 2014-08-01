@@ -1,91 +1,100 @@
 Template.planBoardSprintsInput.rendered = function () {
-    Meteor.setTimeout(function() {
-    // Setting default values for x-editable
-    $.fn.editable.defaults.mode = 'inline';
-    $.fn.editable.defaults.emptytext = '(...)';
-    $.fn.editable.defaults.toggle = 'dblclick';
-    // Setting editable property to story elements
-    $('.storyTitle, .storyText, .storyHours').editable({
-        // Defining callback function to update story in database after in-place editing
-        success: function (response, newValue) {
-            var issueId = this.parentElement.getAttribute("id");
-            var issue = Issues.findOne({
-                '_id': issueId
-            });
-            var gitlabIssueId = issue.gitlab.id;
-            var gitlabProjectId = issue.gitlab.project_id;
-            var updateField = this.getAttribute("ref");
-            var updateObject = {
-                'id': gitlabProjectId,
-                'issue_id': gitlabIssueId
-            };
-            if (updateField == 'estimation') {
-                Issues.update(issueId, {
-                    $set: {
-                        estimation: newValue
-                    }
+    Meteor.setTimeout(function () {
+        // Setting default values for x-editable
+        $.fn.editable.defaults.mode = 'inline';
+        $.fn.editable.defaults.emptytext = '(...)';
+        $.fn.editable.defaults.toggle = 'dblclick';
+        // Setting editable property to story elements
+        $('.storyTitle, .storyText, .storyHours').editable({
+            // Defining callback function to update story in database after in-place editing
+            success: function (response, newValue) {
+                var issueId = this.parentElement.getAttribute("id");
+                var issue = Issues.findOne({
+                    '_id': issueId
                 });
-            } else {
-                updateObject[updateField] = newValue;
-                Meteor.call('editIssue', updateObject);
-                Meteor.call('refreshUserProjects');
-            }
-        }
-    });
-
-    // Setting editable property to task elements
-    $('.taskTitle, .taskHours').editable({
-        // Defining callback function to update task in database after in-place editing
-        success: function (response, newValue) {
-            var taskId = this.parentElement.getAttribute("id");
-            var updateField = {};
-            updateField[this.getAttribute("ref")] = newValue;
-            Tasks.update(taskId, {
-                $set: updateField
-            });
-        }
-    });
-
-    $("#backlog, .sprint").sortable({
-        stop: function (event, ui) {
-            // Getting the element id and containing sprint's id (or a backlogItems container)
-            var ownerId = ui.item.parent().attr("id");
-            var selfId = ui.item.attr("id");
-            var previousId = ui.item.attr("ref");
-            // If no owner is specified or element was returned to backlog container ownerId is set to 0
-            if (ownerId == 'backlog') ownerId = '0';
-            // If no previous owner present, previousId is set to 0
-            if (typeof (previousId) == 'undefined') previousId = '0';
-            // Check if the item was dropped back in container it was taken from by
-            // comparing parent id with original parent id stored in "ref" variable
-            if (ownerId != previousId) {
-                // Check if owner is actually a sprint
-                if (ownerId != 0) {
-                    Issues.update(selfId, {
+                var gitlabIssueId = issue.gitlab.id;
+                var gitlabProjectId = issue.gitlab.project_id;
+                var updateField = this.getAttribute("ref");
+                var updateObject = {
+                    'id': gitlabProjectId,
+                    'issue_id': gitlabIssueId
+                };
+                if (updateField == 'estimation') {
+                    Issues.update(issueId, {
                         $set: {
-                            sprint: ownerId
+                            estimation: newValue
                         }
                     });
                 } else {
-                    // If ownerId = 0, the field sprint is removed
-                    // resulting in element becoming unassigned
-                    Issues.update(selfId, {
-                        $unset: {
-                            sprint: ""
+                    updateObject[updateField] = newValue;
+                    Meteor.call('editIssue', updateObject);
+                    Meteor.call('refreshUserProjects');
+                }
+            }
+        });
+
+        // Setting editable property to task elements
+        $('.taskTitle, .taskHours').editable({
+            // Defining callback function to update task in database after in-place editing
+            success: function (response, newValue) {
+                var taskId = this.parentElement.getAttribute("id");
+                var updateField = {};
+                updateField[this.getAttribute("ref")] = newValue;
+                Tasks.update(taskId, {
+                    $set: updateField
+                });
+            }
+        });
+
+        $("#backlog, .sprint").sortable({
+            stop: function (event, ui) {
+                // Getting the element id and containing sprint's id (or a backlogItems container)
+                var ownerId = ui.item.parent().attr("id");
+                var selfId = ui.item.attr("id");
+                var previousId = ui.item.attr("ref");
+                // If no owner is specified or element was returned to backlog container ownerId is set to 0
+                if (ownerId == 'backlog') ownerId = '0';
+                // If no previous owner present, previousId is set to 0
+                if (typeof (previousId) == 'undefined') previousId = '0';
+                // Check if the item was dropped back in container it was taken from by
+                // comparing parent id with original parent id stored in "ref" variable
+                if (ownerId != previousId) {
+                    // Check if owner is actually a sprint
+                    if (ownerId != 0) {
+                        Issues.update(selfId, {
+                            $set: {
+                                sprint: ownerId
+                            }
+                        });
+                    } else {
+                        // If ownerId = 0, the field sprint is removed
+                        // resulting in element becoming unassigned
+                        Issues.update(selfId, {
+                            $unset: {
+                                sprint: ""
+                            }
+                        });
+                    }
+                    // Getting rid of the duplicated ui item
+                    ui.item.remove();
+                }
+                // If so, starting positioning query
+                var data = $("#backlog").sortable("toArray");
+                for (var i = 0; i < data.length; i++) {
+                    Issues.update(data[i], {
+                        $set: {
+                            position: i
                         }
                     });
                 }
-                // Getting rid of the duplicated ui item
-                ui.item.remove();
-            }
-        },
-        delay: '100',
-        connectWith: "#backlog, .sprint",
-        // Elements to exclude from sortable list
-        cancel: ".sprintTimeMarker, .sprintInfo, .startButton, .stopButton, #backlogFooter, .sprintsFooter, .addTask, .form-control"
-    }).disableSelection();
-    // Setting datepicker property for easy date selection
-    $("#datepicker").datepicker();
+            },
+            delay: '100',
+            connectWith: "#backlog, .sprint",
+            // Elements to exclude from sortable list
+            cancel: ""
+        }).disableSelection();
+        // Setting datepicker property for easy date selection
+        $("#datepicker").datepicker();
     }, 500);
 }
 

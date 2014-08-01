@@ -1,9 +1,5 @@
 .task.list-group-item {
-    border-radius: 0px;
-    border-left: 4px #ed4848 solid;
-    padding: 10px;
-    min-height: 30px;
-    margin: 5px 1px;
+    margin: 1px 1px;
 }
 .task-name.list-group-item-heading {
     color: #444;

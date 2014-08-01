@@ -431,7 +431,7 @@ Server = {
     } //end func
 
 };
-/*
+
 Meteor.startup(function () {
 
 
@@ -480,7 +480,7 @@ SyncedCron.add({
     }
 });
 SyncedCron.start();
-});*/
+});
 
 Accounts.registerLoginHandler(function (loginRequest) {
     // Use first available server if not specified in login request

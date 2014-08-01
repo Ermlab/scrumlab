@@ -20,7 +20,7 @@ div.story:hover {
     border-left: 4px #49bf67 solid;
     padding: 10px;
     min-height: 55px;
-    margin: 5px 1px;
+    margin: 1px 1px;
 }
 .label.label-warning.pull-left {
     background-color: #f0ad4e;
@@ -34,4 +34,13 @@ div.story:hover {
 .title.list-group-item-heading {
     color: #444;
     margin: 6px 15px 0px 50px;
+}
+.details.collapse{
+    clear:both;
+}
+.details.collapsing{
+    clear:both;
+}
+.details.collapse.in{
+    clear:both;
 }

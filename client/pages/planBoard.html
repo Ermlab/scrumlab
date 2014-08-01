@@ -22,6 +22,7 @@
 
 
 <template name="planBoardSprintsList">
+    {{> planBoardSprintsInput}}
     {{#each sprints}}
     <div class="alert alert-dismissable alert-warning">
         <div>
@@ -39,7 +40,7 @@
             {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
         </div>
     </div>
-    {{/each}} {{> planBoardSprintsInput}}
+    {{/each}}
 </template>
 
 

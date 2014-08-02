@@ -22,14 +22,14 @@
         {{/unless}}
         <div class="details collapse">
             <p ref="description" data-type="textarea" class="description list-group-item-text">{{gitlab.description}}</p>
-            <div style="clear:both">
+            <!--<div style="clear:both">-->
                 <form class="form-horizontal" id="{{_id}}">
                     <p>
                         <input type="text" class="form-control" name="title" placeholder="Add new task and press enter" tabindex="1">
                     </p>
                 </form>
                 {{> tasksListTmpl tasks _id}}
-            </div>
+            <!--</div>-->
         </div>
     </div>
 </template>

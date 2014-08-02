@@ -22,6 +22,9 @@ div.story:hover {
     min-height: 55px;
     margin: 1px 1px;
 }
+.story p {
+    margin: 5px 0px;
+}
 .label.label-warning.pull-left {
     background-color: #f0ad4e;
     font-size: 150%;
@@ -33,16 +36,16 @@ div.story:hover {
 }
 .title.list-group-item-heading {
     color: #444;
-    margin: 6px 15px 0px 50px;
+    margin: 0px 20px 0px 50px;
 }
-.details.collapse{
-    clear:both;
+.details.collapse {
+    clear: both;
 }
-.details.collapsing{
-    clear:both;
+.details.collapsing {
+    clear: both;
 }
-.details.collapse.in{
-    clear:both;
+.details.collapse.in {
+    clear: both;
 }
 .description.list-group-item-text {
     color: black;

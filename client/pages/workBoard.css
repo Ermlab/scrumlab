@@ -13,3 +13,9 @@
     border-color: lightgray;
     min-height: 55px;
 }
+.issue-panel {
+    background-color: #fcf8e3;
+    border: 1px #fbeed5 solid;
+    margin-bottom: 5px;
+    padding: 2px;
+}

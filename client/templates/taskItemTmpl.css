@@ -1,0 +1,21 @@
+.task.list-group-item {
+    margin: 1px 1px;
+}
+.task-name.list-group-item-heading {
+    color: #444;
+    margin: 6px 15px 0px 50px;
+}
+.task-estimation.label.label-warning.pull-left {
+    background-color: #f0ad4e;
+    font-size: 150%;
+    height: 31px;
+}
+.deleteTaskButton.glyphicon.glyphicon-remove.pull-right {
+    top: 5px;
+    opacity: 0.5;
+}
+.deleteTaskButton.glyphicon.glyphicon-remove.pull-right:hover {
+    opacity: 1;
+}
+.avatar{
+}

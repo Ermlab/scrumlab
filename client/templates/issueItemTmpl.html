@@ -1,38 +1,35 @@
 <template name="issueItemTmpl">
-    <div id={{_id}} title={{gitlab.title}} ref={{sprint}} objectType="issue" class="story list-group-item" style="border-radius: 0px;border-left: 4px #49bf67 solid;padding: 10px;min-height: 50px;margin: 5px 1px;" state={{gitlab.state}}>
+    <div id={{_id}} title={{gitlab.title}} ref={{sprint}} objectType="issue" class="list-group-item story" state={{gitlab.state}}>
         <div class="pull-right right_icons">
-            <span class="deleteButton glyphicon glyphicon-remove"></span> 
+            <span class="deleteButton glyphicon glyphicon-remove" id={{_id}}></span> 
             <span class="glyphicon glyphicon-th-list"></span>
         </div>
-        <span class="label label-warning pull-left" style="background-color: #f0ad4e;font-size: 150%;height: 31px;">
+        <span class="label label-warning pull-left">
             {{#if estimation}}
             {{estimation}}
             {{else}}
-            <span class="glyphicon glyphicon-time" style="width: 16px;  margin-left: -4px"></span>
+            <span class="glyphicon glyphicon-time"></span>
         {{/if}}
         </span>
-        <h4 class="list-group-item-heading" style="color:#444;margin:6px 15px 0px 50px">
+        {{#unless checkIfDone _id}}
+        <h4 class="title list-group-item-heading">
                 {{gitlab.title}}
         </h4>
-        <div class="collapse" style="clear:both">
-            <p ref="description" data-type="textarea" class="list-group-item-text">{{gitlab.description}}</p>
-            {{#each tasks _id}}
-            <div class="list-group-item" style="border-radius: 0px;border-left: 4px #ed4848 solid;padding: 10px;min-height: 30px;margin: 5px 1px;" id={{_id}} ref={{name}} objectType="task">
-                <p class="list-group-item-heading" style="color:#444;margin:6px 15px 0px 50px" ref="name" data-type="text">{{name}}</p>
-                <p class="label label-warning pull-left" style="background-color: #f0ad4e;font-size: 150%;height: 31px;" ref="estimation" data-type="text">{{estimation}}</p>
-                <p class="taskAssignee" ref="assignee" data-type="text">(todo: rework) Assigned to: {{assignee}}</p>
-                <p class="deleteButton glyphicon glyphicon-remove"></p>
+        {{else}}
+        <h4 class="title list-group-item-heading" style="text-decoration: line-through;">
+                {{gitlab.title}}
+        </h4>
+        {{/unless}}
+        <div class="details collapse">
+            <p ref="description" data-type="textarea" class="description list-group-item-text">{{gitlab.description}}</p>
+            <div style="clear:both">
+                <form class="form-horizontal" id="{{_id}}">
+                    <p>
+                        <input type="text" class="form-control" name="title" placeholder="Add new task and press enter" tabindex="1">
+                    </p>
+                </form>
+                {{> tasksListTmpl tasks _id}}
             </div>
-            {{/each}}
-            <details class="addTask">
-                <summary>Add task</summary>
-                <input type="text" class="tName" style="width: 95%" placeholder="Name" />
-                <br/>Estimated time:
-                <input type="number" class="tTime" style="width: 10%" />
-                <br/>Assigned to:
-                <select class="tAssigneeSelector" style="width: 30%">{{> planBoardAssignees}}</select>
-                <input type="button" class="insertTask" value="Dodaj" style="float: right" />
-            </details>
         </div>
     </div>
 </template>

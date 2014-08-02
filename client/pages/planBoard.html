@@ -20,34 +20,41 @@
     </div>
 </template>
 
-<!-- To jest ten po prawej -->
-<template name="planBoardSprintsList">
 
+<template name="planBoardSprintsList">
+    {{> planBoardSprintsInput}}
     {{#each sprints}}
     <div class="alert alert-dismissable alert-warning">
-
         <div>
-            <span class="label label-success">Status: {{status}}</span>
-
-            <span class="label label-warning">Ramaing ( 7 ) days</span>
-
-            <span class="label label-primary">End date: {{endDate}}</span>
-
+            {{#if sprintStatus status 'finished'}}
+            <span class="label label-danger" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-default">End date: {{endDate}} </span>
+            {{/if}}
+            {{#if sprintStatus status 'ready'}}
+            <span class="label label-success" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-primary">End date: {{endDate}} </span>
+            {{/if}}
+            {{#if sprintStatus status 'in progress'}}
+            <span class="label label-warning" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-primary">End date: {{endDate}} </span>
+            {{/if}}
             <span class="text-right" style="float:right;">
-                <button type="button" class="btn btn-success btn-sm">Start this sprint</button>
+                {{#if checkIfReady status}}
+                <button type="button" class="btn btn-success btn-sm">Start</button>
+                {{else}}
+                <button type="button" class="btn btn-danger btn-sm">Stop</button>
+                {{/if}}
             </span>
-
         </div>
-
         <div class="well well-sm text-left" style="margin-top:8px;">
             <h5><Strong>{{name}}</Strong></h5>
         </div>
-
         <div class="sprint" id={{_id}} style="min-height: 15px">
             {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
         </div>
+        {{sprintsStats _id}}
     </div>
-    {{/each}} {{> planBoardSprintsInput}}
+    {{/each}}
 </template>
 
 
@@ -58,11 +65,4 @@
         <input type="text" id="datepicker" style="width: 66%; margin: 1%;" placeholder="End date" />
         <input type="button" class="insert" style="width: 29%; margin: 1%;" value="Add" />
     </details>
-</template>
-
-
-<template name="planBoardAssignees">
-    {{#each assignees}}
-    <option value={{_id}}>{{username}}</option>
-    {{/each}}
 </template>

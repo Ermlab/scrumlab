@@ -1,52 +1,45 @@
 <template name="workBoard">
     {{#with project}}
-    <div class="page-header">
-        <h1>{{gitlab.name}} - Work Board</h1>
-    </div>
-
-    Work board for project: {{ _id }} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>) {{/with}} {{#if sprint}}
+        <div class="page-header">
+            <h1>{{gitlab.name}} - Work Board</h1>
+            <input type="hidden" id="projectId" ref={{_id}}>
+        </div>
+        Work board for project: {{_id}} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>) 
+    {{/with}} 
+    {{#if sprint}}
     <div class="row">
-        <div class="col-md-12">
+        <p class="col-md-12">
             <h3>{{sprint.name}}: End date: {{sprint.endDate}}</h3>
-        </div>
-        <div id="unassigned" class="col-md-3">Unassigned: {{#each issueList sprint._id 'unassigned'}}
-           
+        </p>
+        <p class="col-md-3">Unassigned:</p>
+        <p class="col-md-3">To do:</p>
+        <p class="col-md-3">In progress:</p>
+        <p class="col-md-3">Done:</p>
+    </div>
+    {{#each issues}}
+    <div class="row" id="{{_id}}">
+        <div class="col-md-3">
             {{>issueItemTmpl}}
-            
-            
-            
-            {{/each}}
-            <p class="footer">{{boardStats sprint._id 'unassigned'}}</p>
         </div>
-        <div id="todo" class="col-md-3">To do: 
-            {{#each issueList sprint._id 'todo'}}
-            
-            {{>issueItemTmpl}}
-            
-          
+        <div class="todo col-md-3" id="{{_id}}">
+            {{#each taskList _id 'toDo'}}
+                {{>taskItemTmpl}}
             {{/each}}
-            <p class="footer">{{boardStats sprint._id 'todo'}}</p>
         </div>
-        <div id="inprogress" class="col-md-3">In progress: {{#each issueList sprint._id 'inprogress'}}
-            
-            {{>issueItemTmpl}}
-            
-            
-           
-            
+        <div class="inprogress col-md-3" id="{{_id}}">
+            {{#each taskList _id 'inProgress'}}
+                {{>taskItemTmpl}}
             {{/each}}
-            <p class="footer">{{boardStats sprint._id 'inprogress'}}</p>
         </div>
-        <div id="done" class="col-md-3">Done: {{#each issueList sprint._id 'done'}}
-            
-            
-            {{>issueItemTmpl}}
-            
-           
-            
+        <div class="done col-md-3" id="{{_id}}">
+            {{#each taskList _id 'done'}}
+                {{>taskItemTmpl}}
             {{/each}}
-            <p class="footer">{{boardStats sprint._id 'done'}}</p>
         </div>
+    </div>
+    {{/each}}
+    <div class="row">
+        <p class="footer col-md-3"></p>
         <div id="stats" class="col-md-12">{{sprintStats sprint._id}}</div>
     </div>
     {{else}}

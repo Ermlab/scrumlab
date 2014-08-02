@@ -1,0 +1,22 @@
+<template name="taskItemTmpl">
+    <li class="task list-group-item list-group-item-info" id={{_id}} issueId={{issue_id}}>
+        <div>
+            {{#if statusCheck status 'toDo'}}
+            <span class="label label-danger">{{taskState status}}</span>
+            {{/if}}
+            {{#if statusCheck status 'inProgress'}}
+            <span class="label label-warning">{{taskState status}}</span>
+            {{/if}}
+            {{#if statusCheck status 'done'}}
+            <span class="label label-success">{{taskState status}}</span>
+            {{/if}}
+            {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
+            <span class="deleteTaskButton glyphicon glyphicon-remove pull-right" id={{_id}} issueId={{issue_id}}></span> 
+        </div>
+        {{#unless statusCheck status 'done'}}
+        <p>{{name}}</p>
+        {{else}}
+        <p style="text-decoration: line-through">{{name}}</p>
+        {{/unless}}
+    </li> 
+</template>

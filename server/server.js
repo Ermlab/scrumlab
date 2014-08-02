@@ -70,7 +70,16 @@ Server = {
 
                 console.log('issue on server \n', new_issue);
 
-                return Issues.insert(new_issue);
+                var output = Issues.insert(new_issue);
+                // Add placeholder task
+                Tasks.insert({
+                    'project_id': new_issue.project_id,
+                    'issue_id': output,
+                    'name': new_issue.gitlab.title,
+                    'status': 'toDo',
+                    'placeholder': true
+                });
+                return output;
 
             }).run(); //end fiber
 
@@ -433,7 +442,6 @@ Server = {
 };
 
 Meteor.startup(function () {
-
 
 
     // Fixtures 

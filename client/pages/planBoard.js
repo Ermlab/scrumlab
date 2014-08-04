@@ -133,12 +133,12 @@ Template.planBoardSprintsList.helpers({
         }, 0);
         return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
     },
-    
+
     'checkIfReady': function (status) {
-        if(status == 'in progress') return false;
+        if (status == 'in progress') return false;
         else return true;
     },
-    
+
     'sprintStatus': function (sprintStatus, input) {
         if (sprintStatus == input) {
             return true;
@@ -247,17 +247,27 @@ Template.planBoardSprintsList.events = {
 }
 
 Template.planBoardSprintsInput.events = {
-    'click input.insert': function (event) {
+    'submit form': function (event) {
         var name = document.getElementById("name");
         var date = document.getElementById("datepicker");
         var projectId = document.getElementById("projectId").getAttribute("ref");
-        Sprints.insert({
-            name: name.value,
-            endDate: date.value,
-            project_id: projectId,
-            status: 'ready'
-        });
+
+        if (date.value == "") {
+            alert("Please select date");
+        } else if (name.value == "") {
+            alert("Please write title of sprint");
+        } else {
+            Sprints.insert({
+                name: name.value,
+                endDate: date.value,
+                project_id: projectId,
+                status: 'ready'
+            });
+        }
+
         name.value = '';
         date.value = '';
+
+        $(e.target).find('[name=name]').focus();
     }
 }

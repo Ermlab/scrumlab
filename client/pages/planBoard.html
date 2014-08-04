@@ -44,7 +44,6 @@
             <span class="label label-warning" style="margin-right:5px;">Status: {{status}} </span>
             <span class="label label-primary">End date: {{endDate}} </span>
             {{/if}}
-
         </div>
 
 
@@ -62,10 +61,31 @@
 
 
 <template name="planBoardSprintsInput">
-    <details id="addSprint">
-        <summary>New sprint</summary>
-        <input type="text" id="name" style="width: 98%; margin: 1%;" placeholder="Sprint title" />
-        <input type="text" id="datepicker" style="width: 66%; margin: 1%;" placeholder="End date" />
-        <input type="button" class="insert" style="width: 29%; margin: 1%;" value="Add" />
-    </details>
+
+    <div class="alert alert-dismissable alert-info">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="date-form">
+                    <div class="form-horizontal">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-group">
+                                    <label for="date-picker-3" class="input-group-addon btn"><span class="glyphicon glyphicon-calendar"></span>
+                                    </label>
+                                    <input id="datepicker" type="text" class="date-picker form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <form class="form-horizontal">
+                    <p>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Add new sprint and press enter" tabindex="1">
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
 </template>

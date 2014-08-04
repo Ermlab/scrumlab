@@ -15,8 +15,6 @@ Template.addIssueTmpl.events = {
             estimation: $(e.target).find('[name=estimation]').val().trim(),
         }
 
-        console.log("Witam");
-
         Meteor.call('createIssue', issue, function (error, result) {
             console.log("m_call_err", error);
             console.log("m_call_err", result);
@@ -43,8 +41,8 @@ Template.addIssueTmpl.events = {
                 count++;
             }
         });
-        var mean = Math.floor(sum/count);
-        if(isNaN(mean)) mean = 0;
+        var mean = Math.floor(sum / count);
+        if (isNaN(mean)) mean = 0;
         document.getElementById('teamEstimationMarker').innerHTML = mean;
     },
 

@@ -25,6 +25,8 @@ Template.projectVelocity.rendered = function () {
         }]
         }
 
+        totalTimeProject = 0;
+
         _.each(sprints, function (spr) {
 
             var issues = Issues.find({
@@ -55,6 +57,8 @@ Template.projectVelocity.rendered = function () {
             var totalTime = _.reduce(_.pluck(issues, 'estimation'), function (sum, val) {
                 return sum + parseInt(val);
             }, 0);
+
+            totalTimeProject += totalTime;
 
             var doneTime = _.reduce(_.pluck(closed, 'estimation'), function (sum, val) {
                 return sum + parseInt(val);
@@ -107,101 +111,51 @@ Template.projectVelocity.rendered = function () {
 
         var barChart = new Chart(ctx).Bar(data, options);
 
-        var legend = barChart.generateLegend()
+        var legend = barChart.generateLegend();
 
         $("#legend").html(legend);
 
-        _.each(sprints, function (spr) {
+        // ////// ///// ///// /////// //////// //
+        // Second chart named project burndown //
+        // ////// ///// ///// /////// //////// //
+        
+        var sprintBurndown = Sprints.find({'status':'in progress'}).fetch();
+        
+        var issues = Issues.find({
+                estimation: {
+                    $exists: true
+                },
+                sprint: sprintBurndown[0]._id
 
-            if (_.isDate(sprints.startDate)) {
-                alert("Yes it's date: ", sprints.startDate);
-            } else {
-                alert("Nope :(");
-            }
+            }).fetch();
 
+        var closed = Issues.find({
+            $and: [{
+                estimation: {
+                    $exists: true
+                }
+        }, {
+                estimation: {
+                    $ne: ''
+                }
+        }, {
+                sprint: sprintBurndown[0]._id
+        }, {
+                'gitlab.state': 'closed'
+        }]
+
+        }).fetch();
+        
+        var totalTime = 0;
+                
+        _.each(issues, function (iss) {
+            totalTime = _.reduce(_.pluck(issues, 'estimation'), function (sum, val) {
+                return sum + parseInt(val);
+            }, 0);
         })
-        // here we can count how many days remaing - for chart burndown
-        var then = "06/08/2014 11:20:30";
-
-        var finish = moment(now, "DD/MM/YYYY HH:mm:ss").diff(moment(then, "DD/MM/YYYY HH:mm:ss"));
-        var dur = moment.duration(finish);
-        var getDur = dur.get("days");
-
-        var data = {
-            labels: ["0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", " 10", " 11", " 12", " 13", " 14", " 15", " 16", " 17", " 18", " 19", " 20", " 21", " 22", " 23", " 24", " 25", " 26", " 27", " 28", " 29", " 30", " 31", ],
-            datasets: [
-                {
-                    label: "My First dataset",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: [80, 79, 75, 40, 45, 68, 68, 65, 62, 58, 54, 74, 60, 40, 34, 32, 22, 8, 6, 2, 0]
-        },
-                {
-                    label: "My Second dataset",
-                    fillColor: "rgba(151,187,205,0.2)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(151,187,205,1)",
-                    data: [80, 76, 72, 68, 64, 60, 56, 52, 48, 44, 40, 36, 32, 28, 24, 20, 16, 12, 8, 4, 0]
-        }
-    ]
-        };
-
-        var options = {
-
-            ///Boolean - Whether grid lines are shown across the chart
-            scaleShowGridLines: true,
-
-            //String - Colour of the grid lines
-            scaleGridLineColor: "rgba(0,0,0,.05)",
-
-            //Number - Width of the grid lines
-            scaleGridLineWidth: 1,
-
-            //Boolean - Whether the line is curved between points
-            bezierCurve: true,
-
-            responsive: true,
-
-            //Number - Tension of the bezier curve between points
-            bezierCurveTension: 0.4,
-
-            //Boolean - Whether to show a dot for each point
-            pointDot: true,
-
-            //Number - Radius of each point dot in pixels
-            pointDotRadius: 4,
-
-            //Number - Pixel width of point dot stroke
-            pointDotStrokeWidth: 1,
-
-            //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-            pointHitDetectionRadius: 20,
-
-            //Boolean - Whether to show a stroke for datasets
-            datasetStroke: true,
-
-            //Number - Pixel width of dataset stroke
-            datasetStrokeWidth: 2,
-
-            //Boolean - Whether to fill the dataset with a colour
-            datasetFill: true,
-
-            //String - A legend template
-            legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-
-        };
-
-        var ctx = document.getElementById("pBurndown").getContext("2d");
-
-        var myLineChart = new Chart(ctx).Line(data, options);
-
+        
+        alert(totalTime);
+        
     }, 500)
 
 }

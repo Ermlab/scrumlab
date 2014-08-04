@@ -23,33 +23,29 @@
 
 <template name="planBoardSprintsList">
     {{> planBoardSprintsInput}} {{#each sprints}}
-    <div class="alert alert-dismissable alert-warning">
+    <div class="alert alert-dismissable alert-info">
 
-        <div class="pull-right">
-            {{#if checkIfReady status}}
-            <button type="button" class="btn btn-success btn-sm">Start</button>
-            {{else}}
-            <button type="button" class="btn btn-danger btn-sm">Stop</button>
-            {{/if}}
-        </div>
-
-        <div>
+        <div class="row">
+            <div class="pull-right" style="margin-right:15px;">
+                {{#if checkIfReady status}}
+                <button type="button" class="btn btn-success btn-sm">Start</button>
+                {{else}}
+                <button type="button" class="btn btn-danger btn-sm">Stop</button>
+                {{/if}}
+            </div>
             {{#if sprintStatus status 'finished'}}
-            <span class="label label-danger" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-danger" style="margin-right:5px; margin-left:5px;">Status: {{status}} </span>
             <span class="label label-default">End date: {{endDate}} </span>
             {{/if}} {{#if sprintStatus status 'ready'}}
-            <span class="label label-success" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-success" style="margin-right:5px; margin-left:5px;">Status: {{status}} </span>
             <span class="label label-primary">End date: {{endDate}} </span>
             {{/if}} {{#if sprintStatus status 'in progress'}}
-            <span class="label label-warning" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-warning" style="margin-right:5px; margin-left:5px;">Status: {{status}} </span>
             <span class="label label-primary">End date: {{endDate}} </span>
             {{/if}}
         </div>
-
-
-
         <div class="well well-sm text-left" style="margin-top:8px;">
-            <h4>{{name}}</h4>
+            <h4 style="color:black;">{{name}}</h4>
         </div>
         <div class="sprint" id={{_id}} style="min-height: 15px">
             {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}

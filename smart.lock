@@ -5,7 +5,6 @@
       "iron-router": {},
       "bootstrap-3": {},
       "iron-router-active": {},
-      "x-editable-bootstrap": {},
       "jquery-ui": {},
       "spin": {},
       "synced-cron": {}
@@ -25,11 +24,6 @@
         "git": "https://github.com/XpressiveCode/iron-router-active.git",
         "tag": "v0.2.0",
         "commit": "1b05aad5325c3dfdb5186b9c288aa53013d767b8"
-      },
-      "x-editable-bootstrap": {
-        "git": "https://github.com/nate-strauser/meteor-x-editable-bootstrap.git",
-        "tag": "v1.5.1",
-        "commit": "ddb9e4523b570f88d96c4fbafa5f6883e544baf8"
       },
       "jquery-ui": {
         "git": "https://github.com/TimHeckel/meteor-jquery-ui.git",

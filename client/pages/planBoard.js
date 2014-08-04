@@ -1,52 +1,5 @@
 Template.planBoardSprintsInput.rendered = function () {
     Meteor.setTimeout(function () {
-        // Setting default values for x-editable
-        /*
-        $.fn.editable.defaults.mode = 'inline';
-        $.fn.editable.defaults.emptytext = '(...)';
-        $.fn.editable.defaults.toggle = 'dblclick';
-        // Setting editable property to story elements
-        $('.description.list-group-item-text, .title.list-group-item-heading, .glyphicon.glyphicon-time').editable({
-            // Defining callback function to update story in database after in-place editing
-            success: function (response, newValue) {
-                var issueId = this.parentElement.getAttribute("id");
-                var issue = Issues.findOne({
-                    '_id': issueId
-                });
-                var gitlabIssueId = issue.gitlab.id;
-                var gitlabProjectId = issue.gitlab.project_id;
-                var updateField = this.getAttribute("ref");
-                var updateObject = {
-                    'id': gitlabProjectId,
-                    'issue_id': gitlabIssueId
-                };
-                if (updateField == 'estimation') {
-                    Issues.update(issueId, {
-                        $set: {
-                            estimation: newValue
-                        }
-                    });
-                } else {
-                    updateObject[updateField] = newValue;
-                    Meteor.call('editIssue', updateObject);
-                    Meteor.call('refreshUserProjects');
-                }
-            }
-        });
-        */
-        // Setting editable property to task elements
-        $('.taskTitle, .taskHours').editable({
-            // Defining callback function to update task in database after in-place editing
-            success: function (response, newValue) {
-                var taskId = this.parentElement.getAttribute("id");
-                var updateField = {};
-                updateField[this.getAttribute("ref")] = newValue;
-                Tasks.update(taskId, {
-                    $set: updateField
-                });
-            }
-        });
-
         $("#backlog, .sprint").sortable({
             stop: function (event, ui) {
                 // Getting the element id and containing sprint's id (or a backlogItems container)

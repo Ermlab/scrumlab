@@ -6,6 +6,7 @@
 /bootstrap-3
 /spin
 /synced-cron
+<<<<<<< HEAD
 /d3.chart
 /iron-layout
 /d3
@@ -13,3 +14,9 @@
 /iron-dynamic-template
 /chartjs
 /moment
+=======
+/gitlab
+/iron-layout
+/iron-core
+/iron-dynamic-template
+>>>>>>> dev

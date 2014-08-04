@@ -6,11 +6,16 @@
       "jquery-ui": {},
       "spin": {},
       "synced-cron": {},
-      "iron-router-active": {},
       "chartjs": {},
-      "moment": {}
+      "moment": {},
+      "gitlab": {}
     },
     "packages": {
+      "iron-router": {
+        "git": "https://github.com/EventedMind/iron-router.git",
+        "tag": "v0.8.2",
+        "commit": "05415a8891ea87a00fb1e2388585f2ca5a38e0da"
+      },
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
         "tag": "v3.2.0-1",
@@ -31,11 +36,6 @@
         "tag": "v0.1.1",
         "commit": "c731ab04e7bf2b0aa7a7e3c4f4750c8c648b791d"
       },
-      "iron-router-active": {
-        "git": "https://github.com/XpressiveCode/iron-router-active.git",
-        "tag": "v0.2.0",
-        "commit": "1b05aad5325c3dfdb5186b9c288aa53013d767b8"
-      },
       "chartjs": {
         "git": "https://github.com/donskifarrell/meteor-chartjs.git",
         "tag": "v0.0.6",
@@ -50,6 +50,10 @@
         "git": "https://github.com/EventedMind/iron-router.git",
         "tag": "v0.8.2",
         "commit": "05415a8891ea87a00fb1e2388585f2ca5a38e0da"
+      "gitlab": {
+        "git": "https://github.com/Ermlab/meteor-nxt-gitlab.git",
+        "tag": "v0.1.0",
+        "commit": "5bcc187dcd4eada7e545f8034463a4f33eb5ff58"
       },
       "iron-layout": {
         "git": "https://github.com/EventedMind/iron-layout.git",

@@ -4,8 +4,8 @@
     "jquery-ui": {},
     "spin": {},
     "synced-cron": {},
-    "iron-router-active": {},
     "chartjs": {},
-    "moment": {}
+    "moment": {},
+    "gitlab": {}
   }
 }

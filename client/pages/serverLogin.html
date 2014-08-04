@@ -1,0 +1,22 @@
+<template name="serverLogin">
+    <div class="page-header">
+        <h1>Sign in with your GitLab account</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-2">
+            <form class="form-horizontal form-signin" id="signupForm">
+                <input id="emailInput" type="email" class="form-control" name="login" placeholder="GitLab e-mail or login" tabindex="1">
+                <input id="passwordInput" type="password" class="form-control" name="password" placeholder="Password" tabindex="2">
+                <div class="col-md-10" style="padding: 0px;">
+                    <input id="serverInput" type="text" class="form-control" list="servers" name="server" placeholder="GitLab server" tabindex="3">
+                    <datalist id="servers">
+                        {{#each servers}}
+                        <option value="{{url}}"></option>
+                        {{/each}}
+                    </datalist>
+                </div>
+                <input type="submit" class="btn btn-success pull-right" tabindex="5" value="Sign in">
+            </form>
+        </div>
+    </div>
+</template>

@@ -42,3 +42,7 @@ Meteor.publish('tasks', function (projectId) {
         'project_id': projectId
     });
 });
+
+Meteor.publish('gitlabServers', function () {
+    return GitlabServers.find();
+});

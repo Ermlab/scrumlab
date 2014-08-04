@@ -57,7 +57,7 @@ Template.issueItemTmpl.events = {
                     'placeholder': true
                 }]
             });
-            if (placeholder != undefined) Tasks.remove(placeholder._id, {
+            if (typeof placeholder != 'undefined') Tasks.remove(placeholder._id, {
                 justOne: true
             });
             $(e.target).each(function () {

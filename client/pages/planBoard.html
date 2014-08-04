@@ -1,7 +1,7 @@
 <template name="planBoard">
     {{#with project}}
     <div class="page-header">
-        <h1>{{gitlab.name}} - Plan your work</h1>
+        <h1 contenteditable="true">{{gitlab.name}} - Plan your work</h1>
         <input type="hidden" id="projectId" ref={{_id}}>
     </div>
     {{/with}} {{> addIssueTmpl}} {{> planBoardSprints}}

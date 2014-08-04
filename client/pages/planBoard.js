@@ -175,9 +175,8 @@ Template.planBoardSprintsList.events = {
                         }
                     });
                 } else alert('Sprint is already overdue.');
-            } else if (sprint.status == 'in progress') alert('Sprint already in progress');
-            else if (sprint.status == 'closed') alert('This sprint has already finished');
-        } else alert('Only owner can start a sprint');
+            } else if (sprint.status == 'in progress') alert('Sprint already in progress.');
+        } else alert('Only owner can start a sprint.');
     },
     'click .btn.btn-danger.btn-sm': function (event) {
         // Check if current user is the owner of the project
@@ -196,7 +195,7 @@ Template.planBoardSprintsList.events = {
                     }
                 });
             };
-        } else alert('Only owner can stop a sprint');
+        } else alert('Only owner can stop a sprint.');
     }
 }
 

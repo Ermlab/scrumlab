@@ -26,9 +26,9 @@
     <div class="alert alert-dismissable alert-warning">
 
         <div class="pull-right">
-            {{#if checkIfReady status}}
+            {{#if sprintStatus status 'ready'}}
             <button id={{_id}} type="button" class="btn btn-success btn-sm">Start</button>
-            {{else}}
+            {{/if}} {{#if sprintStatus status 'in progress'}}
             <button id={{_id}} type="button" class="btn btn-danger btn-sm">Stop</button>
             {{/if}}
         </div>

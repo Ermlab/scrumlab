@@ -1,11 +1,12 @@
 Template.planBoardSprintsInput.rendered = function () {
     Meteor.setTimeout(function () {
         // Setting default values for x-editable
+        /*
         $.fn.editable.defaults.mode = 'inline';
         $.fn.editable.defaults.emptytext = '(...)';
         $.fn.editable.defaults.toggle = 'dblclick';
         // Setting editable property to story elements
-        $('.storyTitle, .storyText, .storyHours').editable({
+        $('.description.list-group-item-text, .title.list-group-item-heading, .glyphicon.glyphicon-time').editable({
             // Defining callback function to update story in database after in-place editing
             success: function (response, newValue) {
                 var issueId = this.parentElement.getAttribute("id");
@@ -32,7 +33,7 @@ Template.planBoardSprintsInput.rendered = function () {
                 }
             }
         });
-
+        */
         // Setting editable property to task elements
         $('.taskTitle, .taskHours').editable({
             // Defining callback function to update task in database after in-place editing
@@ -200,12 +201,12 @@ Template.planBoardSprintsList.assignedItems = function (ownerId) {
 }
 
 Template.planBoardSprintsList.events = {
-    'click .startButton': function (event) {
+    'click .btn.btn-success.btn-sm': function (event) {
         // Check if current user is the owner of the project
         var projectId = document.getElementById("projectId").getAttribute("ref");
         if (CheckIfOwner(projectId)) {
             // Get selected sprint data
-            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var parentId = event.currentTarget.getAttribute("id");
             var sprint = Sprints.findOne({
                 _id: parentId
             });
@@ -225,12 +226,12 @@ Template.planBoardSprintsList.events = {
             else if (sprint.status == 'closed') alert('This sprint has already finished');
         } else alert('Only owner can start a sprint');
     },
-    'click .stopButton': function (event) {
+    'click .btn.btn-danger.btn-sm': function (event) {
         // Check if current user is the owner of the project
         var projectId = document.getElementById("projectId").getAttribute("ref");
         if (CheckIfOwner(projectId)) {
             // Get selected sprint data
-            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var parentId = event.currentTarget.getAttribute("id");
             var sprint = Sprints.findOne({
                 _id: parentId
             });

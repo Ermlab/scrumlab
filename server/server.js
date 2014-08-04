@@ -437,8 +437,22 @@ Server = {
 
             }); //end api
         }
-    } //end func
+    }, //end func
 
+    sprintFinisher: function() {
+        var sprints = Sprints.find({
+                status: 'in progress'
+            }).fetch();
+            _.each(sprints, function (spr) {
+                if (CheckDate(spr.endDate) == false) {
+                    Sprints.update(spr._id, {
+                        $set: {
+                            'status': 'finished'
+                        }
+                    });
+                }
+            });
+    }
 };
 
 Meteor.startup(function () {
@@ -473,22 +487,12 @@ Meteor.startup(function () {
             // parser is a later.parse object
             return parser.text('at 1:00 am');
         },
-        job: function () {
-            var sprints = Sprints.find({
-                status: 'in progress'
-            }).fetch();
-            _.each(sprints, function (spr) {
-                if (CheckDate(spr.endDate) == false) {
-                    Sprints.update(spr._id, {
-                        $set: {
-                            'status': 'finished'
-                        }
-                    });
-                }
-            });
-        }
+        job: Server.sprintFinisher
     });
     SyncedCron.start();
+    
+    // Run sprint finishing 
+    Server.sprintFinisher();
 });
 
 Accounts.registerLoginHandler(function (loginRequest) {

@@ -4,7 +4,7 @@
             <span class="deleteButton glyphicon glyphicon-remove" id={{_id}}></span> 
             <span class="glyphicon glyphicon-th-list"></span>
         </div>
-        <span class="label label-warning pull-left">
+        <span data-type="textarea" class="label label-warning pull-left">
             {{#if estimation}}
             {{estimation}}
             {{else}}
@@ -16,7 +16,7 @@
                 {{gitlab.title}}
         </h4>
         {{else}}
-        <h4 class="title list-group-item-heading" style="text-decoration: line-through;">
+        <h4 data-type="textarea" class="title list-group-item-heading" style="text-decoration: line-through;">
                 {{gitlab.title}}
         </h4>
         {{/unless}}

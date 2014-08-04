@@ -45,9 +45,9 @@ Template.planBoardSprintsInput.rendered = function () {
             delay: '100',
             connectWith: "#backlog, .sprint",
             // Elements to exclude from sortable list
-            cancel: ".form-control",
+            cancel: ".form-control, :input, button, [contenteditable]",
             placeholder: "placeholder"
-        }).disableSelection();
+        });
         // Setting datepicker property for easy date selection
         $("#datepicker").datepicker();
     }, 500);

@@ -38,5 +38,11 @@ Template.taskItemTmpl.events = {
                 });
             }
         }
+    },
+    
+    'blur .taskTitle': function(event) {
+        var newValue = event.currentTarget.innerHTML.trim();
+        var taskId = event.currentTarget.getAttribute("id");
+        Tasks.update(taskId, {$set: {'name': newValue}});
     }
 }

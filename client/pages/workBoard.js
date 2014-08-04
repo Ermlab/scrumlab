@@ -69,7 +69,7 @@ Template.workBoard.rendered = function () {
             delay: '100',
             opacity: '0.7',
             connectWith: ".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3",
-            cancel: ".footer",
+            cancel: ".footer, :input, button, [contenteditable]",
             placeholder: "placeholder"
         }).disableSelection();
     }, 500);

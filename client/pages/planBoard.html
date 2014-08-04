@@ -50,7 +50,7 @@
         <div class="sprint" id={{_id}} style="min-height: 15px">
             {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
         </div>
-        {{sprintsStats _id}}
+        <span class="label label-info">{{sprintsStats _id}}</span>
     </div>
     {{/each}}
 </template>

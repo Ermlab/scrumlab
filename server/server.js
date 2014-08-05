@@ -315,10 +315,17 @@ Server = {
                         });
 
                     } else {
-                        Issues.insert({
+                        var output = Issues.insert({
                             'project_id': projectId,
                             'gitlab': issues[i],
                             'origin': api.options.origin
+                        });
+                        Tasks.insert({
+                            'project_id': projectId,
+                            'issue_id': output,
+                            'name': issues[i].title,
+                            'status': 'toDo',
+                            'placeholder': true
                         });
                     }
                 }
@@ -371,10 +378,11 @@ Server = {
 
                     //choose from the array of objects (members) only member id (gitlab id)
                     var usersGlIds = _.pluck(members, 'id');
+                    // get members' access levels
+                    var userAccessLevels = _.pluck(members, 'access_level');
 
 
                     //update project collection, add members id to member_ids array
-
                     var usersMongoIds = Meteor.users.find({
                         'gitlab.id': {
                             $in: usersGlIds
@@ -388,14 +396,22 @@ Server = {
 
                     //choose from the array of objects (users) only mongo user id
                     usersMongoIds = _.pluck(usersMongoIds, '_id');
+                    // Merge into a table of {id, access_level}
+                    var membersIdAccess = [];
+                    for (var i = 0; i < usersMongoIds.length; i++) {
+                        var obj = {};
+                        obj['id'] = usersMongoIds[i];
+                        obj['access_level'] = userAccessLevels[i];
+                        membersIdAccess.push(obj);
+                    }
 
                     Projects.update(project._id, {
                         $set: {
-                            'member_ids': usersMongoIds
+                            'member_ids': membersIdAccess
                         }
                     });
 
-                    console.log('mongo---', usersMongoIds);
+                    console.log('mongo---', membersIdAccess);
                 }).run();
 
             }); //end api
@@ -408,10 +424,10 @@ Server = {
                 Fiber(function () {
                     //choose from the array of objects (members) only member id (gitlab id)
                     var usersGlIds = _.pluck(members, 'id');
-
+                    // get members' access levels
+                    var userAccessLevels = _.pluck(members, 'access_level');
 
                     //update project collection, add members id to member_ids array
-
                     var usersMongoIds = Meteor.users.find({
                         'gitlab.id': {
                             $in: usersGlIds
@@ -425,33 +441,41 @@ Server = {
 
                     //choose from the array of objects (users) only mongo user id
                     usersMongoIds = _.pluck(usersMongoIds, '_id');
+                    // Merge into a table of {id, access_level}
+                    var membersIdAccess = [];
+                    for (var i = 0; i < usersMongoIds.length; i++) {
+                        var obj = {};
+                        obj['id'] = usersMongoIds[i];
+                        obj['access_level'] = userAccessLevels[i];
+                        membersIdAccess.push(obj);
+                    }
 
                     Projects.update(project._id, {
                         $set: {
-                            'member_ids': usersMongoIds
+                            'member_ids': membersIdAccess
                         }
                     });
 
-                    console.log('mongo---', usersMongoIds);
+                    console.log('mongo---', membersIdAccess);
                 }).run();
 
             }); //end api
         }
     }, //end func
 
-    sprintFinisher: function() {
+    sprintFinisher: function () {
         var sprints = Sprints.find({
-                status: 'in progress'
-            }).fetch();
-            _.each(sprints, function (spr) {
-                if (CheckDate(spr.endDate) == false) {
-                    Sprints.update(spr._id, {
-                        $set: {
-                            'status': 'finished'
-                        }
-                    });
-                }
-            });
+            status: 'in progress'
+        }).fetch();
+        _.each(sprints, function (spr) {
+            if (CheckDate(spr.endDate) == false) {
+                Sprints.update(spr._id, {
+                    $set: {
+                        'status': 'finished'
+                    }
+                });
+            }
+        });
     }
 };
 
@@ -490,7 +514,7 @@ Meteor.startup(function () {
         job: Server.sprintFinisher
     });
     SyncedCron.start();
-    
+
     // Run sprint finishing 
     Server.sprintFinisher();
 });

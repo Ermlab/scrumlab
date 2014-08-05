@@ -45,7 +45,7 @@ Template.planBoardSprintsInput.rendered = function () {
             delay: '100',
             connectWith: "#backlog, .sprint",
             // Elements to exclude from sortable list
-            cancel: ".form-control, :input, button, [contenteditable]",
+            cancel: "#backlogFooter, .form-control, :input, button, [contenteditable]",
             placeholder: "placeholder"
         });
         $("#sprints").sortable({
@@ -53,7 +53,7 @@ Template.planBoardSprintsInput.rendered = function () {
                 var data = $("#sprints").sortable("toArray");
                 for (var i = 0; i < data.length; i++) {
                     // Skipping the sprint input element
-                    if(data[i] == 'addSprint') continue;
+                    if (data[i] == 'addSprint') continue;
                     Sprints.update(data[i], {
                         $set: {
                             position: i
@@ -172,11 +172,21 @@ Template.planBoardSprintsList.assignedItems = function (ownerId) {
     });
 }
 
+// Checks if current user is owner/master of project
+checkIfOwner = function (projectId) {
+    var project = Projects.findOne(projectId);
+    var access_level = _.findWhere(project.member_ids, {
+        id: Meteor.userId()
+    }).access_level;
+    if (access_level >= 40) return true;
+    else return false;
+}
+
 Template.planBoardSprintsList.events = {
     'click .btn.btn-success.btn-sm': function (event) {
         // Check if current user is the owner of the project
         var projectId = document.getElementById("projectId").getAttribute("ref");
-        if (CheckIfOwner(projectId)) {
+        if (checkIfOwner(projectId)) {
             // Get selected sprint data
             var parentId = event.currentTarget.getAttribute("id");
             var sprint = Sprints.findOne({
@@ -197,11 +207,11 @@ Template.planBoardSprintsList.events = {
             } else if (sprint.status == 'in progress') alert('Sprint already in progress.');
         } else alert('Only owner can start a sprint.');
     },
-    
+
     'click .btn.btn-danger.btn-sm': function (event) {
         // Check if current user is the owner of the project
         var projectId = document.getElementById("projectId").getAttribute("ref");
-        if (CheckIfOwner(projectId)) {
+        if (checkIfOwner(projectId)) {
             // Get selected sprint data
             var parentId = event.currentTarget.getAttribute("id");
             var sprint = Sprints.findOne({
@@ -217,11 +227,15 @@ Template.planBoardSprintsList.events = {
             };
         } else alert('Only owner can stop a sprint.');
     },
-    
+
     'blur .sprintTitle': function (event) {
         var newValue = event.currentTarget.innerHTML.trim();
         var sprintId = event.currentTarget.getAttribute("id");
-        Sprints.update(sprintId, {$set: {name: newValue}});
+        Sprints.update(sprintId, {
+            $set: {
+                name: newValue
+            }
+        });
     },
 }
 
@@ -247,6 +261,6 @@ Template.planBoardSprintsInput.events = {
         name.value = '';
         date.value = '';
 
-        $(e.target).find('[name=name]').focus();
+        //$(e.target).find('[name=name]').focus();
     }
 }

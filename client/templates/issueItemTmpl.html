@@ -5,13 +5,13 @@
             <span class="glyphicon glyphicon-th-list"></span>
         </div>
         {{#if estimation}}
-            <span id={{_id}} contenteditable="false" class="label label-warning pull-left">
+        <span id={{_id}} contenteditable="true" class="label label-warning pull-left">
             {{estimation}}
             </span>
         {{else}}
-            <span id={{_id}} contenteditable="true" class="label label-warning pull-left">
+        <span id={{_id}} contenteditable="true" class="label label-warning pull-left">
             <span id={{_id}} contenteditable="true" class="glyphicon glyphicon-time"></span>
-            </span>
+        </span>
         {{/if}} {{#unless checkIfDone _id}}
         <h4 id={{_id}} contenteditable="false" class="title list-group-item-heading">
                 {{gitlab.title}}

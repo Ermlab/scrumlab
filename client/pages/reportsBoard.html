@@ -2,6 +2,22 @@
     {{#with project}}
     <div class="page-header">
         <h1>{{gitlab.name}} - Reports</h1>
+        Reports board for project: {{ _id }} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>)
     </div>
-    Reports board for project: {{ _id }} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>) {{/with}}
+    {{/with}}
+
+    <h3>Project Velocity</h3>
+    {{> projectVelocity}}
+
+    <h3>Project Burndown</h3>
+    {{> projectVelocity}}
+
+    <h3>Sprint Burndown</h3>
+    {{> projectVelocity}}
+</template>
+
+<template name="projectVelocity">
+    <div class=".col-md-12">
+        <canvas id="myChart" height="300" width="900"></canvas>
+    </div>
 </template>

@@ -6,9 +6,7 @@
 standard-app-packages
 insecure
 bootstrap-3
-iron-router
 accounts-ui
-iron-router-active
 gitlab
 jquery-ui
 x-editable-bootstrap
@@ -16,3 +14,7 @@ http
 spin
 underscore
 synced-cron
+d3
+iron-router
+iron-router-active
+chartjs

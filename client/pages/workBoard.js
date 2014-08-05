@@ -71,7 +71,7 @@ Template.workBoard.rendered = function () {
             connectWith: ".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3",
             cancel: ".footer, :input, button, [contenteditable]",
             placeholder: "placeholder"
-        }).disableSelection();
+        })
     }, 500);
 }
 

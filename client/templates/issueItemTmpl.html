@@ -5,24 +5,24 @@
             <span class="glyphicon glyphicon-th-list"></span>
         </div>
         {{#if estimation}}
-            <span id={{_id}} contenteditable="true" class="label label-warning pull-left">
+            <span id={{_id}} contenteditable="false" class="label label-warning pull-left">
             {{estimation}}
             </span>
         {{else}}
-            <span id={{_id}} contenteditable="true" class="label label-warning pull-left">
-            <span id={{_id}} contenteditable="true" class="glyphicon glyphicon-time"></span>
+            <span id={{_id}} contenteditable="false" class="label label-warning pull-left">
+            <span id={{_id}} contenteditable="false" class="glyphicon glyphicon-time"></span>
             </span>
         {{/if}} {{#unless checkIfDone _id}}
-        <h4 id={{_id}} contenteditable="true" class="title list-group-item-heading">
+        <h4 id={{_id}} contenteditable="false" class="title list-group-item-heading">
                 {{gitlab.title}}
         </h4>
         {{else}}
-        <h4 id={{_id}} contenteditable="true" class="title list-group-item-heading" style="text-decoration: line-through;">
+        <h4 id={{_id}} contenteditable="false" class="title list-group-item-heading" style="text-decoration: line-through;">
                 {{gitlab.title}}
         </h4>
         {{/unless}}
         <div class="details collapse">
-            <p id={{_id}} ref="description" contenteditable="true" class="description list-group-item-text">{{gitlab.description}}</p>
+            <p id={{_id}} ref="description" contenteditable="false" class="description list-group-item-text">{{gitlab.description}}</p>
             <form class="form-horizontal" id="{{_id}}">
                 <p>
                     <input type="text" class="form-control" name="title" placeholder="Add new task and press enter" tabindex="1">

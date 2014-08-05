@@ -75,6 +75,18 @@ Template.issueItemTmpl.events = {
             });
         }
     },
+    
+    'click .description.list-group-item-text': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
+    
+    'click .title.list-group-item-heading': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
+    
+    'click .label.label-warning.pull-left': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
 
     'blur .description.list-group-item-text': function (event) {
         var newValue = event.currentTarget.innerHTML.trim();
@@ -98,6 +110,7 @@ Template.issueItemTmpl.events = {
             'description': newValue
         };
         Meteor.call('editIssue', updateObject);
+        event.currentTarget.setAttribute('contenteditable', false);
     },
 
     'blur .title.list-group-item-heading': function (event) {
@@ -119,6 +132,7 @@ Template.issueItemTmpl.events = {
             'title': newValue
         };
         Meteor.call('editIssue', updateObject);
+        event.currentTarget.setAttribute('contenteditable', false);
     },
 
     'blur .label.label-warning.pull-left': function (event) {
@@ -132,6 +146,7 @@ Template.issueItemTmpl.events = {
                     estimation: newValue
                 }
             });
+        event.currentTarget.setAttribute('contenteditable', false);
     },
 
     'focus .label.label-warning.pull-left': function (event) {

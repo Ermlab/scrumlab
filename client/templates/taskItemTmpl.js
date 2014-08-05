@@ -40,9 +40,14 @@ Template.taskItemTmpl.events = {
         }
     },
     
+    'click .taskTitle': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
+    
     'blur .taskTitle': function(event) {
         var newValue = event.currentTarget.innerHTML.trim();
         var taskId = event.currentTarget.getAttribute("id");
         Tasks.update(taskId, {$set: {'name': newValue}});
+        event.currentTarget.setAttribute('contenteditable', false);
     }
 }

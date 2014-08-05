@@ -241,6 +241,7 @@ Template.planBoardSprintsList.events = {
 
 Template.planBoardSprintsInput.events = {
     'submit form': function (event) {
+        event.preventDefault();
         var name = document.getElementById("name");
         var date = document.getElementById("datepicker");
         var projectId = document.getElementById("projectId").getAttribute("ref");

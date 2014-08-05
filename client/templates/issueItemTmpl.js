@@ -83,10 +83,6 @@ Template.issueItemTmpl.events = {
     'click .title.list-group-item-heading': function (event) {
         event.currentTarget.setAttribute('contenteditable', true);
     },
-    /*
-    'click .label.label-warning.pull-left': function (event) {
-        event.currentTarget.setAttribute('contenteditable', true);
-    },*/
 
     'blur .description.list-group-item-text': function (event) {
         var newValue = event.currentTarget.innerHTML.trim();
@@ -138,8 +134,7 @@ Template.issueItemTmpl.events = {
     'blur .label.label-warning.pull-left': function (event) {
         var newValue = event.currentTarget.innerHTML.trim();
         var issueId = event.currentTarget.getAttribute("id");
-        if (newValue == ' ') {}
-        else if (isNaN(newValue) || (newValue.length == 0))
+        if (isNaN(newValue) || (newValue.length == 0))
             event.currentTarget.innerHTML = '<span id={{_id}} contenteditable="true" class="glyphicon glyphicon-time"></span>';
         else
             Issues.update(issueId, {
@@ -147,7 +142,6 @@ Template.issueItemTmpl.events = {
                     estimation: newValue
                 }
             });
-        //event.currentTarget.setAttribute('contenteditable', false);
     },
 
     'focus .label.label-warning.pull-left': function (event) {

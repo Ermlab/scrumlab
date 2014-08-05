@@ -15,6 +15,7 @@
             <p id="backlogFooter">{{issuesStats}}</p>
         </div>
         <div id="sprints" class="col-md-6 list-group">
+            {{> planBoardSprintsInput}}
             {{> planBoardSprintsList}}
         </div>
     </div>
@@ -22,8 +23,8 @@
 
 
 <template name="planBoardSprintsList">
-    {{> planBoardSprintsInput}} {{#each sprints}}
-    <div class="alert alert-dismissable alert-warning">
+    {{#each sprints}}
+    <div id={{_id}} class="alert alert-dismissable alert-warning">
 
         <div class="pull-right">
             {{#if sprintStatus status 'ready'}}
@@ -44,14 +45,12 @@
             <span class="label label-warning" style="margin-right:5px;">Status: {{status}} </span>
             <span class="label label-primary">End date: {{endDate}} </span>
             {{/if}}
-
         </div>
-
-
-
+        
         <div class="well well-sm text-left" style="margin-top:8px;">
-            <h4>{{name}}</h4>
+            <h4 id={{_id}} class="sprintTitle" contentEditable="true">{{name}}</h4>
         </div>
+        
         <div class="sprint" id={{_id}} style="min-height: 15px">
             {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
         </div>

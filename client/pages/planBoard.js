@@ -48,6 +48,25 @@ Template.planBoardSprintsInput.rendered = function () {
             cancel: ".form-control, :input, button, [contenteditable]",
             placeholder: "placeholder"
         });
+        $("#sprints").sortable({
+            stop: function (event, ui) {
+                var data = $("#sprints").sortable("toArray");
+                for (var i = 0; i < data.length; i++) {
+                    // Skipping the sprint input element
+                    if(data[i] == 'addSprint') continue;
+                    Sprints.update(data[i], {
+                        $set: {
+                            position: i
+                        }
+                    });
+                }
+            },
+            delay: '100',
+            connectWith: "#sprints",
+            // Elements to exclude from sortable list
+            cancel: ".form-control, :input, button, [contenteditable]",
+            placeholder: "placeholder"
+        });
         // Setting datepicker property for easy date selection
         $("#datepicker").datepicker();
     }, 500);
@@ -178,6 +197,7 @@ Template.planBoardSprintsList.events = {
             } else if (sprint.status == 'in progress') alert('Sprint already in progress.');
         } else alert('Only owner can start a sprint.');
     },
+    
     'click .btn.btn-danger.btn-sm': function (event) {
         // Check if current user is the owner of the project
         var projectId = document.getElementById("projectId").getAttribute("ref");
@@ -196,7 +216,13 @@ Template.planBoardSprintsList.events = {
                 });
             };
         } else alert('Only owner can stop a sprint.');
-    }
+    },
+    
+    'blur .sprintTitle': function (event) {
+        var newValue = event.currentTarget.innerHTML.trim();
+        var sprintId = event.currentTarget.getAttribute("id");
+        Sprints.update(sprintId, {$set: {name: newValue}});
+    },
 }
 
 Template.planBoardSprintsInput.events = {

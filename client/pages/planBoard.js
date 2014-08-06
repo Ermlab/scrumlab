@@ -256,7 +256,7 @@ Template.planBoardSprintsList.events = {
                     });
                 } else alert('Sprint is already overdue.');
             } else if (sprint.status == 'in progress') alert('Sprint already in progress.');
-        } else alert('Only owner can start a sprint.');
+        } else alert('Only master or owner can start a sprint.');
     },
 
     'click .btn.btn-danger.btn-sm': function (event) {
@@ -276,7 +276,7 @@ Template.planBoardSprintsList.events = {
                     }
                 });
             };
-        } else alert('Only owner can stop a sprint.');
+        } else alert('Only master or owner can stop a sprint.');
     },
 
     'blur .sprintTitle': function (event) {

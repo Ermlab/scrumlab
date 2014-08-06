@@ -28,7 +28,9 @@
                     <input type="text" class="form-control" name="title" placeholder="Add new task and press enter" tabindex="1">
                 </p>
             </form>
+            {{#unless workBoard}}
             {{> tasksListTmpl tasks _id}}
+            {{/unless}}
         </div>
     </div>
 </template>

@@ -352,17 +352,30 @@ Server = {
                 'created_at': hookIssue.created_at,
                 'gitlab': hookIssue //client and server should update this field
             };
+
             //mongo issue id
             var issueId = Issues.insert(new_issue);
-            // Function for update exist issue. First must build SHOW function in API
-            /*api.issues.show(ProjectId, issueId, function (glIssue) {
+            
+            // Fetching new issue from GitLab server
+            api.issues.show(proj.gitlab.id, new_issue.gitlab.id, function (glIssue) {
                 Fiber(function () {
-                    // Here we must update exist issue in mongoDB
+                    var output = Issues.insert({
+                        'project_id': proj.gitlab.id,
+                        'gitlab': glIssue,
+                        'origin': api.options.origin
+                    });
+                    Tasks.insert({
+                        'project_id': proj.gitlab.id,
+                        'issue_id': output,
+                        'name': glIssue.title,
+                        'status': 'toDo',
+                        'placeholder': true
+                    });
                 }).run();
-            });*/
+            });
 
         } else {
-
+            // Updating existing issue
             gitlabObject = finder.gitlab;
             gitlabObject = _.extend(gitlabObject, hookIssue);
             gitlabObject = _.omit(gitlabObject, 'assignee_id', 'author_id', 'branch_name', 'milestone_id');

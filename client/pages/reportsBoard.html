@@ -8,10 +8,20 @@
 
     <h3>Project Velocity</h3>
     {{> projectVelocity}}
+
+    <h3>Project Burndown</h3>
+    {{> projectBurndown}}
+
 </template>
 
 <template name="projectVelocity">
     <div class=".col-md-12">
         <canvas id="myChart" height="300" width="900"></canvas>
+    </div>
+</template>
+
+<template name="projectBurndown">
+    <div class=".col-md-12">
+        <canvas id="pBurndown" height="300" width="900"></canvas>
     </div>
 </template>

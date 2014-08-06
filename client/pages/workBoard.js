@@ -50,7 +50,8 @@ Template.workBoard.rendered = function () {
                             if (tasks.length == 0) {
                                 Issues.update(issueId, {
                                     $set: {
-                                        'gitlab.state': 'closed'
+                                        'gitlab.state': 'closed',
+                                        'closed_at': Date()
                                     }
                                 });
                                 var issue = Issues.findOne(issueId);

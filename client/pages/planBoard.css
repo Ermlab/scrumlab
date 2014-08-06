@@ -29,3 +29,7 @@
 .btn.btn-danger.btn-sm {
     margin-top: -10px;
 }
+#teamEstimationMarker {
+    min-width: 60px;
+    font-weight: bold;
+}

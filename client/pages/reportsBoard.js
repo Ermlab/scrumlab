@@ -112,7 +112,7 @@ Template.projectVelocity.rendered = function () {
         //projectVelocity.showLegend();
 
         var data = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7", "Day 8", "Day 9", "Day 10", "Day 11", "Day 12", "Day 13", "Day 14", "Day 15", "Day 16", "Day 17", "Day 18", "Day 19", "Day 20", "Day 21", "Day 22", "Day 23", "Day 24", "Day 25", "Day 26", "Day 27", "Day 28", "Day 29", "Day 30", "Day 31", ],
             datasets: [
                 {
                     label: "My First dataset",
@@ -122,7 +122,7 @@ Template.projectVelocity.rendered = function () {
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: [65, 59, 80, 81, 56, 55, 40]
+                    data: [80, 79, 75, 40, 45, 68, 68, 65, 62, 58, 54, 74, 60, 40, 34, 32, 22, 8, 6, 2, 0]
         },
                 {
                     label: "My Second dataset",
@@ -132,7 +132,7 @@ Template.projectVelocity.rendered = function () {
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "rgba(151,187,205,1)",
-                    data: [28, 48, 40, 19, 86, 27, 90]
+                    data: [80, 76, 72, 68, 64, 60, 56, 52, 48, 44, 40, 36, 32, 28, 24, 20, 16, 12, 8, 4, 0]
         }
     ]
         };

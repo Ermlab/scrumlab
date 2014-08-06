@@ -278,6 +278,10 @@ Template.planBoardSprintsList.events = {
             };
         } else alert('Only master or owner can stop a sprint.');
     },
+    
+    'click .sprintTitle': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
 
     'blur .sprintTitle': function (event) {
         var newValue = event.currentTarget.innerHTML.trim();
@@ -287,6 +291,7 @@ Template.planBoardSprintsList.events = {
                 name: newValue
             }
         });
+        event.currentTarget.setAttribute('contenteditable', false);
     },
 }
 

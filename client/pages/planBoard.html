@@ -21,7 +21,6 @@
     </div>
 </template>
 
-
 <template name="planBoardSprintsList">
     {{#each sprints}}
     <div id={{_id}} class="alert alert-dismissable alert-info">
@@ -55,7 +54,11 @@
         </div>
         <span class="label label-info">{{sprintsStats _id}}</span>
     </div>
+        {{>planBoardSprintsListItem}}
     {{/each}}
+</template>
+
+<template name="planBoardSprintsListItem">
 </template>
 
 

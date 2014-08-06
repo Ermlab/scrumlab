@@ -72,6 +72,57 @@ Template.planBoardSprintsInput.rendered = function () {
     }, 500);
 }
 
+Template.planBoardSprintsListItem.rendered = function() {
+   $("#backlog, .sprint").sortable({
+            stop: function (event, ui) {
+                // Getting the element id and containing sprint's id (or a backlogItems container)
+                var ownerId = ui.item.parent().attr("id");
+                var selfId = ui.item.attr("id");
+                var previousId = ui.item.attr("ref");
+                // If no owner is specified or element was returned to backlog container ownerId is set to 0
+                if (ownerId == 'backlog') ownerId = '0';
+                // If no previous owner present, previousId is set to 0
+                if (typeof (previousId) == 'undefined') previousId = '0';
+                // Check if the item was dropped back in container it was taken from by
+                // comparing parent id with original parent id stored in "ref" variable
+                if (ownerId != previousId) {
+                    // Check if owner is actually a sprint
+                    if (ownerId != 0) {
+                        Issues.update(selfId, {
+                            $set: {
+                                sprint: ownerId
+                            }
+                        });
+                    } else {
+                        // If ownerId = 0, the field sprint is removed
+                        // resulting in element becoming unassigned
+                        Issues.update(selfId, {
+                            $unset: {
+                                sprint: ""
+                            }
+                        });
+                    }
+                    // Getting rid of the duplicated ui item
+                    ui.item.remove();
+                }
+                // If so, starting positioning query
+                var data = $("#backlog").sortable("toArray");
+                for (var i = 0; i < data.length; i++) {
+                    Issues.update(data[i], {
+                        $set: {
+                            position: i
+                        }
+                    });
+                }
+            },
+            delay: '100',
+            connectWith: "#backlog, .sprint",
+            // Elements to exclude from sortable list
+            cancel: "#backlogFooter, .form-control, :input, button, [contenteditable]",
+            placeholder: "placeholder"
+        });
+}
+
 Template.planBoardSprintsList.helpers({
     'sprintsStats': function (sprint_id) {
         var unestimated = Issues.find({

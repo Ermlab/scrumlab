@@ -35,11 +35,30 @@ Template.projectVelocity.rendered = function () {
 
             }).fetch();
 
+            var closed = Issues.find({
+                $and: [{
+                    estimation: {
+                        $exists: true
+                    }
+            }, {
+                    estimation: {
+                        $ne: ''
+                    }
+            }, {
+                    sprint: spr._id
+            }, {
+                    'gitlab.state': 'closed'
+            }]
+
+            }).fetch();
+
             var totalTime = _.reduce(_.pluck(issues, 'estimation'), function (sum, val) {
                 return sum + parseInt(val);
             }, 0);
 
-            var totalStories = issues.length;
+            var doneTime = _.reduce(_.pluck(closed, 'estimation'), function (sum, val) {
+                return sum + parseInt(val);
+            }, 0);
 
             var sprintName = spr.name;
 
@@ -49,7 +68,7 @@ Template.projectVelocity.rendered = function () {
                 data.labels.push(sprintName);
             }
 
-            data.datasets[1].data.push(totalStories);
+            data.datasets[1].data.push(doneTime);
 
         })
 
@@ -79,7 +98,7 @@ Template.projectVelocity.rendered = function () {
             barDatasetSpacing: 0,
 
             //String - A legend template
-            legendTemplate: "< ul class = \"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+            legendTemplate: "<ul class = \"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         };
 
         var ctx = document.getElementById("myChart").getContext("2d");

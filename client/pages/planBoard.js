@@ -33,7 +33,8 @@ Template.planBoardSprintsInput.rendered = function () {
                     ui.item.remove();
                 }
                 // If so, starting positioning query
-                var data = $("#backlog").sortable("toArray");
+                if(ownerId == 0) var data = $("#backlog").sortable("toArray");
+                else var data = $(ui.item.parent()).sortable("toArray");
                 for (var i = 0; i < data.length; i++) {
                     Issues.update(data[i], {
                         $set: {

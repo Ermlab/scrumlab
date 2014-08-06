@@ -91,6 +91,8 @@ Template.projectVelocity.rendered = function () {
             //Number - Pixel width of the bar stroke
             barStrokeWidth: 1,
 
+            responsive: true,
+
             //Number - Spacing between each of the X value sets
             barValueSpacing: 5,
 

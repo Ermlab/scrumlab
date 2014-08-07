@@ -8,7 +8,7 @@ Template.projectVelocity.rendered = function () {
             labels: [],
             datasets: [
                 {
-                    label: "Hours",
+                    label: "Planned",
                     fillColor: "rgba(220,220,220,0.5)",
                     strokeColor: "rgba(220,220,220,0.8)",
                     highlightFill: "rgba(220,220,220,0.75)",
@@ -16,7 +16,7 @@ Template.projectVelocity.rendered = function () {
                     data: []
         },
                 {
-                    label: "Stories",
+                    label: "Done",
                     fillColor: "rgba(151,187,205,0.5)",
                     strokeColor: "rgba(151,187,205,0.8)",
                     highlightFill: "rgba(151,187,205,0.75)",
@@ -100,7 +100,7 @@ Template.projectVelocity.rendered = function () {
             barDatasetSpacing: 0,
 
             //String - A legend template
-            legendTemplate: "<ul class = \"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+            legendTemplate: "<span style=\"background-color: rgba(220,220,220,0.5); width: 100px;height: 20px;display: block;font-family: &quot;Helvetica Neue&quot;;color: #666;text-align: center;\">Planned</span><span style=\"background-color:rgba(151,187,205,0.5); width: 100px;height: 20px;display: block;font-family: &quot;Helvetica Neue&quot;;color: #666;text-align: center;\">Done</span>"
         };
 
         var ctx = document.getElementById("myChart").getContext("2d");
@@ -112,7 +112,7 @@ Template.projectVelocity.rendered = function () {
         $("#legend").html(legend);
 
         var data = {
-            labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7", "Day 8", "Day 9", "Day 10", "Day 11", "Day 12", "Day 13", "Day 14", "Day 15", "Day 16", "Day 17", "Day 18", "Day 19", "Day 20", "Day 21", "Day 22", "Day 23", "Day 24", "Day 25", "Day 26", "Day 27", "Day 28", "Day 29", "Day 30", "Day 31", ],
+            labels: ["0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", " 10", " 11", " 12", " 13", " 14", " 15", " 16", " 17", " 18", " 19", " 20", " 21", " 22", " 23", " 24", " 25", " 26", " 27", " 28", " 29", " 30", " 31", ],
             datasets: [
                 {
                     label: "My First dataset",

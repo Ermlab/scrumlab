@@ -311,6 +311,7 @@ Template.planBoardSprintsInput.events = {
             Sprints.insert({
                 name: name.value,
                 endDate: date.value,
+                startDate: Date(),
                 project_id: projectId,
                 status: 'ready'
             });

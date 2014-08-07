@@ -100,7 +100,7 @@ Template.projectVelocity.rendered = function () {
             barDatasetSpacing: 0,
 
             //String - A legend template
-            legendTemplate: "<ul class = \"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+            legendTemplate: "<ul class = \"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         };
 
         var ctx = document.getElementById("myChart").getContext("2d");
@@ -109,7 +109,7 @@ Template.projectVelocity.rendered = function () {
 
         var legend = barChart.generateLegend()
 
-        //projectVelocity.showLegend();
+        $("#legend").html(legend);
 
         var data = {
             labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7", "Day 8", "Day 9", "Day 10", "Day 11", "Day 12", "Day 13", "Day 14", "Day 15", "Day 16", "Day 17", "Day 18", "Day 19", "Day 20", "Day 21", "Day 22", "Day 23", "Day 24", "Day 25", "Day 26", "Day 27", "Day 28", "Day 29", "Day 30", "Day 31", ],
@@ -136,6 +136,10 @@ Template.projectVelocity.rendered = function () {
         }
     ]
         };
+
+        var Tablica = ss.sum(data.datasets[0].data)
+
+        console.log(Tablica)
 
         var options = {
 

@@ -19,6 +19,12 @@ Template.issueItemTmpl.helpers({
         }).fetch();
         if (tasks.length == 0) return true;
         else return false;
+    },
+    
+    'workBoard': function () {
+        var board = _.last(document.URL.split('/'));
+        if(board == 'work') return true;
+        return false;
     }
 });
 

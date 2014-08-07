@@ -48,20 +48,33 @@ Template.workBoard.rendered = function () {
                                 }]
                             }).fetch();
                             if (tasks.length == 0) {
-                                // TODO: mark issue as closed both on client and server sides
                                 Issues.update(issueId, {
                                     $set: {
-                                        'gitlab.state': 'closed'
+                                        'gitlab.state': 'closed',
+                                        'closed_at': Date()
                                     }
                                 });
+                                var issue = Issues.findOne(issueId);
+                                var updateObject = {
+                                    'id': issue.gitlab.project_id,
+                                    'issue_id': issue.gitlab.id,
+                                    'state_event': 'close'
+                                }
+                                Meteor.call('editIssue', updateObject);
                             }
-                        }
-                        else {
+                        } else {
                             Issues.update(issueId, {
-                                    $set: {
-                                        'gitlab.state': 'opened'
-                                    }
-                                });
+                                $set: {
+                                    'gitlab.state': 'opened'
+                                }
+                            });
+                            var issue = Issues.findOne(issueId);
+                            var updateObject = {
+                                'id': issue.gitlab.project_id,
+                                'issue_id': issue.gitlab.id,
+                                'state_event': 'reopen'
+                            }
+                            Meteor.call('editIssue', updateObject);
                         }
                     }
                 };

@@ -1,12 +1,6 @@
 <template name="navUserLogin">
 
-    {{#if currentUser}} 
-    {{> masterLayoutConnected}} 
-    {{else}} 
-    {{#if loggingIn}} 
-    {{> masterLayoutLoadingForm}} 
-    {{else}} {{> masterLayoutLoginForm}} 
-    {{/if}} {{/if}}
+    {{#if currentUser}} {{> masterLayoutConnected}} {{else}} {{#if loggingIn}} {{> masterLayoutLoadingForm}} {{else}} {{> masterLayoutLoginForm}} {{/if}} {{/if}}
 
 
 </template>
@@ -54,7 +48,7 @@
                 </li>
 
                 <li class="divider"></li>
-                <li role="presentation"><a role="menuitem" id="userLogout" tabindex="-1" href="#">Sign out</a>
+                <li role="presentation"><a id="userLogout" tabindex="-1" href="#">Sign out</a>
                 </li>
             </ul>
         </li>

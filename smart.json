@@ -5,6 +5,7 @@
     "spin": {},
     "synced-cron": {},
     "iron-router-active": {},
-    "chartjs": {}
+    "chartjs": {},
+    "moment": {}
   }
 }

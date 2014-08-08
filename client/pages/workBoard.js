@@ -88,6 +88,30 @@ Template.workBoard.rendered = function () {
     }, 500);
 }
 
+Template.workBoardProgressBar.helpers({
+    'progress': function (sprintId, status) {
+        var issueIds = _.pluck(Issues.find({
+            sprint: sprintId
+        }).fetch(), '_id');
+        var taskCount = Tasks.find({
+            $and: [{
+                'issue_id': {
+                    $in: issueIds
+                }
+            }, {
+                'status': status
+            }]
+        }).fetch().length;
+        var totalCount = Tasks.find({
+            'issue_id': {
+                $in: issueIds
+            }
+        }).fetch().length;
+        var output = (taskCount / totalCount) * 100;
+        return Math.floor(output * 10) / 10;
+    }
+});
+
 Template.workBoard.helpers({
     'taskList': function (issueId, status) {
         return Tasks.find({
@@ -98,6 +122,7 @@ Template.workBoard.helpers({
             }]
         });
     },
+
     'sprintStats': function (sprintId) {
         var unestimated = Issues.find({
             $and: [{

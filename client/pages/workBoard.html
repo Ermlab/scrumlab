@@ -8,6 +8,7 @@
     <div class="row">
         <p class="col-md-12">
             <h3>{{sprint.name}}: End date: {{sprint.endDate}}</h3>
+            {{> workBoardProgressBar}}
         </p>
         <div class="col-md-3">
             <h4>Issues:</h4>
@@ -49,4 +50,19 @@
         </div>
     </div>
     {{/if}}
+</template>
+
+<template name="workBoardProgressBar">
+    <h5>Task distribution:</h5>
+    <div class="progress">
+        <div class="progress-bar progress-bar-danger" style="width: {{progress sprint._id 'toDo'}}%">
+            {{progress sprint._id 'toDo'}}% To do
+        </div>
+        <div class="progress-bar progress-bar-warning" style="background-color: #f0ad4e; width: {{progress sprint._id 'inProgress'}}%">
+            {{progress sprint._id 'inProgress'}}% In progress
+        </div>
+        <div class="progress-bar progress-bar-success" style="width: {{progress sprint._id 'done'}}%">
+            {{progress sprint._id 'done'}}% Done
+        </div>
+    </div>
 </template>

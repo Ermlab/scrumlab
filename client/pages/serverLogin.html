@@ -1,0 +1,21 @@
+<template name="serverLogin">
+    <div class="page-header">
+        <h1>Sign in with your GitLab account</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-2">
+            <form class="form-horizontal" id="signupForm">
+            Placeholder for signup form
+            </form>
+        </div>
+    </div>
+    <!--{{>serverLoginServers}}-->
+</template>
+
+<template name="serverLoginServers">
+    <div>
+        {{#each servers}}
+        {{url}}
+        {{/each}}
+    </div>
+</template>

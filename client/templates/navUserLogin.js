@@ -1,4 +1,5 @@
 Template.navUserLogin.events = {
+    /*
     'click #signIn': function () {
         var email = iEmail.value;
         var password = inputPassword3.value;
@@ -16,6 +17,7 @@ Template.navUserLogin.events = {
         }
         return true;
     },
+    */
     'click #userLogout': function () {
         Meteor.logout();
     }

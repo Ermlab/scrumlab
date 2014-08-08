@@ -137,10 +137,6 @@ Template.projectVelocity.rendered = function () {
     ]
         };
 
-        var Tablica = ss.sum(data.datasets[0].data)
-
-        console.log(Tablica)
-
         var options = {
 
             ///Boolean - Whether grid lines are shown across the chart

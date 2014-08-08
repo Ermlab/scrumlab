@@ -308,10 +308,14 @@ Template.planBoardSprintsInput.events = {
         } else if (name.value == "") {
             alert("Please write title of sprint");
         } else {
+            var nowDate = new Date();
+
+            var actualDate = (nowDate.getMonth() + 1) + "/" + nowDate.getDate() + "/" + nowDate.getFullYear();
+
             Sprints.insert({
                 name: name.value,
                 endDate: date.value,
-                startDate: Date(),
+                startDate: actualDate,
                 project_id: projectId,
                 status: 'ready'
             });

@@ -355,7 +355,7 @@ Server = {
 
             //mongo issue id
             var issueId = Issues.insert(new_issue);
-            
+
             // Fetching new issue from GitLab server
             api.issues.show(proj.gitlab.id, new_issue.gitlab.id, function (glIssue) {
                 Fiber(function () {
@@ -537,7 +537,8 @@ Server = {
             if (CheckDate(spr.endDate) == false) {
                 Sprints.update(spr._id, {
                     $set: {
-                        'status': 'finished'
+                        'status': 'finished',
+                        'closedAt': CurrDate
                     }
                 });
             }

@@ -9,7 +9,15 @@ Template.serverLogin.events = {
         Meteor.call('getGitlabServerIds', emailInput.value, function(error, data) {
             var serverList = $("#servers");
             var servers = GitlabServers.find({'_id': {$in: data}}).fetch();
-            if(servers.length > 0) {
+            if(servers.length == 1) {
+                
+                serverList.empty();
+                serverInput.value = servers[0].url;
+                var option = $("<option></option>").attr("value", servers[0].url).attr("id", servers[0]._id);
+				serverList.append(option);
+            }
+            else if(servers.length > 1) {
+                
                 serverList.empty();
                 serverInput.placeholder = 'GitLab server(s) found';
                 _.each(servers, function(server) {

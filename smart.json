@@ -5,6 +5,7 @@
     "iron-router-active": {},
     "jquery-ui": {},
     "spin": {},
-    "synced-cron": {}
+    "synced-cron": {},
+    "gitlab": {}
   }
 }

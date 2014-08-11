@@ -14,9 +14,9 @@
             <span class="deleteTaskButton glyphicon glyphicon-remove pull-right" id={{_id}} issueId={{issue_id}}></span> 
         </div>
         {{#unless statusCheck status 'done'}}
-        <p>{{name}}</p>
+        <p id={{_id}} class="taskTitle" contenteditable="false">{{name}}</p>
         {{else}}
-        <p style="text-decoration: line-through">{{name}}</p>
+        <p id={{_id}} class="taskTitle" contenteditable="false" style="text-decoration: line-through">{{name}}</p>
         {{/unless}}
     </li> 
 </template>

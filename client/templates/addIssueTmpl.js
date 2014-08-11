@@ -32,6 +32,22 @@ Template.addIssueTmpl.events = {
 
     },
 
+    'keyup #teamEstimation': function (event) {
+        var estimation = $(event.target).val().trim();
+        var values = estimation.split(/[\s,;]+/);
+        var sum = 0;
+        var count = 0;
+        _.each(values, function (value) {
+            if (!isNaN(value) && (value != '')) {
+                sum = sum + parseInt(value);
+                count++;
+            }
+        });
+        var mean = Math.floor(sum/count);
+        if(isNaN(mean)) mean = 0;
+        document.getElementById('teamEstimationMarker').innerHTML = mean;
+    },
+
     'click #toogleDetails': function (e) {
         e.preventDefault();
 

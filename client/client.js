@@ -10,10 +10,11 @@ Meteor.startup(function () {
 
 
 /*--- Meteor system hooks ---*/
-Meteor.loginWithGitlabAccount = function (email, password, callback) {
+Meteor.loginWithGitlabAccount = function (email, password, serverUrl, callback) {
     var loginRequest = {
         email: email,
-        password: password
+        password: password,
+        gitlabServerUrl: serverUrl
     };
 
     Accounts.callLoginMethod({

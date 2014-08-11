@@ -15,57 +15,79 @@
             <p id="backlogFooter">{{issuesStats}}</p>
         </div>
         <div id="sprints" class="col-md-6 list-group">
+            {{> planBoardSprintsInput}}
             {{> planBoardSprintsList}}
         </div>
     </div>
 </template>
 
-
 <template name="planBoardSprintsList">
-    {{> planBoardSprintsInput}} {{#each sprints}}
-    <div class="alert alert-dismissable alert-warning">
+    {{#each sprints}}
+    <div id={{_id}} class="alert alert-dismissable alert-info">
 
-        <div class="pull-right">
-            {{#if checkIfReady status}}
-            <button type="button" class="btn btn-success btn-sm">Start</button>
-            {{else}}
-            <button type="button" class="btn btn-danger btn-sm">Stop</button>
+        <div class="pull-right" style="margin-right:15px;">
+            {{#if sprintStatus status 'ready'}}
+            <button id={{_id}} type="button" class="btn btn-success btn-sm">Start</button>
+            {{/if}} {{#if sprintStatus status 'in progress'}}
+            <button id={{_id}} type="button" class="btn btn-danger btn-sm">Stop</button>
             {{/if}}
         </div>
 
         <div>
             {{#if sprintStatus status 'finished'}}
-            <span class="label label-danger" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-danger" style="margin-right:5px; margin-left:5px;">Status: {{status}} </span>
             <span class="label label-default">End date: {{endDate}} </span>
             {{/if}} {{#if sprintStatus status 'ready'}}
-            <span class="label label-success" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-success" style="margin-right:5px; margin-left:5px;">Status: {{status}} </span>
             <span class="label label-primary">End date: {{endDate}} </span>
             {{/if}} {{#if sprintStatus status 'in progress'}}
-            <span class="label label-warning" style="margin-right:5px;">Status: {{status}} </span>
+            <span class="label label-warning" style="margin-right:5px; margin-left:5px;">Status: {{status}} </span>
             <span class="label label-primary">End date: {{endDate}} </span>
             {{/if}}
-
         </div>
-
-
-
         <div class="well well-sm text-left" style="margin-top:8px;">
-            <h4>{{name}}</h4>
+            <h4 style="color:black;" id={{_id}} class="sprintTitle" contentEditable="false">{{name}}</h4>
         </div>
+        
         <div class="sprint" id={{_id}} style="min-height: 15px">
             {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
         </div>
-        {{sprintsStats _id}}
+        <span class="label label-info">{{sprintsStats _id}}</span>
     </div>
+        {{>planBoardSprintsListItem}}
     {{/each}}
+</template>
+
+<template name="planBoardSprintsListItem">
 </template>
 
 
 <template name="planBoardSprintsInput">
-    <details id="addSprint">
-        <summary>New sprint</summary>
-        <input type="text" id="name" style="width: 98%; margin: 1%;" placeholder="Sprint title" />
-        <input type="text" id="datepicker" style="width: 66%; margin: 1%;" placeholder="End date" />
-        <input type="button" class="insert" style="width: 29%; margin: 1%;" value="Add" />
-    </details>
+
+    <div id="addSprint" class="alert alert-dismissable alert-info">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="date-form">
+                    <div class="form-horizontal">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-group">
+                                    <label for="date-picker-3" class="input-group-addon btn"><span class="glyphicon glyphicon-calendar"></span>
+                                    </label>
+                                    <input id="datepicker" type="text" class="date-picker form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <form class="form-horizontal">
+                    <p>
+                        <input type="text" class="form-control" id="name" placeholder="Add new sprint and press enter" tabindex="1">
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
 </template>

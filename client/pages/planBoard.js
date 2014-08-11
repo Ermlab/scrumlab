@@ -1,52 +1,80 @@
 Template.planBoardSprintsInput.rendered = function () {
     Meteor.setTimeout(function () {
-        // Setting default values for x-editable
-        $.fn.editable.defaults.mode = 'inline';
-        $.fn.editable.defaults.emptytext = '(...)';
-        $.fn.editable.defaults.toggle = 'dblclick';
-        // Setting editable property to story elements
-        $('.storyTitle, .storyText, .storyHours').editable({
-            // Defining callback function to update story in database after in-place editing
-            success: function (response, newValue) {
-                var issueId = this.parentElement.getAttribute("id");
-                var issue = Issues.findOne({
-                    '_id': issueId
-                });
-                var gitlabIssueId = issue.gitlab.id;
-                var gitlabProjectId = issue.gitlab.project_id;
-                var updateField = this.getAttribute("ref");
-                var updateObject = {
-                    'id': gitlabProjectId,
-                    'issue_id': gitlabIssueId
-                };
-                if (updateField == 'estimation') {
-                    Issues.update(issueId, {
+        $("#backlog, .sprint").sortable({
+            stop: function (event, ui) {
+                // Getting the element id and containing sprint's id (or a backlogItems container)
+                var ownerId = ui.item.parent().attr("id");
+                var selfId = ui.item.attr("id");
+                var previousId = ui.item.attr("ref");
+                // If no owner is specified or element was returned to backlog container ownerId is set to 0
+                if (ownerId == 'backlog') ownerId = '0';
+                // If no previous owner present, previousId is set to 0
+                if (typeof (previousId) == 'undefined') previousId = '0';
+                // Check if the item was dropped back in container it was taken from by
+                // comparing parent id with original parent id stored in "ref" variable
+                if (ownerId != previousId) {
+                    // Check if owner is actually a sprint
+                    if (ownerId != 0) {
+                        Issues.update(selfId, {
+                            $set: {
+                                sprint: ownerId
+                            }
+                        });
+                    } else {
+                        // If ownerId = 0, the field sprint is removed
+                        // resulting in element becoming unassigned
+                        Issues.update(selfId, {
+                            $unset: {
+                                sprint: ""
+                            }
+                        });
+                    }
+                    // Getting rid of the duplicated ui item
+                    ui.item.remove();
+                }
+                // If so, starting positioning query
+                if(ownerId == 0) var data = $("#backlog").sortable("toArray");
+                else var data = $(ui.item.parent()).sortable("toArray");
+                for (var i = 0; i < data.length; i++) {
+                    Issues.update(data[i], {
                         $set: {
-                            estimation: newValue
+                            position: i
                         }
                     });
-                } else {
-                    updateObject[updateField] = newValue;
-                    Meteor.call('editIssue', updateObject);
-                    Meteor.call('refreshUserProjects');
                 }
-            }
+            },
+            delay: '100',
+            connectWith: "#backlog, .sprint",
+            // Elements to exclude from sortable list
+            cancel: "#backlogFooter, .form-control, :input, button, [contenteditable]",
+            placeholder: "placeholder"
         });
-
-        // Setting editable property to task elements
-        $('.taskTitle, .taskHours').editable({
-            // Defining callback function to update task in database after in-place editing
-            success: function (response, newValue) {
-                var taskId = this.parentElement.getAttribute("id");
-                var updateField = {};
-                updateField[this.getAttribute("ref")] = newValue;
-                Tasks.update(taskId, {
-                    $set: updateField
-                });
-            }
+        $("#sprints").sortable({
+            stop: function (event, ui) {
+                var data = $("#sprints").sortable("toArray");
+                for (var i = 0; i < data.length; i++) {
+                    // Skipping the sprint input element
+                    if (data[i] == 'addSprint') continue;
+                    Sprints.update(data[i], {
+                        $set: {
+                            position: i
+                        }
+                    });
+                }
+            },
+            delay: '100',
+            connectWith: "#sprints",
+            // Elements to exclude from sortable list
+            cancel: ".form-control, :input, button, [contenteditable]",
+            placeholder: "placeholder"
         });
+        // Setting datepicker property for easy date selection
+        $("#datepicker").datepicker();
+    }, 500);
+}
 
-        $("#backlog, .sprint").sortable({
+Template.planBoardSprintsListItem.rendered = function() {
+   $("#backlog, .sprint").sortable({
             stop: function (event, ui) {
                 // Getting the element id and containing sprint's id (or a backlogItems container)
                 var ownerId = ui.item.parent().attr("id");
@@ -91,12 +119,9 @@ Template.planBoardSprintsInput.rendered = function () {
             delay: '100',
             connectWith: "#backlog, .sprint",
             // Elements to exclude from sortable list
-            cancel: ".form-control",
+            cancel: "#backlogFooter, .form-control, :input, button, [contenteditable]",
             placeholder: "placeholder"
-        }).disableSelection();
-        // Setting datepicker property for easy date selection
-        $("#datepicker").datepicker();
-    }, 500);
+        });
 }
 
 Template.planBoardSprintsList.helpers({
@@ -133,12 +158,12 @@ Template.planBoardSprintsList.helpers({
         }, 0);
         return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated)';
     },
-    
+
     'checkIfReady': function (status) {
-        if(status == 'in progress') return false;
+        if (status == 'in progress') return false;
         else return true;
     },
-    
+
     'sprintStatus': function (sprintStatus, input) {
         if (sprintStatus == input) {
             return true;
@@ -199,13 +224,23 @@ Template.planBoardSprintsList.assignedItems = function (ownerId) {
     });
 }
 
+// Checks if current user is owner/master of project
+checkIfOwner = function (projectId) {
+    var project = Projects.findOne(projectId);
+    var access_level = _.findWhere(project.member_ids, {
+        id: Meteor.userId()
+    }).access_level;
+    if (access_level >= 40) return true;
+    else return false;
+}
+
 Template.planBoardSprintsList.events = {
-    'click .startButton': function (event) {
+    'click .btn.btn-success.btn-sm': function (event) {
         // Check if current user is the owner of the project
         var projectId = document.getElementById("projectId").getAttribute("ref");
-        if (CheckIfOwner(projectId)) {
+        if (checkIfOwner(projectId)) {
             // Get selected sprint data
-            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var parentId = event.currentTarget.getAttribute("id");
             var sprint = Sprints.findOne({
                 _id: parentId
             });
@@ -221,16 +256,16 @@ Template.planBoardSprintsList.events = {
                         }
                     });
                 } else alert('Sprint is already overdue.');
-            } else if (sprint.status == 'in progress') alert('Sprint already in progress');
-            else if (sprint.status == 'closed') alert('This sprint has already finished');
-        } else alert('Only owner can start a sprint');
+            } else if (sprint.status == 'in progress') alert('Sprint already in progress.');
+        } else alert('Only master or owner can start a sprint.');
     },
-    'click .stopButton': function (event) {
+
+    'click .btn.btn-danger.btn-sm': function (event) {
         // Check if current user is the owner of the project
         var projectId = document.getElementById("projectId").getAttribute("ref");
-        if (CheckIfOwner(projectId)) {
+        if (checkIfOwner(projectId)) {
             // Get selected sprint data
-            var parentId = event.currentTarget.parentElement.getAttribute("id");
+            var parentId = event.currentTarget.getAttribute("id");
             var sprint = Sprints.findOne({
                 _id: parentId
             });
@@ -242,22 +277,49 @@ Template.planBoardSprintsList.events = {
                     }
                 });
             };
-        } else alert('Only owner can stop a sprint');
-    }
+        } else alert('Only master or owner can stop a sprint.');
+    },
+    
+    'click .sprintTitle': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
+
+    'blur .sprintTitle': function (event) {
+        var newValue = event.currentTarget.innerHTML.trim();
+        var sprintId = event.currentTarget.getAttribute("id");
+        Sprints.update(sprintId, {
+            $set: {
+                name: newValue
+            }
+        });
+        event.currentTarget.setAttribute('contenteditable', false);
+    },
 }
 
 Template.planBoardSprintsInput.events = {
-    'click input.insert': function (event) {
+    'submit form': function (event) {
+        event.preventDefault();
         var name = document.getElementById("name");
         var date = document.getElementById("datepicker");
         var projectId = document.getElementById("projectId").getAttribute("ref");
-        Sprints.insert({
-            name: name.value,
-            endDate: date.value,
-            project_id: projectId,
-            status: 'ready'
-        });
+
+        if (date.value == "") {
+            alert("Please select date");
+        } else if (name.value == "") {
+            alert("Please write title of sprint");
+        } else {
+            Sprints.insert({
+                name: name.value,
+                endDate: date.value,
+                startDate: Date(),
+                project_id: projectId,
+                status: 'ready'
+            });
+        }
+
         name.value = '';
         date.value = '';
+
+        //$(e.target).find('[name=name]').focus();
     }
 }

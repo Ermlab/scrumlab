@@ -19,7 +19,7 @@ Meteor.publish("userData", function () {
 Meteor.publish('userProjects', function () {
     if (this.userId) {
         return Projects.find({
-            member_ids: this.userId
+            'member_ids.id': this.userId
         });
     } else
         return null;
@@ -41,4 +41,8 @@ Meteor.publish('tasks', function (projectId) {
     return Tasks.find({
         'project_id': projectId
     });
+});
+
+Meteor.publish('gitlabServers', function () {
+    return GitlabServers.find();
 });

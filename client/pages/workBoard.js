@@ -48,20 +48,33 @@ Template.workBoard.rendered = function () {
                                 }]
                             }).fetch();
                             if (tasks.length == 0) {
-                                // TODO: mark issue as closed both on client and server sides
                                 Issues.update(issueId, {
                                     $set: {
-                                        'gitlab.state': 'closed'
+                                        'gitlab.state': 'closed',
+                                        'closed_at': Date()
                                     }
                                 });
+                                var issue = Issues.findOne(issueId);
+                                var updateObject = {
+                                    'id': issue.gitlab.project_id,
+                                    'issue_id': issue.gitlab.id,
+                                    'state_event': 'close'
+                                }
+                                Meteor.call('editIssue', updateObject);
                             }
-                        }
-                        else {
+                        } else {
                             Issues.update(issueId, {
-                                    $set: {
-                                        'gitlab.state': 'opened'
-                                    }
-                                });
+                                $set: {
+                                    'gitlab.state': 'opened'
+                                }
+                            });
+                            var issue = Issues.findOne(issueId);
+                            var updateObject = {
+                                'id': issue.gitlab.project_id,
+                                'issue_id': issue.gitlab.id,
+                                'state_event': 'reopen'
+                            }
+                            Meteor.call('editIssue', updateObject);
                         }
                     }
                 };
@@ -69,11 +82,35 @@ Template.workBoard.rendered = function () {
             delay: '100',
             opacity: '0.7',
             connectWith: ".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3",
-            cancel: ".footer",
+            cancel: ".footer, :input, button, [contenteditable]",
             placeholder: "placeholder"
-        }).disableSelection();
+        })
     }, 500);
 }
+
+Template.workBoardProgressBar.helpers({
+    'progress': function (sprintId, status) {
+        var issueIds = _.pluck(Issues.find({
+            sprint: sprintId
+        }).fetch(), '_id');
+        var taskCount = Tasks.find({
+            $and: [{
+                'issue_id': {
+                    $in: issueIds
+                }
+            }, {
+                'status': status
+            }]
+        }).fetch().length;
+        var totalCount = Tasks.find({
+            'issue_id': {
+                $in: issueIds
+            }
+        }).fetch().length;
+        var output = (taskCount / totalCount) * 100;
+        return Math.floor(output * 10) / 10;
+    }
+});
 
 Template.workBoard.helpers({
     'taskList': function (issueId, status) {
@@ -85,6 +122,7 @@ Template.workBoard.helpers({
             }]
         });
     },
+
     'sprintStats': function (sprintId) {
         var unestimated = Issues.find({
             $and: [{

@@ -13,8 +13,24 @@ Server = {
         if (options.origin === undefined) {
             throw new Error("Origin is not defined");
         }
-
         return new GitLab(options);
+    },
+
+    getPrivateToken: function (options) {
+        var future = new Future();
+        var postUrl = options.gitlabServerUrl + 'api/v3/session';
+        var postObject = {
+            params: {
+                'email': options.email,
+                'password': options.password
+            }
+        };
+        HTTP.post(postUrl, postObject, function (error, data) {
+            future.return(data);
+        });
+        var response = future.wait();
+        if (response.data) return response.data.private_token;
+        else return false;
     },
 
     createIssue: function (issue) {
@@ -315,15 +331,88 @@ Server = {
                         });
 
                     } else {
-                        Issues.insert({
+                        var output = Issues.insert({
                             'project_id': projectId,
                             'gitlab': issues[i],
                             'origin': api.options.origin
+                        });
+                        Tasks.insert({
+                            'project_id': projectId,
+                            'issue_id': output,
+                            'name': issues[i].title,
+                            'status': 'toDo',
+                            'placeholder': true
                         });
                     }
                 }
             }).run();
         });
+    },
+
+    synchronizingIssues: function (respIncome, servInfo) {
+        var hookIssue = respIncome.body.object_attributes;
+
+        var finder = Issues.findOne({
+            "gitlab.id": hookIssue.id,
+            "origin": servInfo._id,
+        });
+
+        if (finder == undefined) {
+            var proj = Projects.findOne({
+                "gitlab.id": hookIssue.project_id,
+                "origin": servInfo._id,
+            });
+            var new_issue = {
+                'project_id': proj._id, //mongo project_id
+                'origin': servInfo._id,
+                'created_at': hookIssue.created_at,
+                'gitlab': hookIssue //client and server should update this field
+            };
+
+            //mongo issue id
+            var issueId = Issues.insert(new_issue);
+
+            // Fetching new issue from GitLab server
+            api.issues.show(proj.gitlab.id, new_issue.gitlab.id, function (glIssue) {
+                Fiber(function () {
+                    var output = Issues.insert({
+                        'project_id': proj.gitlab.id,
+                        'gitlab': glIssue,
+                        'origin': api.options.origin
+                    });
+                    Tasks.insert({
+                        'project_id': proj.gitlab.id,
+                        'issue_id': output,
+                        'name': glIssue.title,
+                        'status': 'toDo',
+                        'placeholder': true
+                    });
+                }).run();
+            });
+
+        } else {
+            // Updating existing issue
+            gitlabObject = finder.gitlab;
+            gitlabObject = _.extend(gitlabObject, hookIssue);
+            gitlabObject = _.omit(gitlabObject, 'assignee_id', 'author_id', 'branch_name', 'milestone_id');
+
+            Issues.update(
+                finder._id, {
+                    $set: {
+                        'gitlab': gitlabObject,
+                    }
+                });
+
+            Issues.update({
+                _id: finder._id
+            }, {
+                $addToSet: {
+                    'gitlab.labels': {
+                        $each: [hookIssue.labels]
+                    }
+                }
+            })
+        }
     },
 
     fetchProjectMilestones: function (api, projectId) {
@@ -371,10 +460,11 @@ Server = {
 
                     //choose from the array of objects (members) only member id (gitlab id)
                     var usersGlIds = _.pluck(members, 'id');
+                    // get members' access levels
+                    var userAccessLevels = _.pluck(members, 'access_level');
 
 
                     //update project collection, add members id to member_ids array
-
                     var usersMongoIds = Meteor.users.find({
                         'gitlab.id': {
                             $in: usersGlIds
@@ -388,14 +478,22 @@ Server = {
 
                     //choose from the array of objects (users) only mongo user id
                     usersMongoIds = _.pluck(usersMongoIds, '_id');
+                    // Merge into a table of {id, access_level}
+                    var membersIdAccess = [];
+                    for (var i = 0; i < usersMongoIds.length; i++) {
+                        var obj = {};
+                        obj['id'] = usersMongoIds[i];
+                        obj['access_level'] = userAccessLevels[i];
+                        membersIdAccess.push(obj);
+                    }
 
                     Projects.update(project._id, {
                         $set: {
-                            'member_ids': usersMongoIds
+                            'member_ids': membersIdAccess
                         }
                     });
 
-                    console.log('mongo---', usersMongoIds);
+                    console.log('mongo---', membersIdAccess);
                 }).run();
 
             }); //end api
@@ -408,10 +506,10 @@ Server = {
                 Fiber(function () {
                     //choose from the array of objects (members) only member id (gitlab id)
                     var usersGlIds = _.pluck(members, 'id');
-
+                    // get members' access levels
+                    var userAccessLevels = _.pluck(members, 'access_level');
 
                     //update project collection, add members id to member_ids array
-
                     var usersMongoIds = Meteor.users.find({
                         'gitlab.id': {
                             $in: usersGlIds
@@ -425,32 +523,67 @@ Server = {
 
                     //choose from the array of objects (users) only mongo user id
                     usersMongoIds = _.pluck(usersMongoIds, '_id');
+                    // Merge into a table of {id, access_level}
+                    var membersIdAccess = [];
+                    for (var i = 0; i < usersMongoIds.length; i++) {
+                        var obj = {};
+                        obj['id'] = usersMongoIds[i];
+                        obj['access_level'] = userAccessLevels[i];
+                        membersIdAccess.push(obj);
+                    }
 
                     Projects.update(project._id, {
                         $set: {
-                            'member_ids': usersMongoIds
+                            'member_ids': membersIdAccess
                         }
                     });
 
-                    console.log('mongo---', usersMongoIds);
+                    console.log('mongo---', membersIdAccess);
                 }).run();
 
             }); //end api
         }
-    } //end func
+    }, //end func
 
+    sprintFinisher: function () {
+        var sprints = Sprints.find({
+            status: 'in progress'
+        }).fetch();
+        _.each(sprints, function (spr) {
+            if (CheckDate(spr.endDate) == false) {
+                Sprints.update(spr._id, {
+                    $set: {
+                        'status': 'finished'
+                    }
+                });
+            }
+        });
+    },
+
+    getGitlabServerIds: function (email) {
+        var users = Meteor.users.find({
+            'gitlab.email': email
+        }).fetch();
+        if (users) {
+            var origins = _.pluck(users, 'origin');
+            return _.uniq(origins, true);
+        }
+        return undefined;
+    }
 };
 
 Meteor.startup(function () {
 
 
-    // Fixtures 
+    // Fixtures
+    /*
     if (GitlabServers.find().count() === 0) {
         GitlabServers.insert({
             url: 'http://gitlab.ermlab.com/',
             token: '7d1dByE7ecRyBHKhieWR'
         });
     }
+    */
 
 
     // Fetch data from all servers
@@ -473,83 +606,145 @@ Meteor.startup(function () {
             // parser is a later.parse object
             return parser.text('at 1:00 am');
         },
-        job: function () {
-            var sprints = Sprints.find({
-                status: 'in progress'
-            }).fetch();
-            _.each(sprints, function (spr) {
-                if (CheckDate(spr.endDate) == false) {
-                    Sprints.update(spr._id, {
-                        $set: {
-                            'status': 'finished'
-                        }
-                    });
-                }
-            });
-        }
+        job: Server.sprintFinisher
     });
     SyncedCron.start();
+
+    // Run sprint finishing 
+    Server.sprintFinisher();
 });
 
 Accounts.registerLoginHandler(function (loginRequest) {
-    // Use first available server if not specified in login request
-    if (loginRequest.gitlabServerId === undefined) {
-        loginRequest.gitlabServerId = GitlabServers.findOne()._id;
-    }
-
-    var server = GitlabServers.findOne(loginRequest.gitlabServerId);
-
-    // Authorize user and update its profile
-    var future = new Future();
-
-    server.origin = server._id;
-    var api = Server.getGitlabApi(server);
-    api.users.session(loginRequest.email, loginRequest.password, function (data) {
-        future.return(data);
+    // Search for existing GitLab server
+    var gitlabServerId = GitlabServers.findOne({
+        'url': loginRequest.gitlabServerUrl
     });
-    var userData = future.wait();
+    // If server was found use existing server to authorize user
+    if (gitlabServerId) {
+        var future = new Future();
 
+        // Get server info from database
+        var server = GitlabServers.findOne(gitlabServerId);
+        server.origin = server._id;
 
-    if (userData === true) {
-        // TODO: Gitlab auth failes
-    } else {
-        // Gitlab auth successful
-        var existingUser = Meteor.users.findOne({
-            'gitlab.username': userData.username,
-            'origin': server._id
+        // Create GitLab api
+        var api = Server.getGitlabApi(server);
+
+        // Create user session
+        api.users.session(loginRequest.email, loginRequest.password, function (data) {
+            future.return(data);
         });
 
-        var userId = null;
-
-        if (existingUser) {
-            userId = existingUser._id;
-
-            //we merged the gitlab fields with those in existing user
-            var usrUpdated = _.extend(existingUser.gitlab, userData);
-            Meteor.users.update(existingUser._id, {
-                $set: {
-                    username: userData.username,
-                    token: userData.private_token,
-                    gitlab: usrUpdated,
-                }
-            });
-
+        // Wait for data
+        var userData = future.wait();
+        if (userData === true) {
+            // TODO: Gitlab auth fails
         } else {
-            userId = Meteor.users.insert({
-                username: userData.username,
-                gitlab: userData,
-                origin: server._id,
-                token: userData.private_token
+            // Gitlab auth successful
+            var existingUser = Meteor.users.findOne({
+                'gitlab.username': userData.username,
+                'origin': server._id
             });
-        }
 
-        // return id user to log in
-        if (userId !== null) {
-            return {
-                userId: userId,
-            };
+            var userId = null;
+
+            if (existingUser) {
+                userId = existingUser._id;
+
+                //we merged the gitlab fields with those in existing user
+                var usrUpdated = _.extend(existingUser.gitlab, userData);
+                Meteor.users.update(existingUser._id, {
+                    $set: {
+                        username: userData.username,
+                        token: userData.private_token,
+                        gitlab: usrUpdated,
+                    }
+                });
+
+            } else {
+                userId = Meteor.users.insert({
+                    username: userData.username,
+                    gitlab: userData,
+                    origin: server._id,
+                    token: userData.private_token
+                });
+            }
+
+            // return id user to log in
+            if (userId !== null) {
+                return {
+                    userId: userId,
+                };
+            }
         }
     }
+    // If no server found : verify and add new gitlab server
+    else {
+        // Get user's private token
+        var privateToken = Server.getPrivateToken(loginRequest);
+        // If token was received, save server in database
+        if (privateToken) {
+            console.log('Private token received: ' + privateToken);
+            // Insert server info and use it to create api
+            var server = {
+                url: loginRequest.gitlabServerUrl,
+                token: privateToken,
+                origin: GitlabServers.insert({
+                    url: loginRequest.gitlabServerUrl
+                })
+            };
+            // Create GitLab api
+            var api = Server.getGitlabApi(server);
+
+            // Create user session
+            api.users.session(loginRequest.email, loginRequest.password, function (data) {
+                future.return(data);
+            });
+
+            // Wait for data
+            var userData = future.wait();
+            if (userData === true) {
+                // TODO: Gitlab auth fails
+            } else {
+                // Gitlab auth successful
+                var existingUser = Meteor.users.findOne({
+                    'gitlab.username': userData.username,
+                    'origin': server._id
+                });
+
+                var userId = null;
+
+                if (existingUser) {
+                    userId = existingUser._id;
+
+                    //we merged the gitlab fields with those in existing user
+                    var usrUpdated = _.extend(existingUser.gitlab, userData);
+                    Meteor.users.update(existingUser._id, {
+                        $set: {
+                            username: userData.username,
+                            token: userData.private_token,
+                            gitlab: usrUpdated,
+                        }
+                    });
+
+                } else {
+                    userId = Meteor.users.insert({
+                        username: userData.username,
+                        gitlab: userData,
+                        origin: server._id,
+                        token: userData.private_token
+                    });
+                }
+
+                // return id user to log in
+                if (userId !== null) {
+                    return {
+                        userId: userId,
+                    };
+                }
+            }
+        } else console.log('Server authorization failed.')
+    };
 });
 
 Accounts.onLogin(function (data) {

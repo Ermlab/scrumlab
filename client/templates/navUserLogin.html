@@ -1,21 +1,21 @@
 <template name="navUserLogin">
 
-    {{#if currentUser}} 
-    {{> masterLayoutConnected}} 
-    {{else}} 
-    {{#if loggingIn}} 
-    {{> masterLayoutLoadingForm}} 
-    {{else}} {{> masterLayoutLoginForm}} 
-    {{/if}} {{/if}}
+    {{#if currentUser}}
+        {{> masterLayoutConnected}}
+    {{else}}
+        {{#if loggingIn}}
+            {{> masterLayoutLoadingForm}}
+        {{else}}
+            <!--{{> masterLayoutLoginForm}}-->
+        {{/if}}
+    {{/if}}
 
 
 </template>
 
 
 <template name="masterLayoutLoginForm">
-
     <div class="navbar-form navbar-right">
-
         <div class="form-group">
             <input class="form-control input-sm" id="iEmail" type="email" placeholder="Enter email ">
         </div>
@@ -24,9 +24,6 @@
         </div>
         <button type="button" class="btn btn-success btn-sm" id="signIn">Sign In</button>
     </div>
-
-
-
 </template>
 
 <template name="masterLayoutLoadingForm">
@@ -54,7 +51,7 @@
                 </li>
 
                 <li class="divider"></li>
-                <li role="presentation"><a role="menuitem" id="userLogout" tabindex="-1" href="#">Sign out</a>
+                <li role="presentation"><a id="userLogout" tabindex="-1" href="#">Sign out</a>
                 </li>
             </ul>
         </li>

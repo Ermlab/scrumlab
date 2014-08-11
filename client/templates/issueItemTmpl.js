@@ -19,6 +19,12 @@ Template.issueItemTmpl.helpers({
         }).fetch();
         if (tasks.length == 0) return true;
         else return false;
+    },
+    
+    'workBoard': function () {
+        var board = _.last(document.URL.split('/'));
+        if(board == 'work') return true;
+        return false;
     }
 });
 
@@ -57,7 +63,7 @@ Template.issueItemTmpl.events = {
                     'placeholder': true
                 }]
             });
-            if (placeholder != undefined) Tasks.remove(placeholder._id, {
+            if (typeof placeholder != 'undefined') Tasks.remove(placeholder._id, {
                 justOne: true
             });
             $(e.target).each(function () {
@@ -74,5 +80,83 @@ Template.issueItemTmpl.events = {
                 _id: parentId
             });
         }
+    },
+    
+    'click .description.list-group-item-text': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
+    
+    'click .title.list-group-item-heading': function (event) {
+        event.currentTarget.setAttribute('contenteditable', true);
+    },
+
+    'blur .description.list-group-item-text': function (event) {
+        var newValue = event.currentTarget.innerHTML.trim();
+        // Hack for issue described here: https://github.com/meteor/meteor/issues/1964
+        event.currentTarget.innerHTML = newValue;
+        // /hack
+        var issueId = event.currentTarget.getAttribute("id");
+        Issues.update(issueId, {
+            $set: {
+                'gitlab.description': newValue
+            }
+        });
+        var issue = Issues.findOne({
+            '_id': issueId
+        });
+        var gitlabIssueId = issue.gitlab.id;
+        var gitlabProjectId = issue.gitlab.project_id;
+        var updateObject = {
+            'id': gitlabProjectId,
+            'issue_id': gitlabIssueId,
+            'description': newValue
+        };
+        Meteor.call('editIssue', updateObject);
+        event.currentTarget.setAttribute('contenteditable', false);
+    },
+
+    'blur .title.list-group-item-heading': function (event) {
+        var newValue = event.currentTarget.innerHTML.trim();
+        var issueId = event.currentTarget.getAttribute("id");
+        Issues.update(issueId, {
+            $set: {
+                'gitlab.title': newValue
+            }
+        });
+        var issue = Issues.findOne({
+            '_id': issueId
+        });
+        var gitlabIssueId = issue.gitlab.id;
+        var gitlabProjectId = issue.gitlab.project_id;
+        var updateObject = {
+            'id': gitlabProjectId,
+            'issue_id': gitlabIssueId,
+            'title': newValue
+        };
+        Meteor.call('editIssue', updateObject);
+        event.currentTarget.setAttribute('contenteditable', false);
+    },
+
+    'blur .label.label-warning.pull-left': function (event) {
+        var newValue = event.currentTarget.innerHTML.trim();
+        var issueId = event.currentTarget.getAttribute("id");
+        if (isNaN(newValue) || (newValue.length == 0))
+            event.currentTarget.innerHTML = '<span id={{_id}} contenteditable="true" class="glyphicon glyphicon-time"></span>';
+        else
+            Issues.update(issueId, {
+                $set: {
+                    estimation: newValue
+                }
+            });
+    },
+
+    'focus .label.label-warning.pull-left': function (event) {
+        var newValue = event.currentTarget.innerHTML.trim();
+        if (isNaN(newValue)) event.currentTarget.innerHTML = ' ';
+    },
+
+    'keydown .label.label-warning.pull-left': function (event) {
+        var newValue = event.currentTarget.innerHTML;
+        if (newValue.length == 0) event.currentTarget.innerHTML = ' ';
     }
 }

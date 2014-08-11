@@ -6,7 +6,7 @@ Template.navProjectsList.anyProjectIsEnabled = function () {
 
 Template.navProjectsList.projectNames = function () {
     //TODO: refactor, fields are not needed on the client side (PG)
-    return Projects.find({member_ids: Meteor.userId()}, {
+    return Projects.find({'member_ids.id': Meteor.userId()}, {
         fields: {
             '_id': 1,
             'gitlab.name': 1,

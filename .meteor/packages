@@ -9,9 +9,9 @@ bootstrap-3
 iron-router
 accounts-ui
 iron-router-active
-gitlab
 jquery-ui
 http
 spin
 underscore
 synced-cron
+gitlab

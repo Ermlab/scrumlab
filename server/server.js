@@ -685,10 +685,64 @@ Accounts.registerLoginHandler(function (loginRequest) {
         // If token was received, save server in database
         if (privateToken) {
             console.log('Private token received: ' + privateToken);
+            // Insert server info and use it to create api
             var server = {
                 url: loginRequest.gitlabServerUrl,
-                token: privateToken
+                token: privateToken,
+                origin: GitlabServers.insert({
+                    url: loginRequest.gitlabServerUrl
+                })
             };
+            // Create GitLab api
+            var api = Server.getGitlabApi(server);
+
+            // Create user session
+            api.users.session(loginRequest.email, loginRequest.password, function (data) {
+                future.return(data);
+            });
+
+            // Wait for data
+            var userData = future.wait();
+            if (userData === true) {
+                // TODO: Gitlab auth fails
+            } else {
+                // Gitlab auth successful
+                var existingUser = Meteor.users.findOne({
+                    'gitlab.username': userData.username,
+                    'origin': server._id
+                });
+
+                var userId = null;
+
+                if (existingUser) {
+                    userId = existingUser._id;
+
+                    //we merged the gitlab fields with those in existing user
+                    var usrUpdated = _.extend(existingUser.gitlab, userData);
+                    Meteor.users.update(existingUser._id, {
+                        $set: {
+                            username: userData.username,
+                            token: userData.private_token,
+                            gitlab: usrUpdated,
+                        }
+                    });
+
+                } else {
+                    userId = Meteor.users.insert({
+                        username: userData.username,
+                        gitlab: userData,
+                        origin: server._id,
+                        token: userData.private_token
+                    });
+                }
+
+                // return id user to log in
+                if (userId !== null) {
+                    return {
+                        userId: userId,
+                    };
+                }
+            }
         } else console.log('Server authorization failed.')
     };
 });

@@ -3,9 +3,9 @@
     "iron-router": {},
     "bootstrap-3": {},
     "iron-router-active": {},
-    "x-editable-bootstrap": {},
     "jquery-ui": {},
     "spin": {},
-    "synced-cron": {}
+    "synced-cron": {},
+    "gitlab": {}
   }
 }

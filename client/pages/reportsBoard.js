@@ -130,7 +130,7 @@ Template.projectVelocity.rendered = function () {
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(220,220,220,1)",
-                        data: [0]
+                        data: []
         },
                     {
                         label: "Progress",
@@ -141,7 +141,10 @@ Template.projectVelocity.rendered = function () {
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(151,187,205,1)",
                         data: []
-        }
+        },
+                    {
+                        data: [0]
+                    }
     ]
             };
 
@@ -265,6 +268,9 @@ Template.projectVelocity.rendered = function () {
                 dataLine.datasets[1].data.push(i);
             }
 
+
+
+
             dataLine.datasets[1].data[0] = totalTime;
 
             for (var i = 1; i < daysToNow + 1; i++) {
@@ -288,15 +294,17 @@ Template.projectVelocity.rendered = function () {
             var creatingChartPoints = [];
 
             for (var i = 0; i < dataLine.datasets[1].data.length; i++) {
-                creatingChartPoints[i] = [i, dataLine.datasets[1].data[i]]
+                creatingChartPoints[i] = [(i * 24), dataLine.datasets[1].data[i]];
             }
 
             // and now i must create linear regression
 
             var linearRegression = ss.linear_regression().data(creatingChartPoints).line();
 
-            for (var i = 0; i < dataLine.datasets[1].data.length; i++) {
-                dataLine.datasets[0].data.push(linearRegression(dataLine.datasets[1].data[i]));
+            for (var i = 0; i < startDays + 1; i++) {
+                var value = Math.max(0, linearRegression(i * 24));
+
+                dataLine.datasets[0].data.push(value);
             }
 
             var ctx = document.getElementById("pBurndown").getContext("2d");

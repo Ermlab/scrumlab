@@ -68,6 +68,13 @@ Template.workBoard.rendered = function () {
                                     'gitlab.state': 'opened'
                                 }
                             });
+
+                            Issues.update(issueId, {
+                                $unset: {
+                                    'closed_at': ''
+                                }
+                            });
+
                             var issue = Issues.findOne(issueId);
                             var updateObject = {
                                 'id': issue.gitlab.project_id,

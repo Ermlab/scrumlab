@@ -17,7 +17,8 @@ Template.planBoardSprintsInput.rendered = function () {
                     if (ownerId != 0) {
                         Issues.update(selfId, {
                             $set: {
-                                sprint: ownerId
+                                sprint: ownerId,
+                                added_at: CurrDate()
                             }
                         });
                     } else {
@@ -25,7 +26,8 @@ Template.planBoardSprintsInput.rendered = function () {
                         // resulting in element becoming unassigned
                         Issues.update(selfId, {
                             $unset: {
-                                sprint: ""
+                                sprint: "",
+                                added_at: CurrDate()
                             }
                         });
                     }
@@ -252,7 +254,8 @@ Template.planBoardSprintsList.events = {
                     // Update sprint status
                     Sprints.update(parentId, {
                         $set: {
-                            status: 'in progress'
+                            status: 'in progress',
+                            status_changed: CurrDate()
                         }
                     });
                 } else alert('Sprint is already overdue.');
@@ -273,7 +276,8 @@ Template.planBoardSprintsList.events = {
             if (sprint.status == 'in progress') {
                 Sprints.update(parentId, {
                     $set: {
-                        status: 'ready'
+                        status: 'ready',
+                        status_changed: ''
                     }
                 });
             };
@@ -311,7 +315,7 @@ Template.planBoardSprintsInput.events = {
 
             Sprints.insert({
                 name: name.value,
-                endDate: date.value,
+                endDate: moment(date.value).format("DD/MM/YYYY"),
                 startDate: CurrDate(),
                 project_id: projectId,
                 status: 'ready'

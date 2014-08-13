@@ -50,6 +50,7 @@
         "git": "https://github.com/EventedMind/iron-router.git",
         "tag": "v0.8.2",
         "commit": "05415a8891ea87a00fb1e2388585f2ca5a38e0da"
+        },
       "gitlab": {
         "git": "https://github.com/Ermlab/meteor-nxt-gitlab.git",
         "tag": "v0.1.0",

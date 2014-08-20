@@ -3,14 +3,11 @@
         <div class="col-md-8 col-md-offset-2">
 
             <form class="form-horizontal" id="addStoryForm">
-
-
                 {{#with project}}
                 <input type="hidden" value="{{_id}}" name="projectId">
                 <input type="hidden" value="{{gitlab.id}}" name="glProjectId">{{/with}}
 
                 <div class="form-group">
-
                     <div class="input-group input-group-lg double-input">
                         <input type="text" class="form-control" name="title" placeholder="Story title" tabindex="1">
                         <div class="input-group-btn">

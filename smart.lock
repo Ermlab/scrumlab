@@ -2,7 +2,9 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "iron-router": {},
+      "iron-router": {
+        "version": "0.8.2"
+      },
       "bootstrap-3": {},
       "iron-router-active": {},
       "jquery-ui": {},

@@ -1,7 +1,11 @@
 /* custom css file for scrumlab */
 
 /* custom top padding for bootstrap "fixed navigation"" */
+
 body {
-  min-height: 2000px;
-  padding-top: 70px;
+    padding-top: 70px;
+}
+.error-message {
+    color: red;
+    margin-left: 0.5em;
 }

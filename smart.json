@@ -1,11 +1,13 @@
 {
-  "packages": {
-    "iron-router": {},
-    "bootstrap-3": {},
-    "iron-router-active": {},
-    "jquery-ui": {},
-    "spin": {},
-    "synced-cron": {},
-    "gitlab": {}
-  }
+    "packages": {
+        "iron-router": {
+            "version": "0.8.2"
+        },
+        "bootstrap-3": {},
+        "iron-router-active": {},
+        "jquery-ui": {},
+        "spin": {},
+        "synced-cron": {},
+        "gitlab": {}
+    }
 }

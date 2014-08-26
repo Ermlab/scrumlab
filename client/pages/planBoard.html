@@ -1,12 +1,163 @@
-<template name="planBoard">
-    {{#with project}}
-    <div class="page-header">
-        <h1>{{gitlab.name}} - Plan your work</h1>
-        <input type="hidden" id="projectId" ref={{_id}}>
+<template name="tmpTest">
+    <div id="scroll-menu">
+        <ul class="nav nav-pills">
+            <li><a href="#sandbox">sandbox</a>
+            </li>
+            <li><a href="#backlog">backlog</a>
+            </li>
+            <li><a href="#sprint1">sprint1</a>
+            </li>
+            <li><a href="#sprint2">sprint2</a>
+            </li>
+            <li><a href="#sprint3">sprint3</a>
+            </li>
+            <li><a href="#sprint4">sprint4</a>
+            </li>
+        </ul>
     </div>
-    {{/with}} 
-    {{> addIssueTmpl}} 
-    {{> planBoardSprints}}
+    <div id="panel-left" class="" style="">
+        <div class="panel-body" data-spy="scroll" data-target="#scroll-menu">
+            <h1 id="sandbox">sandbox</h1>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h1 id="backlog">backlog</h1>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h1 id="sprint1">sprint 1</h1>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h1 id="sprint2">sprint 2</h1>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h1 id="sprint3">sprint 3</h1>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h1 id="sprint4">sprint 4</h1>
+            <h2>.</h2>
+            <h2>.</h2>
+            <h2>.</h2>
+        </div>
+    </div>
+</template>
+
+<!--
+<template name="tmpHeader">
+    <ul class="nav nav-pills">
+        <li><a href="#sandbox">sandbox</a>
+        </li>
+        <li><a href="#backlog">backlog</a>
+        </li>
+        <li><a href="#sprint1">spr1</a>
+        </li>
+        <li><a href="#sprint2">spr2</a>
+        </li>
+        <li><a href="#sprint3">spr3</a>
+        </li>
+        <li><a href="#sprint4">spr4</a>
+        </li>
+    </ul>
+</template>
+
+<template name="tmpList">
+    <h2 id="sandbox">Sandbox</h2>
+    <ul>
+        <li>a</li>
+        <li>b</li>
+        <li>c</li>
+        <li>d</li>
+        <li>e</li>
+        <li>f</li>
+        <li>g</li>
+    </ul>
+    <h2 id="backlog">Backlog</h2>
+    <ul>
+        <li>a</li>
+        <li>b</li>
+        <li>c</li>
+        <li>d</li>
+        <li>e</li>
+        <li>f</li>
+        <li>g</li>
+    </ul>
+    <h2 id="sprint1">Sprint 1</h2>
+    <ul>
+        <li>a</li>
+        <li>b</li>
+        <li>c</li>
+        <li>d</li>
+        <li>e</li>
+        <li>f</li>
+        <li>g</li>
+    </ul>
+    <h2 id="sprint2">Sprint 2</h2>
+    <ul>
+        <li>a</li>
+        <li>b</li>
+        <li>c</li>
+        <li>d</li>
+        <li>e</li>
+        <li>f</li>
+        <li>g</li>
+    </ul>
+    <h2 id="sprint3">Sprint 3</h2>
+    <ul>
+        <li>a</li>
+        <li>b</li>
+        <li>c</li>
+        <li>d</li>
+        <li>e</li>
+        <li>f</li>
+        <li>g</li>
+    </ul>
+    <h2 id="sprint4">Sprint 4</h2>
+    <ul>
+        <li>a</li>
+        <li>b</li>
+        <li>c</li>
+        <li>d</li>
+        <li>e</li>
+        <li>f</li>
+        <li>g</li>
+    </ul>
+</template>
+-->
+
+
+<template name="planBoard">
+
+    <div class="row">
+        <div class="col-md-12">
+            {{> panelTmpl panels.left}}
+            <hr />
+        </div>
+    </div>
+<!--
+    <div class="row">
+        <div id="panel-left" class="col-md-6" style="background:red">
+            <div class="header">{{tmpHeader}}</div>
+            <div class="panel">
+                <div class="inner" xxxdata-spy="scroll" xxxdata-target="tmp-nav">
+                    {{tmpList}}
+                </div>
+            </div>
+        </div>
+        <div id="panel-right" class="col-md-6 panel" style="background:pink">
+            <div class="header">HEADER{{tmpHeader}}</div>
+            <div class="panel">
+                <div class="inner">
+                    {{tmpList}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{> addIssueTmpl}} {{> planBoardSprints}}
+-->
 </template>
 
 
@@ -17,8 +168,7 @@
             <p id="backlogFooter">{{issuesStats}}</p>
         </div>
         <div id="sprints" class="col-md-6 list-group">
-            {{> planBoardSprintsInput}}
-            {{> planBoardSprintsList}}
+            {{> planBoardSprintsInput}} {{> planBoardSprintsList}}
         </div>
     </div>
 </template>
@@ -50,14 +200,13 @@
         <div class="well well-sm text-left" style="margin-top:8px;">
             <h4 style="color:black;" id={{_id}} class="sprintTitle" contentEditable="false">{{name}}</h4>
         </div>
-        
+
         <div class="sprint" id={{_id}} style="min-height: 15px">
             {{#each assignedItems _id}} {{> issueItemTmpl}} {{/each}}
         </div>
         <span class="label label-info">{{sprintsStats _id}}</span>
     </div>
-        {{>planBoardSprintsListItem}}
-    {{/each}}
+    {{>planBoardSprintsListItem}} {{/each}}
 </template>
 
 <template name="planBoardSprintsListItem">

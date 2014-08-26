@@ -23,3 +23,9 @@ body {
     box-shadow: 0px 2px 5px #444;
     color: white;
 }
+
+#panel-left .panel-body {
+    position: relative;
+    height: 400px;
+    overflow: scroll;
+}

@@ -3,6 +3,5 @@ Template.connectionStatus.isConnected = function () {
 };
 
 Template.connectionStatus.status = function () {
-    console.log(Meteor.status())
     return Meteor.status();
 }

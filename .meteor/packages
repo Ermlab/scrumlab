@@ -5,13 +5,17 @@
 
 standard-app-packages
 insecure
-bootstrap-3
-iron-router
+cmather:iron-router@0.8.2
 accounts-ui
-iron-router-active
-jquery-ui
+mrt:iron-router-active@0.2.0
 http
-spin
+sacha:spin@2.0.4
 underscore
-synced-cron
-gitlab
+percolatestudio:synced-cron@0.1.1
+ermlab:gitlab
+mizzao:bootstrap-3
+less
+ermlab:log4js-silos
+pfafman:font-awesome-4
+mrt:jquery-ui
+

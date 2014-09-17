@@ -24,8 +24,6 @@ body {
     color: white;
 }
 
-#panel-left .panel-body {
-    position: relative;
-    height: 400px;
-    overflow: scroll;
+#ui-datepicker-div {
+    display: none;
 }

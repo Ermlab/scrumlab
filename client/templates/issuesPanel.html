@@ -1,0 +1,62 @@
+<template name="issuesPanel">
+    {{#if context.project}}
+    <div class="issues-panel" id="panel-{{name}}">
+        <div class="issues-panel-header">
+            {{> issuesPanelDropdown}}
+            <em>{{selectedSprint.help}}</em>
+        </div>
+        <div class="issues-panel-body">
+            <ul class="issues-list">
+                {{#each issues selectedSprint.value}}
+                <li>{{>issueItemTmpl}}</li>
+                {{/each}}
+                <li class="new-issue-wrapper hidden">{{>issuesPanelNewIssue}}</li>
+            </ul>
+        </div>
+        <div class="issues-panel-footer">
+            footer {{selectedSprint.value}}
+        </div>
+    </div>
+    {{/if}}
+</template>
+
+
+<template name="issuesPanelDropdown">
+    <div class="input-group">
+        <select class="container form-control">
+            {{#each options}}
+            <option {{selectedIfEq value selectedSprint}} value="{{value}}">{{name}}</option>
+            {{/each}}
+        </select>
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Add</button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li><a class="new-issue" href="#">New Issue</a>
+                </li>
+                <li><a href="#">New Sprint</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
+
+
+<template name="issuesPanelNewIssue">
+    <div class="new-issue">
+        <span class="title">Add new issue</span>
+        <form class="form">
+            <div class="form-group">
+                <input type="text" class="form-control input-sm" name="title" placeholder="Title (required)" />
+            </div>
+            <div class="form-group">
+                <textarea class="form-control input-sm" name="description" placeholder="Description"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control input-sm" name="estimation" placeholder="Estimation" />
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-sm btn-primary" value="Add new issue" />
+            </div>
+        </form>
+    </div>
+</template>

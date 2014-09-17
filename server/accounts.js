@@ -1,8 +1,47 @@
 var Fiber = Npm.require('fibers');
 var Future = Npm.require('fibers/future');
 
+// Upserts user data after successful login to gitlab server
+// returns userId or null
+var loginSuccessful = function (userData, origin) {
+
+    var userId = null;
+
+    // Gitlab auth successful
+    var existingUser = Meteor.users.findOne({
+        'gitlab.username': userData.username,
+        'origin': origin
+    });
+
+    if (existingUser) {
+        userId = existingUser._id;
+
+        //we merged the gitlab fields with those in existing user
+        var usrUpdated = _.extend(existingUser.gitlab, userData);
+        Meteor.users.update(existingUser._id, {
+            $set: {
+                username: userData.username + '@' + origin,
+                token: userData.private_token,
+                gitlab: userData,
+            }
+        });
+
+    } else {
+        // New user
+        userId = Meteor.users.insert({
+            username: userData.username + '@' + origin,
+            gitlab: userData,
+            token: userData.private_token,
+            origin: origin
+        });
+    }
+    
+    return userId;
+}
+
 
 Accounts.registerLoginHandler(function (loginRequest) {
+    logger.info("New login request", loginRequest);
 
     var url = loginRequest.gitlabServerUrl;
     if (url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
@@ -21,9 +60,10 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
     // If server was found use existing server to authorize user
     if (server) {
-
         // Get server info from database
         server.origin = server._id;
+
+        logger.debug("Server exists, origin: ", server.origin);
 
         // Create GitLab api
         var api = Server.getGitlabApi(server);
@@ -36,41 +76,16 @@ Accounts.registerLoginHandler(function (loginRequest) {
         // Wait for data
         var userData = future.wait();
 
-        console.log('got user data from logging to existing server', userData);
+        logger.debug('Login result:', userData);
 
         if (userData === true) {
             // Gitlab auth failed
             throw new Meteor.Error(401, "Authentication failed");
         } else {
-            // Gitlab auth successful
-            var existingUser = Meteor.users.findOne({
-                'gitlab.username': userData.username,
-                'origin': server._id
-            });
 
-            var userId = null;
-
-            if (existingUser) {
-                userId = existingUser._id;
-
-                //we merged the gitlab fields with those in existing user
-                var usrUpdated = _.extend(existingUser.gitlab, userData);
-                Meteor.users.update(existingUser._id, {
-                    $set: {
-                        username: userData.username + '@' + server._id,
-                        token: userData.private_token,
-                        gitlab: userData,
-                    }
-                });
-
-            } else {
-                userId = Meteor.users.insert({
-                    username: userData.username + '@' + server._id,
-                    gitlab: userData,
-                    token: userData.private_token,
-                    origin: server._id
-                });
-            }
+            var userId = loginSuccessful(userData, server.origin);
+            
+            logger.info("Logging in user ", userId);
 
             // return id user to log in
             if (userId !== null) {
@@ -82,10 +97,10 @@ Accounts.registerLoginHandler(function (loginRequest) {
     }
     // If no server found : verify and add new gitlab server
     else {
-        console.log("new server");
+        logger.info("This server is new: ", loginRequest.gitlabServerUrl);
         // Get user's private token
         var result = Server.getPrivateToken(loginRequest);
-        console.log('login result', result);
+        logger.debug('Login result:', result);
         if (result.error) {
             throw new Meteor.Error(result.error.code, result.error.message);
         }
@@ -97,14 +112,16 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
         // If token was received, save server in database
         else {
-            console.log('Private token received: ' + privateToken);
+            logger.debug('Private token received: ' + privateToken);
             // Insert server info and use it to create api
+            var id = GitlabServers.insert({
+                url: loginRequest.gitlabServerUrl
+            });
+
             var server = {
                 url: loginRequest.gitlabServerUrl,
                 token: privateToken,
-                origin: GitlabServers.insert({
-                    url: loginRequest.gitlabServerUrl
-                })
+                origin: id
             };
             // Create GitLab api
             var api = Server.getGitlabApi(server);
@@ -119,43 +136,16 @@ Accounts.registerLoginHandler(function (loginRequest) {
             if (userData === true) {
                 throw new Meteor.Error(401, "No user data from server, check your login and password");
             } else {
-                // Gitlab auth successful
-                var existingUser = Meteor.users.findOne({
-                    'gitlab.username': userData.username,
-                    'origin': server._id
-                });
-
-                var userId = null;
-
-                if (existingUser) {
-                    userId = existingUser._id;
-
-                    //we merged the gitlab fields with those in existing user
-                    var usrUpdated = _.extend(existingUser.gitlab, userData);
-                    Meteor.users.update(existingUser._id, {
-                        $set: {
-                            username: userData.username,
-                            token: userData.private_token,
-                            gitlab: usrUpdated,
-                        }
-                    });
-
-                } else {
-                    userId = Meteor.users.insert({
-                        username: userData.username,
-                        gitlab: userData,
-                        origin: server._id,
-                        token: userData.private_token
-                    });
-                }
+                
+                var userId = loginSuccessful(userData, server.origin);
+                
+                logger.info("Logging in user ", userId);
 
                 // return id user to log in
                 if (userId !== null) {
                     return {
                         userId: userId,
                     };
-                } else {
-                    throw new Meteor.Error(401, "Something bad happened");
                 }
             }
         }

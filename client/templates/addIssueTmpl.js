@@ -27,8 +27,11 @@ Template.addIssueTmpl.events = {
             });
             //set focus on story title textbox
             $(e.target).find('[name=title]').focus();
-
+            console.log('on');
+            $(e.target).find('input, textarea').attr('disabled', true);
         });
+        console.log('off');
+        $(e.target).find('input, textarea').attr('disabled', false);
 
     },
 

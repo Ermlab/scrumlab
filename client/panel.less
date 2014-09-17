@@ -1,0 +1,41 @@
+.issues-panel {
+    .issues-panel-header {
+        box-shadow: 0 5px 8px -5px gray;
+        z-index: 2;
+        position: relative;
+        padding-bottom: 4px;
+    }
+    
+    .issues-panel-body {
+        padding-right: 2px;
+        height: 500px;
+        overflow-y: scroll;
+        .issues-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            li:first-child {
+                border-top: 1px solid #ebebeb;
+            }
+            li {
+                /*
+                display: inline-block;
+                float: left;
+                width: 50%;
+                */
+                margin: 0;
+                padding: 0;
+                border: 0;
+                border-bottom: 1px solid #ebebeb;
+            }
+        }
+    }
+    
+    .issues-panel-footer {
+        padding-top: 4px;
+        box-shadow: 0 -5px 8px -5px gray;
+        z-index: 2;
+        position: relative;
+    }
+
+}

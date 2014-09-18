@@ -4,13 +4,16 @@
         <div class="issues-panel-header">
             {{> issuesPanelDropdown}}
             <em>{{selectedSprint.help}}</em>
+            <div>
+                {{> editSprint sprint=selectedSprintData project=context.project}}
+            </div>
         </div>
         <div class="issues-panel-body">
             <ul class="issues-list">
                 {{#each issues selectedSprint.value}}
                 <li>{{>issueItemTmpl}}</li>
                 {{/each}}
-                <li class="new-issue-wrapper hidden">{{>issuesPanelNewIssue}}</li>
+                <li class="new-issue-wrapper" style="display:none;">{{>issuesPanelNewIssue}}</li>
             </ul>
         </div>
         <div class="issues-panel-footer">
@@ -56,6 +59,7 @@
             </div>
             <div class="form-group">
                 <input type="submit" class="btn btn-sm btn-primary" value="Add new issue" />
+                <a class="close-it" href="#">close</a>
             </div>
         </form>
     </div>

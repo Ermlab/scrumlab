@@ -68,7 +68,7 @@ Template.issuesPanelDropdown.events({
         var panelBody = $(panel).find('.issues-panel-body')[0];
         var newIssue = $(panelBody).find('.issues-list .new-issue-wrapper');
         
-        $(newIssue).removeClass('hidden');
+        $(newIssue).show();
         $(panelBody).scrollTo(newIssue, 300);
     },
     
@@ -80,6 +80,9 @@ Template.issuesPanelDropdown.events({
 
 
 Template.issuesPanelNewIssue.events({
+    'click .close-it': function (e) {
+        $(e.target).parents('li.new-issue-wrapper').hide();
+    },
     'submit .new-issue form': function (e) {
         e.preventDefault();        
         var title = $(e.target).find('[name=title]').val().trim();
@@ -129,12 +132,14 @@ Template.issuesPanelNewIssue.events({
 
 var _options = function (panel) {
     var options = [
+        /*
         {
             value: 'sandbox',
             name: 'Sandbox',
             help: 'Issues which are not ready for planning',
             panel: panel
         },
+        */
         {
             value: 'backlog',
             name: 'Backlog',

@@ -1,24 +1,3 @@
-/*
-Template.planBoard.left = function (data) {
-    console.log(data);
-    console.log(this);
-    return {
-        name: 'left',
-        context: data
-    };
-}
-
-Template.planBoard.right = function (data) {
-    return {
-        name: 'right',
-        context: data
-    };
-}
-*/
-
-
-
-
 Template.planBoardSprintsInput.rendered = function () {
     Meteor.setTimeout(function () {
         $("#backlog, .sprint").sortable({

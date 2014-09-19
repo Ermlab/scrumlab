@@ -4,9 +4,10 @@
         <div class="issues-panel-header">
             {{> issuesPanelDropdown}}
             <em>{{selectedSprint.help}}</em>
-            <div>
-                {{> editSprint sprint=selectedSprintData project=context.project}}
-            </div>
+            {{#if selectedSprint.editable}}
+                <a href="#" class="edit-sprint fa fa-pencil"></a>
+            {{/if}}
+            {{>editSprint}}
         </div>
         <div class="issues-panel-body">
             <ul class="issues-list">
@@ -36,7 +37,7 @@
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li><a class="new-issue" href="#">New Issue</a>
                 </li>
-                <li><a href="#">New Sprint</a>
+                <li><a class="new-sprint" href="#">New Sprint</a>
                 </li>
             </ul>
         </div>

@@ -33,7 +33,7 @@ Template.issuesPanel.issues = function (sprint) {
             'gitlab.milestone.iid': sprint * 1
         });
     }
-}
+}, 0
 
 Template.issuesPanel.created = function () {
     $(window).resize(function () {
@@ -53,6 +53,16 @@ Template.issuesPanel.rendered = function () {
     }, 10);
 }
 
+Template.issuesPanel.events({
+    'click .edit-sprint': function (e) {
+        e.preventDefault();
+        Session.set('modal', {
+            template: 'modalEditSprint',
+            data: this.name + 'IssuesPanel'
+        });
+    }
+});
+
 
 Template.issuesPanelDropdown.options = function () {
     return _options(this.name);
@@ -67,11 +77,19 @@ Template.issuesPanelDropdown.events({
         var panel = $(e.target).parents('.issues-panel')[0];
         var panelBody = $(panel).find('.issues-panel-body')[0];
         var newIssue = $(panelBody).find('.issues-list .new-issue-wrapper');
-        
+
         $(newIssue).show();
         $(panelBody).scrollTo(newIssue, 300);
     },
-    
+
+    'click .new-sprint': function (e) {
+        Session.set('modal', {
+            template: 'modalEditSprint',
+            data: null
+        });
+
+    },
+
     'change select.container': function (e) {
         Session.set(this.name + 'IssuesPanel', $(e.target).val());
     }
@@ -84,7 +102,7 @@ Template.issuesPanelNewIssue.events({
         $(e.target).parents('li.new-issue-wrapper').hide();
     },
     'submit .new-issue form': function (e) {
-        e.preventDefault();        
+        e.preventDefault();
         var title = $(e.target).find('[name=title]').val().trim();
         var description = $(e.target).find('[name=description]').val().trim();
         var estimation = $(e.target).find('[name=estimation]').val().trim();
@@ -94,11 +112,11 @@ Template.issuesPanelNewIssue.events({
             $(e.target).find('[name=title]').parent().addClass('has-error');
             isValid = false;
         }
-        
+
         var projectId = this.context.project._id
         var gitlabProjectId = this.context.project.gitlab.id;
         var sprint = Session.get(this.name + 'IssuesPanel') || _options()[0].value;
-        
+
         var issue = {
             project_id: projectId,
             gitlabProjectId: gitlabProjectId,
@@ -109,9 +127,9 @@ Template.issuesPanelNewIssue.events({
         };
 
         $(e.target).find('[type=submit]').blur();
-        
+
         console.log(issue.sprint);
-        
+
         if (isValid) {
             Meteor.call('createIssue', issue, function (error, result) {
                 //reset the from
@@ -144,7 +162,8 @@ var _options = function (panel) {
             value: 'backlog',
             name: 'Backlog',
             help: 'Issues which are ready for planning',
-            panel: panel
+            panel: panel,
+            editable: false
         },
     ];
     var sprints = Sprints.find({}, {
@@ -155,9 +174,10 @@ var _options = function (panel) {
     for (var i in sprints) {
         options.push({
             value: sprints[i].gitlab.iid,
-            name: "#" + sprints[i].gitlab.iid + " " + sprints[i].gitlab.description,
+            name: "#" + sprints[i].gitlab.iid + " " + sprints[i].gitlab.title,
             help: 'Issues assigned to the sprint',
-            panel: panel
+            panel: panel,
+            editable: true
         });
     }
     return options;

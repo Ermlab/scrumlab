@@ -1,3 +1,17 @@
+OnElementReady = function(selector, fcn) {
+    if ($(selector).length) {
+        fcn(selector);
+    }
+    else {
+        var id = Meteor.setInterval(function() {
+            if ($(selector).length) {
+                Meteor.clearInterval(id);
+                fcn(selector);
+            }
+        }, 100);
+    }    
+}
+
 jQuery.fn.selectText = function(){
    var doc = document;
    var element = this[0];

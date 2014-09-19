@@ -1,0 +1,15 @@
+<template name="modalEditSprint">
+    {{log this "modalEditSprint"}}
+    {{#with sprint this}}
+    <div class="modal-header">
+        <h4 id="modal-title" class="modal-title">Edit sprint</h4>
+    </div>
+    <div class="modal-body">
+        <p>{{gitlab.title}}</p>
+        <p>{{gitlab.description}}</p>
+    </div>
+    <div class="modal-footer">
+        SOME FOOTER
+    </div>
+    {{/with}}
+</template>

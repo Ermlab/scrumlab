@@ -4,16 +4,24 @@
 Meteor.subscribe("userData");
 
 
-live = function() {
-    $(document.body).on('change', '*[contenteditable^="true"]', function () {
-        alert('on',$(this));
-    });
-}
-
-
 Meteor.startup(function () {
     // code to run on server at startup
-
+    Deps.autorun(function() {
+        
+        var modal = Session.get("modal");
+        console.log('modal', modal);
+        if (modal !== undefined) {
+            OnElementReady('#modal', function(selector) {
+                $(selector).modal('show');
+                $(selector).on('hide.bs.modal', function (e) {
+                    Session.set("modal", undefined);
+                });
+            });
+        }
+        else {
+            $('#modal').modal('hide');
+        }
+    });
 });
 
 
@@ -50,27 +58,14 @@ Client = {
             return;
         }
 
-
         var gitlabIssue = {
             'project_id': issue.gitlabProjectId,
             'title': issue.title,
             'description': issue.description,
         };
 
-
-        /*   var new_issue = {
-            'project_id': issue.project_id,
-            'gitlab': gitlabIssue,
-            'origin': user.origin,
-            'created_at' : issue.created_at,
-            'team_estimation': issue.teamEst,
-            'estimation': issue.estimation,
-        };*/
-
-
         var new_issue = BuildAnIssue(issue, gitlabIssue);
 
-        console.log(' issue on client \n', new_issue);
         return Issues.insert(new_issue);
 
     }

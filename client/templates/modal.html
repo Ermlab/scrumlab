@@ -1,0 +1,24 @@
+<template name="modal">
+    {{log this "modal"}}
+    <div id="modal" class="modal fade" role="dialog" aria-labelledby="modal-title" aria-hidden="true" data-backdrop="{{backdropClose}}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                {{> UI.dynamic template=templateName data=templateData}}
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<template name="modalUndefined">
+    <div class="modal-header">
+        <h4 id="modal-title" class="modal-title">Undefined modal</h4>
+    </div>
+    <div class="modal-body">
+        <p>This is the contents of Session.get("modal"):</p>
+        <code>{{this}}</code>
+    </div>
+    <div class="modal-footer">
+        
+    </div>
+</template>

@@ -28,7 +28,6 @@
                         {{> navProjectsList}}
                     </li>
 
-
                     {{#if isActivePath 'project\/' }}
 
                     <li class="{{ isActiveRoute '^planBoard$' id=project._id }}">
@@ -45,12 +44,24 @@
 
                     {{/if}} {{else}}
                     <li class="{{ isActiveRoute '^serverLogin$' }}">
-                        <a href="{{ pathFor 'serverLogin' }}">Login</a>
+                        <a href="{{ pathFor 'pricing' }}">Pricing</a>
+                    </li>
+                    <li class="{{ isActiveRoute '^serverLogin$' }}">
+                        <a href="{{ pathFor 'support' }}">Support</a>
+                    </li>
+                    <li class="{{ isActiveRoute '^serverLogin$' }}">
+                        <a href="{{ pathFor 'about' }}">About</a>
                     </li>
                     {{/if}}
                 </ul>
 
-                {{> navUserLogin}}
+                {{#if currentUser}} {{else}}
+                <ul class="nav navbar-nav navbar-right" style="margin-right: 10px;">
+                    <li class="dropdown">
+                        <a href="{{ pathFor 'serverLogin' }}">Login</a>
+                    </li>
+                </ul>
+                {{/if}} {{> navUserLogin}}
 
             </div>
         </div>

@@ -83,11 +83,12 @@ Template.issuesPanelDropdown.events({
     },
 
     'click .new-sprint': function (e) {
+        console.log('new sprint in', this.context.project._id);
         Session.set('modal', {
             template: 'modalEditSprint',
-            data: null
+            data: this.context.project._id+""
         });
-
+        Session.set("newSprintTarget", this.name + 'IssuesPanel');
     },
 
     'change select.container': function (e) {
@@ -140,6 +141,7 @@ Template.issuesPanelNewIssue.events({
                 //set focus on story title textbox
                 $(e.target).find('[name=title]').focus();
                 $(e.target).find('input, textarea').attr('disabled', false);
+                $('.new-issue [name=title]').focus();
             });
             $(e.target).find('input, textarea').attr('disabled', true);
         }
@@ -166,7 +168,7 @@ var _options = function (panel) {
             editable: false
         },
     ];
-    var sprints = Sprints.find({}, {
+    var sprints = Sprints.find({'gitlab.state': 'active'}, {
         sort: {
             'gitlab.iid': 1
         }

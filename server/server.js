@@ -60,6 +60,50 @@ Server = {
         return future.wait();
     },
 
+    createSprint: function (doc) {
+        // Create the milestone
+        try {
+            var user = Meteor.user();
+            if (user === undefined || user.origin != doc.origin) {
+                return new Meteor.Error(403, "Access denied.");
+            }
+
+            var project = Projects.findOne(doc.projectId);
+
+            var server = GitlabServers.findOne(user.origin);
+            var api = Server.getGitlabApi({
+                url: server.url,
+                token: user.token,
+                origin: server._id
+            });
+
+            var future = new Future();
+            logger.debug("Calling api.projects.milestones.add @", server.url);
+            api.projects.milestones.add(project.gitlab.id, doc['gitlab.title'], doc['gitlab.description'], doc['gitlab.due_date'], function (milestone) {
+                Fiber(function () {
+                    doc.gitlab = milestone;
+                    doc.project_id = doc.projectId;
+                    delete doc.projectId;
+                    delete doc['gitlab.title'];
+                    delete doc['gitlab.description'];
+                    delete doc['gitlab.due_date'];
+
+                    logger.debug('milestone added', milestone, doc);
+                    var id = Sprints.insert(doc);
+                    logger.debug("New sprint added with id", id);
+                    future.return(id);
+                }).run();
+            });
+            return future.wait();
+        } catch (err) {
+            return new Meteor.Error(500, err.message);
+        }
+    },
+
+    editSprint: function (doc) {
+        logger.info("Editing sprint", doc);
+    },
+
     createIssue: function (issue) {
         logger.info("Creating issue", issue);
         // Create issue at GitLab server
@@ -106,7 +150,7 @@ Server = {
 
                 var issueId = Issues.insert(new_issue);
                 AddPlaceholderTaskToIssue(issueId);
-                
+
                 return issueId;
 
             }).run(); //end fiber
@@ -132,7 +176,7 @@ Server = {
         if (!user) {
             return;
         }
-        
+
         var server = GitlabServers.findOne(user.origin);
         var api = Server.getGitlabApi({
             url: server.url,
@@ -150,7 +194,7 @@ Server = {
         if (!user) {
             return;
         }
-        
+
         logger.info('Refreshing projects for user', user);
 
         var server = GitlabServers.findOne(user.origin);
@@ -174,6 +218,35 @@ Server = {
                 Server.fetchProjectMilestones(api, id);
             });
         });
+    },
+
+    refreshProject: function (projectId) {
+        console.log('xx');
+        try {
+            var user = Meteor.user();
+            var project = Projects.findOne(projectId);
+            
+            if (user.origin != project.origin) {
+                return new Meteor.Error(403, "Access denied.");
+            }
+            
+            logger.info("Refreshing project ", project.gitlab.name);           
+            var server = GitlabServers.findOne(user.origin);
+            var api = Server.getGitlabApi({
+                url: server.url,
+                token: user.token,
+                origin: server._id
+            });
+            
+            Server.fetchProjectIssues(api, projectId);
+            Server.fetchProjectMembers(api, projectId);
+            Server.fetchProjectMilestones(api, projectId);
+            
+            
+        } catch (err) {
+            logger.error(err.message);
+            return new Meteor.Error(500, err.message);
+        }
     },
 
     fetchUsers: function (api) {
@@ -301,9 +374,9 @@ Server = {
         // Fetch all project issues from Gitlab server
         api.projects.issues.list(project.gitlab.id, {}, function (issues) {
             Fiber(function () {
-
+                logger.info("Refreshing {0} issues".format(issues.length));
+                
                 //todo: the same logic as in fetchUserIssues
-
                 for (var i = 0; i < issues.length; i++) {
                     // Check if issue already exists, then update or insert
                     var existingIssue = Issues.findOne({
@@ -312,6 +385,7 @@ Server = {
                     });
 
                     if (existingIssue !== undefined) {
+                        logger.info('[issue*] ' + existingIssue.gitlab.title);
 
                         var issueUpdated = _.extend(existingIssue.gitlab, issues[i]);
 
@@ -322,6 +396,7 @@ Server = {
                         });
 
                     } else {
+                        logger.info('[issue+] ' + existingIssue.gitlab.title);
                         var output = Issues.insert({
                             'project_id': projectId,
                             'gitlab': issues[i],
@@ -340,78 +415,13 @@ Server = {
         });
     },
 
-    synchronizingIssues: function (respIncome, servInfo) {
-        var hookIssue = respIncome.body.object_attributes;
-
-        var finder = Issues.findOne({
-            "gitlab.id": hookIssue.id,
-            "origin": servInfo._id,
-        });
-
-        if (finder === undefined) {
-            var proj = Projects.findOne({
-                "gitlab.id": hookIssue.project_id,
-                "origin": servInfo._id,
-            });
-            var new_issue = {
-                'project_id': proj._id, //mongo project_id
-                'origin': servInfo._id,
-                'created_at': hookIssue.created_at,
-                'gitlab': hookIssue //client and server should update this field
-            };
-
-            //mongo issue id
-            var issueId = Issues.insert(new_issue);
-
-            // Fetching new issue from GitLab server
-            api.issues.show(proj.gitlab.id, new_issue.gitlab.id, function (glIssue) {
-                Fiber(function () {
-                    var output = Issues.insert({
-                        'project_id': proj.gitlab.id,
-                        'gitlab': glIssue,
-                        'origin': api.options.origin
-                    });
-                    Tasks.insert({
-                        'project_id': proj.gitlab.id,
-                        'issue_id': output,
-                        'name': glIssue.title,
-                        'status': 'toDo',
-                        'placeholder': true
-                    });
-                }).run();
-            });
-
-        } else {
-            // Updating existing issue
-            gitlabObject = finder.gitlab;
-            gitlabObject = _.extend(gitlabObject, hookIssue);
-            gitlabObject = _.omit(gitlabObject, 'assignee_id', 'author_id', 'branch_name', 'milestone_id');
-
-            Issues.update(
-                finder._id, {
-                    $set: {
-                        'gitlab': gitlabObject,
-                    }
-                });
-
-            Issues.update({
-                _id: finder._id
-            }, {
-                $addToSet: {
-                    'gitlab.labels': {
-                        $each: [hookIssue.labels]
-                    }
-                }
-            });
-        }
-    },
-
     fetchProjectMilestones: function (api, projectId) {
         var project = Projects.findOne(projectId);
 
         // Fetch all project issues from Gitlab server
         api.projects.milestones.list(project.gitlab.id, function (milestones) {
             Fiber(function () {
+                logger.info("Refreshing {0} milestones".format(milestones.length));
                 for (var i = 0; i < milestones.length; i++) {
                     // Check if issue already exists, then update or insert
                     var existingSprint = Sprints.findOne({
@@ -420,12 +430,14 @@ Server = {
                     });
 
                     if (existingSprint !== undefined) {
+                        logger.info('[milestone*] ' + existingSprint.gitlab.title);
                         Sprints.update(existingSprint._id, {
                             $set: {
                                 'gitlab': milestones[i]
                             }
                         });
                     } else {
+                        logger.info('[milestone+] ' + existingSprint.gitlab.title);
                         Sprints.insert({
                             'project_id': projectId,
                             'gitlab': milestones[i],
@@ -535,6 +547,72 @@ Server = {
             }); //end api
         }
     }, //end func
+
+    synchronizingIssues: function (respIncome, servInfo) {
+        var hookIssue = respIncome.body.object_attributes;
+
+        var finder = Issues.findOne({
+            "gitlab.id": hookIssue.id,
+            "origin": servInfo._id,
+        });
+
+        if (finder === undefined) {
+            var proj = Projects.findOne({
+                "gitlab.id": hookIssue.project_id,
+                "origin": servInfo._id,
+            });
+            var new_issue = {
+                'project_id': proj._id, //mongo project_id
+                'origin': servInfo._id,
+                'created_at': hookIssue.created_at,
+                'gitlab': hookIssue //client and server should update this field
+            };
+
+            //mongo issue id
+            var issueId = Issues.insert(new_issue);
+
+            // Fetching new issue from GitLab server
+            api.issues.show(proj.gitlab.id, new_issue.gitlab.id, function (glIssue) {
+                Fiber(function () {
+                    var output = Issues.insert({
+                        'project_id': proj.gitlab.id,
+                        'gitlab': glIssue,
+                        'origin': api.options.origin
+                    });
+                    Tasks.insert({
+                        'project_id': proj.gitlab.id,
+                        'issue_id': output,
+                        'name': glIssue.title,
+                        'status': 'toDo',
+                        'placeholder': true
+                    });
+                }).run();
+            });
+
+        } else {
+            // Updating existing issue
+            gitlabObject = finder.gitlab;
+            gitlabObject = _.extend(gitlabObject, hookIssue);
+            gitlabObject = _.omit(gitlabObject, 'assignee_id', 'author_id', 'branch_name', 'milestone_id');
+
+            Issues.update(
+                finder._id, {
+                    $set: {
+                        'gitlab': gitlabObject,
+                    }
+                });
+
+            Issues.update({
+                _id: finder._id
+            }, {
+                $addToSet: {
+                    'gitlab.labels': {
+                        $each: [hookIssue.labels]
+                    }
+                }
+            });
+        }
+    },
 
     sprintFinisher: function () {
         var sprints = Sprints.find({

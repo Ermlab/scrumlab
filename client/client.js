@@ -13,6 +13,10 @@ Meteor.startup(function () {
         if (modal !== undefined) {
             OnElementReady('#modal', function(selector) {
                 $(selector).modal('show');
+                $(selector).on('shown.bs.modal', function (e) {
+                    $('[name]:first', selector).focus();
+                    console.log('shown', e);
+                });
                 $(selector).on('hide.bs.modal', function (e) {
                     Session.set("modal", undefined);
                 });

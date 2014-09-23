@@ -44,6 +44,11 @@
                     <li class="{{ isActiveRoute '^reportsBoard$' }}">
                         <a href="{{ pathFor 'reportsBoard' id=project._id }}">Reports</a>
                     </li>
+                    
+                    <li class="sync">
+                        <a href="#" class="fa fa-refresh" title="Sync with gitlab"></a>
+                    </li>
+
 
                     {{/if}} {{else}}
                     <li class="{{ isActiveRoute '^serverLogin$' }}">
@@ -58,7 +63,8 @@
         </div>
     </nav>
     <div class="container">
-        {{> yield}}      
+        {{> yield}}
+        {{> modal}}
     </div>
 </template>
 

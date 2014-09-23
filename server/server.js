@@ -19,6 +19,16 @@ Server = {
         return new GitLab(options);
     },
 
+    getUserApi: function (user) {
+        var server = GitlabServers.findOne(user.origin);
+        var api = Server.getGitlabApi({
+            url: server.url,
+            token: user.token,
+            origin: server._id
+        });
+        return api;
+    },
+
     getPrivateToken: function (options) {
         var future = new Future();
         var postUrl = options.gitlabServerUrl + '/api/v3/session';
@@ -68,6 +78,7 @@ Server = {
                 return new Meteor.Error(403, "Access denied.");
             }
 
+            // TODO: refactor doc.projectId to doc.project_id in template?
             var project = Projects.findOne(doc.projectId);
 
             var server = GitlabServers.findOne(user.origin);
@@ -96,12 +107,31 @@ Server = {
             });
             return future.wait();
         } catch (err) {
+            logger.error(err.message);
             return new Meteor.Error(500, err.message);
         }
     },
 
-    editSprint: function (doc) {
-        logger.info("Editing sprint", doc);
+    // Updates Gitlab milestone according to document in Meteor
+    pushSprint: function (id) {
+        try {
+            doc = Sprints.findOne(id);
+            logger.info("[milestone^] {0}".format(doc.gitlab.title));
+            var user = Meteor.user();
+            if (user === undefined || user.origin != doc.origin) {
+                return new Meteor.Error(403, "Access denied.");
+            }
+            var project = Projects.findOne(doc.project_id);
+            var api = Server.getUserApi(user);
+            var state = 'activate';
+            if (doc.status && (doc.status == 'aborted' || doc.status == 'completed')) {
+                state = 'close';
+            }
+            api.projects.milestones.update(project.gitlab.id, doc.gitlab.id, doc.gitlab.title, doc.gitlab.description, doc.gitlab.due_date, state);
+        } catch (err) {
+            logger.error(err.message);
+            return new Meteor.Error(500, err.message);
+        }
     },
 
     createIssue: function (issue) {
@@ -225,24 +255,24 @@ Server = {
         try {
             var user = Meteor.user();
             var project = Projects.findOne(projectId);
-            
+
             if (user.origin != project.origin) {
                 return new Meteor.Error(403, "Access denied.");
             }
-            
-            logger.info("Refreshing project ", project.gitlab.name);           
+
+            logger.info("Refreshing project ", project.gitlab.name);
             var server = GitlabServers.findOne(user.origin);
             var api = Server.getGitlabApi({
                 url: server.url,
                 token: user.token,
                 origin: server._id
             });
-            
+
             Server.fetchProjectIssues(api, projectId);
             Server.fetchProjectMembers(api, projectId);
             Server.fetchProjectMilestones(api, projectId);
-            
-            
+
+
         } catch (err) {
             logger.error(err.message);
             return new Meteor.Error(500, err.message);
@@ -375,7 +405,7 @@ Server = {
         api.projects.issues.list(project.gitlab.id, {}, function (issues) {
             Fiber(function () {
                 logger.info("Refreshing {0} issues".format(issues.length));
-                
+
                 //todo: the same logic as in fetchUserIssues
                 for (var i = 0; i < issues.length; i++) {
                     // Check if issue already exists, then update or insert
@@ -396,7 +426,7 @@ Server = {
                         });
 
                     } else {
-                        logger.info('[issue+] ' + existingIssue.gitlab.title);
+                        logger.info('[issue+] ' + issues[i].title);
                         var output = Issues.insert({
                             'project_id': projectId,
                             'gitlab': issues[i],
@@ -431,10 +461,22 @@ Server = {
 
                     if (existingSprint !== undefined) {
                         logger.info('[milestone*] ' + existingSprint.gitlab.title);
+                        var changes = {
+                            gitlab: milestones[i]
+                        };
+                        
+                        // switch to inPlanning status in milestone has been opened in Gitlab
+                        if (milestones[i].state == 'active' && _.contains(['completed', 'aborted'], existingSprint.status)) {
+                            changes.status = undefined;
+                        }
+
+                        // switch to "completed" status if milestone has been closed in Gitlab
+                        if (milestones[i].state == 'closed' && _.contains([undefined, 'inPlanning', 'inProgess'], existingSprint.status)) {
+                            changes.status = 'completed';
+                        }
+                        
                         Sprints.update(existingSprint._id, {
-                            $set: {
-                                'gitlab': milestones[i]
-                            }
+                            $set: changes
                         });
                     } else {
                         logger.info('[milestone+] ' + existingSprint.gitlab.title);
@@ -495,8 +537,6 @@ Server = {
                             'member_ids': membersIdAccess
                         }
                     });
-
-                    console.log('mongo---', membersIdAccess);
                 }).run();
 
             }); //end api
@@ -540,8 +580,6 @@ Server = {
                             'member_ids': membersIdAccess
                         }
                     });
-
-                    console.log('mongo---', membersIdAccess);
                 }).run();
 
             }); //end api

@@ -53,7 +53,7 @@ Template.modalEditSprint.canAbortSprint = function (sprint) {
 
 
 Template.modalEditSprint.events({
-    'change input': function (e) {
+    'change input, change textarea': function (e) {
 
         var field = $(e.target).attr('name');
         var value = $(e.target).val();
@@ -63,6 +63,8 @@ Template.modalEditSprint.events({
         var isValid = true;
 
         // TODO: check start/end date
+        console.log(field, value);
+        
 
         if (field == 'gitlab.title' && value.length == 0) {
             $(e.target).parent().addClass('has-error');
@@ -72,6 +74,7 @@ Template.modalEditSprint.events({
             Sprints.update(this._id, {
                 $set: update
             });
+            Meteor.call('pushSprint', this._id);
         }
     },
 
@@ -82,6 +85,7 @@ Template.modalEditSprint.events({
                 status: 'inProgress'
             }
         });
+        Meteor.call('pushSprint', this._id);
     },
 
     'click .complete-sprint': function (e) {
@@ -91,6 +95,7 @@ Template.modalEditSprint.events({
                 status: 'completed'
             }
         });
+        Meteor.call('pushSprint', this._id);
     },
 
     'click .abort-sprint': function (e) {
@@ -100,6 +105,7 @@ Template.modalEditSprint.events({
                 status: 'aborted'
             }
         });
+        Meteor.call('pushSprint', this._id);
     },
 
     'submit form': function (e) {

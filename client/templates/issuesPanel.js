@@ -191,6 +191,7 @@ Template.issuesPanelDropdown.events({
 
         $(newIssue).show();
         $(panelBody).scrollTo(newIssue, 300);
+        newIssue.find('input[name=title]').focus();
     },
 
     'click .new-sprint': function (e) {

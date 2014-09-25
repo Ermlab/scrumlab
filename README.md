@@ -1,5 +1,8 @@
 # TODO
 
+- ostylować task
+- uniemożliwić usuwanie tasków
+
 - zablokować możliwość startu sprintu jeżeli jakiś inny jest aktywny (po stronie serwera też, na update kolekcji w allow/deny)
 
 - dodać parametr per_page=1000000 dla wszystkich zapytań do serwera gitlabowego (na pewno dla milestones, bo teraz pokazuje tylko 20)

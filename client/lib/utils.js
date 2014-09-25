@@ -1,15 +1,32 @@
 OnElementReady = function(selector, fcn) {
-    if ($(selector).length) {
-        fcn(selector);
+    if (typeof selector == "string") {
+        console.log("OnElementReady() with selector "+selector+" is deprecated, use jquery object instead");
+        if ($(selector).length) {
+            fcn(selector);
+        }
+        else {
+            var id = Meteor.setInterval(function() {
+                if ($(selector).length) {
+                    Meteor.clearInterval(id);
+                    fcn(selector);
+                }
+            }, 100);
+        }        
     }
     else {
-        var id = Meteor.setInterval(function() {
-            if ($(selector).length) {
-                Meteor.clearInterval(id);
-                fcn(selector);
-            }
-        }, 100);
-    }    
+        var obj = selector;
+        if (obj.length) {
+            fcn(obj);
+        }
+        else {
+            var id = Meteor.setInterval(function() {
+                if (obj.length) {
+                    Meteor.clearInterval(id);
+                    fcn(obj);
+                }
+            }, 100);
+        }        
+    }
 }
 
 jQuery.fn.selectText = function(){

@@ -4,7 +4,10 @@
         <h1>{{gitlab.name}} - Work Board</h1>
         <input type="hidden" id="projectId" ref={{_id}}>
     </div>
-    Work board for project: {{_id}} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>) {{/with}} {{#if sprint}}
+    Work board for project: {{_id}} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>) 
+    {{/with}} 
+    
+    {{#if sprint}}
     <div class="row">
         <p class="col-md-12">
             <h3>{{sprint.name}}: End date: {{sprint.endDate}}</h3>

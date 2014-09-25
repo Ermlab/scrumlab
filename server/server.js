@@ -189,8 +189,40 @@ Server = {
 
     }, //end issue create
 
-    editIssue: function (updateObject) {
-        logger.info("Editing issue", updateObject);
+    pushIssue: function (id) {
+        try {
+            doc = Issues.findOne(id);
+            logger.info("[issue^] {0}".format(doc.gitlab.title));
+            var user = Meteor.user();
+            if (user === undefined || user.origin != doc.origin) {
+                return new Meteor.Error(403, "Access denied.");
+            }
+            
+            var project = Projects.findOne(doc.project_id);
+            var api = Server.getUserApi(user);
+
+            var params = {
+                title: doc.gitlab.title,
+                description: doc.gitlab.description,
+                labels: doc.gitlab.labels.join(','), 
+                state: doc.gitlab.state
+            }
+            
+            params.assignee_id = 0;
+            if (doc.gitlab.assignee && doc.gitlab.assignee.id) {
+                params.assignee_id = doc.gitlab.assignee.id;
+            }
+            
+            params.milestone_id = 0;
+            if (doc.gitlab.milestone && doc.gitlab.milestone.id) {
+                params.milestone_id = doc.gitlab.milestone.id;
+            }
+            api.issues.edit(doc.gitlab.project_id, doc.gitlab.id, params);
+        } catch (err) {
+            logger.error(err);
+            return new Meteor.Error(500, err.message);
+        }
+        
         // Edit issue at GitLab server
         /*
         id (required) - The ID of a project
@@ -201,7 +233,8 @@ Server = {
         milestone_id (optional) - The ID of a milestone to assign issue
         labels (optional) - Comma-separated label names for an issue
         state_event (optional) - The state event of an issue ('close' to close issue and 'reopen' to reopen it)
-        */
+        
+        logger.info("Editing issue", updateObject);
         var user = Meteor.user();
         if (!user) {
             return;
@@ -216,6 +249,7 @@ Server = {
         api.issues.edit(updateObject.id, updateObject.issue_id, updateObject, function (data) {
             logger.info("Gitlab server updated issue", data);
         });
+        */
     },
 
     refreshUserProjects: function () {
@@ -251,7 +285,6 @@ Server = {
     },
 
     refreshProject: function (projectId) {
-        console.log('xx');
         try {
             var user = Meteor.user();
             var project = Projects.findOne(projectId);
@@ -361,6 +394,7 @@ Server = {
         });
     },
 
+    /*
     fetchUserIssues: function (api) {
         // Fetch all user issues from Gitlab server
         api.issues.all(function (issues) {
@@ -397,6 +431,7 @@ Server = {
             }).run();
         });
     },
+    */
 
     fetchProjectIssues: function (api, projectId) {
         var project = Projects.findOne(projectId);
@@ -430,7 +465,8 @@ Server = {
                         var output = Issues.insert({
                             'project_id': projectId,
                             'gitlab': issues[i],
-                            'origin': api.options.origin
+                            'origin': api.options.origin,
+                            'weight': issues[i].iid
                         });
                         Tasks.insert({
                             'project_id': projectId,
@@ -479,7 +515,7 @@ Server = {
                             $set: changes
                         });
                     } else {
-                        logger.info('[milestone+] ' + existingSprint.gitlab.title);
+                        logger.info('[milestone+] ' + milestones[i].title);
                         Sprints.insert({
                             'project_id': projectId,
                             'gitlab': milestones[i],

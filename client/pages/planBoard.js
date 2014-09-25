@@ -1,3 +1,4 @@
+/*
 Template.planBoardSprintsInput.rendered = function () {
     Meteor.setTimeout(function () {
         $("#backlog, .sprint").sortable({
@@ -323,3 +324,4 @@ Template.planBoardSprintsInput.events = {
         //$(e.target).find('[name=name]').focus();
     }
 }
+*/

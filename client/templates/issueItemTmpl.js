@@ -28,26 +28,79 @@ Template.issueItemTmpl.helpers({
     }
 });
 
+
 Template.issueItemTmpl.events = {
     'focus .inline-edit': function (e) {
         $(e.target).data('original', $(e.target).text());
+        // TODO: select all text on edit - not working
         //$(e.target).selectText();
+        
+        if ($(e.target).hasClass('inline-placeholder')) {
+            // clear placeholder
+            console.log('aa', $(e.target).is(':focus'));
+            //$(e.target).text('');
+            console.log('bb', $(e.target).is(':focus'));
+            $(e.target).selectText();
+        }
     },
 
-    
     'keydown .inline-edit': function (e) {
         switch (e.keyCode) {
             case 13:
+                // Enter key was pressed
                 e.preventDefault();
+                var field = $(e.target).data("name");
+                var value = $(e.target).text();
+                var id = this._id;
+                var update = {};
+                update[field] = value;
                 $(e.target).blur();
+                // Fix for doubling text input with contenteditable
+                $(e.target).text("");
+                Meteor.defer(function() {
+                    Issues.update(id, {
+                        $set: update
+                    });
+                    Meteor.call('pushIssue', id);
+                });
                 break;
             case 27:
+                // Esc key was pressed
                 e.preventDefault();
                 $(e.target).text($(e.target).data('original'));
                 $(e.target).blur();
                 break;
         }
     },
+    
+    /*
+    'blur .inline-edit': function (e) {
+                var field = $(e.target).data("name");
+                var value = $(e.target).text();
+                console.log('down',field,value);        
+    }
+    
+    /*
+    'keypress .inline-edit': function (e) {
+        console.log('press',e.keyCode);
+        if (e.keyCode==13) {
+            e.preventDefault();
+            var field = $(e.target).data("name");
+            var value = $(e.target).text();
+            console.log('press',field,value);
+        }
+    },
+
+    'keyup .inline-edit': function (e) {
+        console.log('up',e.keyCode);
+        if (e.keyCode==13) {
+            //e.preventDefault();
+            var field = $(e.target).data("name");
+            var value = $(e.target).text();
+            console.log('up',field,value);
+        }
+    },
+    */
     
 
     /*

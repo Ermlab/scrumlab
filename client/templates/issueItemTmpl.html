@@ -1,22 +1,25 @@
 <template name="issueItemTmpl">
-    <div id={{_id}} title="{{gitlab.title}}" ref="{{sprint}}" objectType="issue" class="issue issue-{{gitlab.state}}" state={{gitlab.state}}>
+    <div title="{{gitlab.title}}" ref="{{sprint}}" objectType="issue" class="issue issue-{{gitlab.state}}" data-id={{_id}} state={{gitlab.state}}>
         <div class="handler">
         </div>
         <div class="inner">
             
-            <span class="title"><span class="inline-edit single-line" contenteditable="true">{{gitlab.title}}<i class="fa fa-pencil"></i></span></span>&nbsp;<a class="issue-id" href="#">&#35;{{gitlab.iid}}</a>
+            <span class="title">
+                <span class="inline-edit single-line" contenteditable="true" data-name="gitlab.title">{{gitlab.title}}</span>
+                <i class="fa fa-pencil"></i>
+            </span>
+            &nbsp;
+            <a class="issue-id" href="#">&#35;{{gitlab.iid}}</a>W:{{weight}}, {{_id}}
             <div class="description">{{gitlab.description}}</div>
 
                 <div class="header">
                 <span class="estimation" title="size">
-                    <span class="inline-edit single-line" contenteditable="true">
                     {{#if estimation}}
-                    {{estimation}}
+                    <span class="inline-edit single-line" contenteditable="true" data-name="estimation">{{estimation}}</span>
                     {{else}}
-                    ?
+                    <span class="inline-edit single-line inline-placeholder" contenteditable="true" data-name="estimation" data-placeholder="true">not estimated</span>
                     {{/if}}
                     <i class="fa fa-pencil"></i>
-                    </span>
                 </span>
                     
             </div>

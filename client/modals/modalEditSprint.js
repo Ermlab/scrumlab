@@ -4,19 +4,19 @@ Template.modalEditSprint.sprint = function () {
     var sprint = Sprints.findOne({
         'gitlab.iid': iid
     });
-    
+
     // this can be projectId as well if new sprint is created
     var id;
     var project;
-    var origin;    
+    var origin;
     if (sprint === undefined) {
-        id = this+"";
+        id = this + "";
         project = Projects.findOne(id);
         if (project) {
             origin = project.origin;
         }
     }
-    
+
     return sprint || {
         isNew: true,
         projectId: id,
@@ -25,7 +25,7 @@ Template.modalEditSprint.sprint = function () {
 }
 
 Template.modalEditSprint.sprintStatus = function () {
-    if (this.status === undefined) {
+    if (this.status === undefined || this.status === null) {
         return 'In planning';
     }
     if (this.status == 'inProgress') {
@@ -40,7 +40,7 @@ Template.modalEditSprint.sprintStatus = function () {
 }
 
 Template.modalEditSprint.canStartSprint = function (sprint) {
-    return this.status === undefined;
+    return (this.status === undefined || this.status === null);
 }
 
 Template.modalEditSprint.canCompleteSprint = function (sprint) {
@@ -54,6 +54,11 @@ Template.modalEditSprint.canAbortSprint = function (sprint) {
 
 Template.modalEditSprint.events({
     'change input, change textarea': function (e) {
+        console.log("changed");
+        if (this.isNew === true) {
+            // do nothing if this is a new sprint
+            return;
+        }
 
         var field = $(e.target).attr('name');
         var value = $(e.target).val();
@@ -61,10 +66,6 @@ Template.modalEditSprint.events({
         update[field] = value;
 
         var isValid = true;
-
-        // TODO: check start/end date
-        console.log(field, value);
-        
 
         if (field == 'gitlab.title' && value.length == 0) {
             $(e.target).parent().addClass('has-error');
@@ -79,6 +80,7 @@ Template.modalEditSprint.events({
     },
 
     'click .start-sprint': function (e) {
+        console.log("click ss");
         e.preventDefault();
         Sprints.update(this._id, {
             $set: {
@@ -89,6 +91,7 @@ Template.modalEditSprint.events({
     },
 
     'click .complete-sprint': function (e) {
+        console.log("click cs");
         e.preventDefault();
         Sprints.update(this._id, {
             $set: {
@@ -110,20 +113,30 @@ Template.modalEditSprint.events({
 
     'submit form': function (e) {
         e.preventDefault();
+        console.log('submit');
+
+        // form was sumbitted for existing sprint
+        if (this._id) {
+            // close modal, any changes in input fields will be handled by change event
+            Session.set('modal', undefined);
+            return;
+        }
+
         var doc = this;
         delete doc.isNew;
-        $('input, textarea', e.target).each(function() {
+        $('input, textarea', e.target).each(function () {
             var field = $(this).attr('name');
             var value = $(this).val();
-            if ($(this).attr('required') || value.length>0) {
+            if ($(this).attr('required') || value.length > 0) {
                 doc[field] = value;
             }
         });
         $('#update-sprint').prop('disabled', true);
+
         Meteor.call('createSprint', doc, function (error, result) {
             if (result) {
                 // wait until new document arrives to client...
-                var id = Meteor.setInterval(function() {
+                var id = Meteor.setInterval(function () {
                     var sprint = Sprints.findOne(result);
                     if (sprint) {
                         //.. then change panel and close modal
@@ -134,10 +147,8 @@ Template.modalEditSprint.events({
                         $('#update-sprint').prop('disabled', false);
                     }
                 }, 100);
-            }
-            else {
+            } else {
                 $('#update-sprint').prop('disabled', false);
-                console.log(error);
             }
         });
     }

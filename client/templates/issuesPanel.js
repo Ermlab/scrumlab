@@ -9,6 +9,12 @@ Template.issuesPanel.selectedSprint = function () {
 }
 
 Template.issuesPanel.issues = function (sprint) {
+    var sort = {
+        sort: {
+            weight: 1
+        }
+    };
+
     switch (sprint) {
     case 'sandbox':
         return Issues.find({
@@ -26,14 +32,14 @@ Template.issuesPanel.issues = function (sprint) {
                     $exists: false
                 }
             }]
-        });
+        }, sort);
         break;
     default:
         return Issues.find({
             'gitlab.milestone.iid': sprint * 1
-        });
+        }, sort);
     }
-}, 0
+}
 
 Template.issuesPanel.created = function () {
     $(window).resize(function () {
@@ -41,16 +47,121 @@ Template.issuesPanel.created = function () {
     });
 }
 
+Template.issuesPanel.invalidate = function() {
+    return Session.get("invalidatePanels");
+}
+
 Template.issuesPanel.destroyed = function () {
     $(window).off('resize');
 };
 
 Template.issuesPanel.rendered = function () {
-    var id = Meteor.setInterval(function () {
-        if (resizePanels()) {
-            Meteor.clearInterval(id);
-        }
-    }, 10);
+    OnElementReady('.issues-panel-body', function () {
+        resizePanels();
+        
+
+        $('.issues-list').sortable({
+            cancel: "[contenteditable=true], input",
+            cursor: "cursor",
+            connectWith: ".issues-list",
+            placeholder: "sortable-placeholder",
+            revert: 50,
+            
+            start: function (event, ui) {
+                //console.log(ui.item.parents('.issues-panel').attr('data-name'));
+                var issueId = $('.issue',ui.item).attr('data-id');
+                $('.issues-panel').each(function() {
+                    var search = $(this).find(ui.item);
+                    if (search.length==0) {
+                        // found item duplicate on the other (non-source) panel
+                        $(this).find('.issue[data-id={0}]'.format(issueId)).addClass('duplicate');
+                        
+                    }
+                });
+            },
+            stop: function (event, ui) {
+                var srcPanel = $(this).parents('.issues-panel')[0];
+                var dstPanel = $(ui.item[0]).parents('.issues-panel')[0];
+                
+                var issueId = $('.issue', ui.item).attr('data-id');
+                var sprintId = $(dstPanel).attr('data-id');       
+
+                var issue = Issues.findOne(issueId);
+                var sprint = Sprints.findOne(sprintId);
+                
+                // Reweight issued based on positions in the destination panel
+                var last;
+                var predecessor;
+                $('.issue', dstPanel).not('.duplicate').each(function (i) {
+                    var id = $(this).attr('data-id');
+                    if (id==issue._id) {
+                        predecessor = last;
+                    }
+                    Issues.update(id, {
+                        $set: {
+                            weight: i
+                        }
+                    });
+                    last = id;
+                });
+                
+                if (srcPanel == dstPanel) {
+                    // Issue moved inside one panels
+                    console.log("moved in the same panel");
+                }
+                else {
+                    console.log("moved between panels");
+                    // Issue moved between 2 panels
+                    if ($(srcPanel).attr('data-id') == $(dstPanel).attr('data-id')) {
+                        // both panels display the same sprint
+                        
+                        // move original issue b back to the source panel but in a correct position
+                        if (predecessor===undefined) {
+                            // new item is first on the list
+                            console.log('insert at the begg');
+                            $(this).prepend(ui.item);
+                        }
+                        else {
+                            $('.issue[data-id={0}]'.format(predecessor),this).after(ui.item);
+                        }
+                    }
+                }
+                
+                // show duplicated issue
+                $('.issue.duplicate').removeClass('duplicate');
+            
+                if (sprint) {
+                    // Add issue to sprint
+                    console.log("adding to sprint ", issueId, sprint.gitlab.title);
+                    Issues.update(issue._id, {
+                        $set: {
+                            'gitlab.milestone': {
+                                id: sprint.gitlab.id,
+                                iid: sprint.gitlab.iid
+                            },
+                            weight: ui.item.index()
+                        }
+                    });
+
+                } else {
+                    // Remove issue from sprint
+                    console.log("removing from sprint ", issueId);
+                    Issues.update(issueId, {
+                        $unset: {
+                            'gitlab.milestone.id': "",
+                            'gitlab.milestone.iid': "",
+                        },
+                    });
+                }
+
+                // Push issue if it has been moved to another sprint
+                if ($(srcPanel).attr('data-id') != $(dstPanel).attr('data-id')) {
+                    Meteor.call('pushIssue', issueId);
+                }
+
+            }
+        });
+    });
 }
 
 Template.issuesPanel.events({
@@ -86,7 +197,7 @@ Template.issuesPanelDropdown.events({
         console.log('new sprint in', this.context.project._id);
         Session.set('modal', {
             template: 'modalEditSprint',
-            data: this.context.project._id+""
+            data: this.context.project._id + ""
         });
         Session.set("newSprintTarget", this.name + 'IssuesPanel');
     },
@@ -162,13 +273,16 @@ var _options = function (panel) {
         */
         {
             value: 'backlog',
+            _id: 'backlog',
             name: 'Backlog',
             help: 'Issues which are ready for planning',
             panel: panel,
             editable: false
         },
     ];
-    var sprints = Sprints.find({'gitlab.state': 'active'}, {
+    var sprints = Sprints.find({
+        'gitlab.state': 'active'
+    }, {
         sort: {
             'gitlab.iid': 1
         }
@@ -176,6 +290,7 @@ var _options = function (panel) {
     for (var i in sprints) {
         options.push({
             value: sprints[i].gitlab.iid,
+            _id: sprints[i]._id,
             name: "#" + sprints[i].gitlab.iid + " " + sprints[i].gitlab.title,
             help: 'Issues assigned to the sprint',
             panel: panel,

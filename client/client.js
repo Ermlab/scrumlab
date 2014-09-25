@@ -9,7 +9,6 @@ Meteor.startup(function () {
     Deps.autorun(function() {
         
         var modal = Session.get("modal");
-        console.log('modal', modal);
         if (modal !== undefined) {
             OnElementReady('#modal', function(selector) {
                 $(selector).modal('show');

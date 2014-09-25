@@ -1,6 +1,6 @@
 <template name="issuesPanel">
     {{#if context.project}}
-    <div class="issues-panel" id="panel-{{name}}">
+    <div class="issues-panel" id="panel-{{name}}" data-name="{{name}}" data-id="{{selectedSprint._id}}">
         <div class="issues-panel-header">
             {{> issuesPanelDropdown}}
             <em>{{selectedSprint.help}}</em>
@@ -11,7 +11,8 @@
         <div class="issues-panel-body">
             <ul class="issues-list">
                 {{#each issues selectedSprint.value}}
-                <li>{{>issueItemTmpl}}</li>
+                <li>{{>issueItemTmpl}}{{invalidate}}</li>
+                {{else}}
                 {{/each}}
                 <li class="new-issue-wrapper" style="display:none;">{{>issuesPanelNewIssue}}</li>
             </ul>
@@ -19,6 +20,7 @@
         <div class="issues-panel-footer">
             footer {{selectedSprint.value}}
         </div>
+        
     </div>
     {{/if}}
 </template>

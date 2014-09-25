@@ -4,6 +4,20 @@ Template.issueItemTmpl.tasks = function () {
     });
 }
 
+Template.issueItemTmpl.totalEstimate = function () {
+   var tasks = Tasks.find({
+        issue_id: this._id
+    }).fetch();
+    var sum = 0;
+    for (var i=0; i<tasks.length; i++) {
+        var n = parseFloat(tasks[i].estimate);
+        if (!isNaN(n)) {
+            sum += n;
+        }
+    }
+    return sum;
+}
+
 Template.issueItemTmpl.helpers({
     'checkIfDone': function (id) {
         var tasks = Tasks.find({

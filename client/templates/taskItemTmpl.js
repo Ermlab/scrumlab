@@ -1,6 +1,10 @@
 Template.taskItemTmpl.helpers({
+    'estimate': function () {
+        return this.estimate || "N/A";
+    },
+    
     'taskState': function (status) {
-        if (status == 'toDo') return "To do";
+        if (status == 'toDo') return "Todo";
         if (status == 'inProgress') return "In progress";
         if (status == 'done') return "Done";
     },

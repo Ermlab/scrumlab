@@ -1,14 +1,14 @@
 <template name="taskItemTmpl">
-    <li class="task " id={{_id}} issueId={{issue_id}}>
+    <li class="task" data-issue={{issue_id}}>
         <span class="status">
             {{#if statusCheck status 'toDo'}}
-            <span class="label label-danger">{{taskState status}}</span>
+            <span class="label label-danger">{{estimate}}</span>
             {{/if}}
             {{#if statusCheck status 'inProgress'}}
-            <span class="label label-warning">{{taskState status}}</span>
+            <span class="label label-warning">{{estimate}}</span>
             {{/if}}
             {{#if statusCheck status 'done'}}
-            <span class="label label-success">{{taskState status}}</span>
+            <span class="label label-success">{{estimate}}</span>
             {{/if}}
             {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
         </span>

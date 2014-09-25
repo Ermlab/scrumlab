@@ -1,7 +1,6 @@
 # TODO
 
-- drag&drop dla issues
-- issues sie nie zapisuja
+- zablokować możliwość startu sprintu jeżeli jakiś inny jest aktywny (po stronie serwera też, na update kolekcji w allow/deny)
 
 - dodać parametr per_page=1000000 dla wszystkich zapytań do serwera gitlabowego (na pewno dla milestones, bo teraz pokazuje tylko 20)
   w nxt-gitlab ApiBaseHTTP.coffee w funkcji prepare_opts (linia 33) dodać per_page

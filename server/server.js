@@ -168,6 +168,14 @@ Server = {
             'assignee_id': issue.assignee_id,
             'labels': 'story'
         };
+        
+        if (issue.sprint) {
+            var sprint = Sprints.findOne(issue.sprint);
+            if (sprint) {
+                console.log('creating issue in sprint', sprint);
+                gitlabIssue.milestone_id = sprint.gitlab.id;
+            }
+        }
 
 
         api.issues.create(issue.gitlabProjectId, gitlabIssue, function (glIssue) {

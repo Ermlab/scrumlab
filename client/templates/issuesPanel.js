@@ -227,20 +227,22 @@ Template.issuesPanelNewIssue.events({
 
         var projectId = this.context.project._id
         var gitlabProjectId = this.context.project.gitlab.id;
-        var sprint = Session.get(this.name + 'IssuesPanel') || _options()[0].value;
-
+        
         var issue = {
             project_id: projectId,
             gitlabProjectId: gitlabProjectId,
             title: title,
             description: description,
             estimation: estimation,
-            sprint: sprint,
         };
+        
+        var iid = Session.get(this.name + 'IssuesPanel');
+        var sprint = Sprints.findOne({'gitlab.iid':iid*1});
+        if (sprint!==undefined) {
+            issue.sprint = sprint._id;
+        }
 
         $(e.target).find('[type=submit]').blur();
-
-        console.log(issue.sprint);
 
         if (isValid) {
             Meteor.call('createIssue', issue, function (error, result) {

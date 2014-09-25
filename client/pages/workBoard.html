@@ -50,7 +50,17 @@
     {{else}}
     <div class="row">
         <div class="col-md-12">
-            <h3>Your project has no active sprints. Start one using plan board.</h3>
+            <p>Your project has no active sprints. Start one using plan board.</p>
+            {{#if startableSprints}}
+                <ul>
+                {{#each startableSprints}}
+                    <li>{{gitlab.iid}} {{gitlab.title}} {{status}} <button type="button" class="btn btn-default start-sprint">Start Sprint</button></li>
+                {{/each}}
+                </ul>
+            {{else}}
+                <p>No sprints at all</p>
+            {{/if}}
+            <button type="button" class="btn btn-default new-sprint">New Sprint</button>
         </div>
     </div>
     {{/if}}

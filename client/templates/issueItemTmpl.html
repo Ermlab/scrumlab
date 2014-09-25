@@ -4,14 +4,12 @@
         </div>
         <div class="inner">
             
+            <a class="issue-id" href="#">&#35;{{gitlab.iid}}</a>
             <span class="title">
                 <span class="inline-edit single-line" contenteditable="true" data-name="gitlab.title">{{gitlab.title}}</span>
-                <i class="fa fa-pencil"></i>
+                {{!--<i class="fa fa-pencil"></i>--}}
             </span>
-            &nbsp;
-            <a class="issue-id" href="#">&#35;{{gitlab.iid}}</a>W:{{weight}}, {{_id}}
             <div class="description">{{gitlab.description}}</div>
-
                 <div class="header">
                 <span class="estimation" title="size">
                     {{#if estimation}}
@@ -21,9 +19,14 @@
                     {{/if}}
                     <i class="fa fa-pencil"></i>
                 </span>
-                    
             </div>
+            <p>1 task, 0% complete, W:{{weight}}, {{_id}}</p>
+            {{!--
+            Na razie nie robimy tasków
+            
+            --}}
             {{> tasksListTmpl tasks=tasks issue=this}}
+            
         </div>
     </div>
 </template>

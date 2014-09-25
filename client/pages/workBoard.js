@@ -1,3 +1,39 @@
+Template.workBoard.startableSprints = function () {
+    return Sprints.find({
+        $or: [
+            {
+                status: {
+                    $exists: false
+                }
+            },
+            {
+                status: 'inPlanning'
+            },
+            
+        ]
+    }, {
+        sort: {
+            'gitlab.iid': 1
+        }
+    });
+}
+            
+Template.workBoard.events({
+    'click .start-sprint': function (e) {
+        Sprints.update(this._id, {
+            $set: {
+                status: 'inProgress'
+            }
+        });
+    },
+    'click .new-sprint': function (e) {
+        Session.set('modal', {
+            template: 'modalEditSprint',
+            data: this.project._id + ""
+        });
+    }, 
+});
+
 Template.workBoard.rendered = function () {
     Meteor.setTimeout(function () {
         $(".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3").sortable({

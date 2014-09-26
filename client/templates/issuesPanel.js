@@ -75,7 +75,6 @@ Template.issuesPanel.rendered = function () {
                     if (search.length==0) {
                         // found item duplicate on the other (non-source) panel
                         $(this).find('.issue[data-id={0}]'.format(issueId)).addClass('duplicate');
-                        
                     }
                 });
             },
@@ -122,7 +121,9 @@ Template.issuesPanel.rendered = function () {
                             $(this).prepend(ui.item);
                         }
                         else {
-                            $('.issue[data-id={0}]'.format(predecessor),this).after(ui.item);
+                            console.log($('.issue[data-id={0}]'.format(predecessor),this));
+                            console.log(ui.item);
+                            $('.issue[data-id={0}]'.format(predecessor),this).parent().after(ui.item);
                         }
                     }
                 }

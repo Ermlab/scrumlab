@@ -17,6 +17,10 @@ Template.xeditable.rendered = function () {
                         $set: update
                     });
                 }
+                
+                if (typeof options.updated == 'function') {
+                    options.updated(options.id);
+                }
             }
         });
         container.editable(options);

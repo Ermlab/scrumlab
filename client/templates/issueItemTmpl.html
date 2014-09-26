@@ -5,25 +5,12 @@
         <div class="inner">
 
             <a class="issue-id" href="#">&#35;{{gitlab.iid}}</a>
-            <span class="title">
-                <span class="inline-edit single-line" contenteditable="true" data-name="gitlab.title">{{gitlab.title}}</span>
-            {{!--
-            <i class="fa fa-pencil"></i>--}}
-            </span>
+            <span class="title">{{>xeditable titleOptions}}</span>
             <div class="description">{{gitlab.description}}</div>
-            <div class="estimation" title="estimation">{{totalEstimate}}</div>
-            {{!--
+            <div class="estimation" title="estimation">{{totalEstimation}}</div>
             <div class="header">
-                <span class="estimation" title="size">
-                    {{#if estimation}}
-                    <span class="inline-edit single-line" contenteditable="true" data-name="estimation">{{estimation}}</span>
-                {{else}}
-                <span class="inline-edit single-line inline-placeholder" contenteditable="true" data-name="estimation" data-placeholder="true">not estimated</span>
-                {{/if}}
-                <i class="fa fa-pencil"></i>
-                </span>
+                
             </div>
-            --}}
             <p>1 task, 0% complete, W:{{weight}}, {{_id}}</p>
             {{!-- Na razie nie robimy tasków --}} {{> tasksListTmpl tasks=tasks issue=this}}
 

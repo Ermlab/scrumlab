@@ -22,7 +22,7 @@ Template.tasksListTmpl.events({
                 issue_id: this.issue._id,
                 name: title,
                 status: 'toDo',
-                estimate: est               
+                estimation: est               
             });
             // Resetting the input fields
             title.value = '';
@@ -43,3 +43,9 @@ Template.tasksListTmpl.events({
         
     }
 });
+
+
+
+Template.m_editable.rendered = function () {
+    console.log('m_editable rendered', this);
+};

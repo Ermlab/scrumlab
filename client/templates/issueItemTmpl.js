@@ -10,7 +10,7 @@ Template.issueItemTmpl.totalEstimate = function () {
     }).fetch();
     var sum = 0;
     for (var i=0; i<tasks.length; i++) {
-        var n = parseFloat(tasks[i].estimate);
+        var n = parseFloat(tasks[i].estimation);
         if (!isNaN(n)) {
             sum += n;
         }

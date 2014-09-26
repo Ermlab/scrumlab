@@ -1,24 +1,23 @@
 <template name="taskItemTmpl">
-    {{log this 'task'}}
     <li class="task">
         <span class="status">
             {{#if statusCheck status 'toDo'}}
-            <span class="label label-danger editable" data-container="body" data-display="false" data-title="Task estimate" data-type="text" data-pk="{{_id}}" data-name="estimate" data-placeholder="Task estimate" data-value="{{estimateDataValue}}">{{estimate}}</span>
+            <span class="label label-danger">{{>xeditable estimationOptions}}</span>
             {{/if}}
             {{#if statusCheck status 'inProgress'}}
-            <span class="label label-warning">{{estimate}}</span>
+            <span class="label label-warning">{{>xeditable estimationOptions}}</span>
             {{/if}}
             {{#if statusCheck status 'done'}}
-            <span class="label label-success">{{estimate}}</span>
+            <span class="label label-success">{{>xeditable estimationOptions}}</span>
             {{/if}}
             {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
         </span>
-         {{_id}}
         {{#unless statusCheck status 'done'}}
           {{#if placeholder}}
             <span class="title placeholder">{{name}}</span>
           {{else}}
-            <span class="title">{{name}}</span><a href="#" class="delete-task fa fa-trash" title="remove task"></a>
+            <span class="title">{{>xeditable nameOptions}}</span><a href="#" class="delete-task fa fa-trash" title="remove task"></a>
+            
           {{/if}}
         {{else}}
           <span class="title done">{{name}}</span>

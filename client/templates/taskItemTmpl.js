@@ -1,10 +1,10 @@
 Template.taskItemTmpl.helpers({
-    'estimate': function () {
-        return this.estimate || "N/A";
+    'estimation': function () {
+        return this.estimation;// || "N/A";
     },
 
     'estimateDataValue': function () {
-        if (isNaN(parseFloat(this.estimate))) {
+        if (isNaN(parseFloat(this.estimation))) {
             return "";
         }
         return this.estimate;
@@ -19,6 +19,36 @@ Template.taskItemTmpl.helpers({
     'statusCheck': function (status, input) {
         if (status == input) return true;
         else return false;
+    },
+    
+    estimationOptions: function () {
+        return {
+            collection: Tasks,
+            id: this._id,
+            field: 'estimation',
+            type: 'text',
+            title: 'Task estimation',
+            value: this.estimation,
+            emptytext: 'N/A',
+            container: 'body',
+            validate: function (value) {
+                if (isNaN(parseFloat(value))) {
+                    return "Number is required";
+                }
+            }
+        };
+    },
+    
+    nameOptions: function () {
+        return {
+            collection: Tasks,
+            id: this._id,
+            field: 'name',
+            type: 'text',
+            title: 'Task name',
+            value: this.name,
+            container: 'body'
+        };
     }
 });
 
@@ -50,12 +80,4 @@ Template.taskItemTmpl.events = {
 
 
 Template.taskItemTmpl.rendered = function () {
-    $('.editable').editable({
-        success: function (response, newValue) {
-            var value = parseFloat(newValue);
-            if (!isNaN(value)) {
-                XEditableUpdate(Tasks, this, value);
-            }
-        }
-    });
 }

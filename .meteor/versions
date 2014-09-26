@@ -58,3 +58,4 @@ templating@1.0.4
 ui@1.0.0
 underscore@1.0.0
 webapp@1.0.2
+workman:meteor-editable@0.1.2

@@ -43,9 +43,3 @@ Template.tasksListTmpl.events({
         
     }
 });
-
-
-
-Template.m_editable.rendered = function () {
-    console.log('m_editable rendered', this);
-};

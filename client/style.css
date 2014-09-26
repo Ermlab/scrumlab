@@ -27,3 +27,11 @@ body {
 #ui-datepicker-div {
     display: none;
 }
+
+.editable-click {
+    border: none;
+}
+
+.editable-click:hover {
+    background-color: #FFFFAD;
+}

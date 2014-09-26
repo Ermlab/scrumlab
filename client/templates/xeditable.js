@@ -7,6 +7,7 @@ Template.xeditable.rendered = function () {
         container.addClass('processed');
         var options = _.extend(this.data, {
             // Default success function, saves document do database
+            unsavedclass: null,
             success: function (response, value) {
                 var options = $(this).data().editable.options;
                 if (options.collection && options.id && options.field) {
@@ -22,7 +23,7 @@ Template.xeditable.rendered = function () {
     }
 
     this.autorun(function () {
-        var value = Blaze.getCurrentData().value;
+        var value = Blaze.getData().value;
         var elData = container.data();
         if (elData && elData.editable) {
             elData.editable.setValue(value, true);

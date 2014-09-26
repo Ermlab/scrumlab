@@ -47,7 +47,7 @@ Template.taskItemTmpl.helpers({
             type: 'text',
             title: 'Task name',
             value: this.name,
-            container: 'body'
+            container: 'body',
         };
     }
 });

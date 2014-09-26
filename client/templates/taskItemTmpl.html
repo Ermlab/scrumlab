@@ -1,8 +1,9 @@
 <template name="taskItemTmpl">
-    <li class="task" data-issue={{issue_id}}>
+    {{log this 'task'}}
+    <li class="task">
         <span class="status">
             {{#if statusCheck status 'toDo'}}
-            <span class="label label-danger">{{estimate}}</span>
+            <span class="label label-danger editable" data-container="body" data-display="false" data-title="Task estimate" data-type="text" data-pk="{{_id}}" data-name="estimate" data-placeholder="Task estimate" data-value="{{estimateDataValue}}">{{estimate}}</span>
             {{/if}}
             {{#if statusCheck status 'inProgress'}}
             <span class="label label-warning">{{estimate}}</span>
@@ -12,6 +13,7 @@
             {{/if}}
             {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
         </span>
+         {{_id}}
         {{#unless statusCheck status 'done'}}
           {{#if placeholder}}
             <span class="title placeholder">{{name}}</span>

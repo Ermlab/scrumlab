@@ -1,3 +1,16 @@
+XEditableUpdate = function(collection, editable, value) {
+    var id = $(editable).data('pk');
+    var field = $(editable).data('name');
+    if (id && field) {
+        var update = {};
+        update[field] = value;
+        console.log(update);
+        collection.update(id, {$set: update});
+        console.log(collection.findOne(id));
+        console.log($(editable).text());
+    }
+}
+
 OnElementReady = function(selector, fcn) {
     if (typeof selector == "string") {
         console.log("OnElementReady() with selector "+selector+" is deprecated, use jquery object instead");

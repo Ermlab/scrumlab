@@ -2,7 +2,14 @@ Template.taskItemTmpl.helpers({
     'estimate': function () {
         return this.estimate || "N/A";
     },
-    
+
+    'estimateDataValue': function () {
+        if (isNaN(parseFloat(this.estimate))) {
+            return "";
+        }
+        return this.estimate;
+    },
+
     'taskState': function (status) {
         if (status == 'toDo') return "Todo";
         if (status == 'inProgress') return "In progress";
@@ -39,4 +46,16 @@ Template.taskItemTmpl.events = {
         event.currentTarget.setAttribute('contenteditable', false);
         */
     }
+}
+
+
+Template.taskItemTmpl.rendered = function () {
+    $('.editable').editable({
+        success: function (response, newValue) {
+            var value = parseFloat(newValue);
+            if (!isNaN(value)) {
+                XEditableUpdate(Tasks, this, value);
+            }
+        }
+    });
 }

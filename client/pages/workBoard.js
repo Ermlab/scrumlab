@@ -51,7 +51,7 @@ Template.workBoard.rendered = function () {
                                 Issues.update(issueId, {
                                     $set: {
                                         'gitlab.state': 'closed',
-                                        'closed_at': Date()
+                                        'closed_at': CurrDate()
                                     }
                                 });
                                 var issue = Issues.findOne(issueId);
@@ -68,6 +68,13 @@ Template.workBoard.rendered = function () {
                                     'gitlab.state': 'opened'
                                 }
                             });
+
+                            Issues.update(issueId, {
+                                $unset: {
+                                    'closed_at': ''
+                                }
+                            });
+
                             var issue = Issues.findOne(issueId);
                             var updateObject = {
                                 'id': issue.gitlab.project_id,

@@ -17,7 +17,8 @@ Template.planBoardSprintsInput.rendered = function () {
                     if (ownerId != 0) {
                         Issues.update(selfId, {
                             $set: {
-                                sprint: ownerId
+                                sprint: ownerId,
+                                added_at: CurrDate()
                             }
                         });
                     } else {
@@ -25,7 +26,8 @@ Template.planBoardSprintsInput.rendered = function () {
                         // resulting in element becoming unassigned
                         Issues.update(selfId, {
                             $unset: {
-                                sprint: ""
+                                sprint: "",
+                                added_at: CurrDate()
                             }
                         });
                     }
@@ -33,7 +35,7 @@ Template.planBoardSprintsInput.rendered = function () {
                     ui.item.remove();
                 }
                 // If so, starting positioning query
-                if(ownerId == 0) var data = $("#backlog").sortable("toArray");
+                if (ownerId == 0) var data = $("#backlog").sortable("toArray");
                 else var data = $(ui.item.parent()).sortable("toArray");
                 for (var i = 0; i < data.length; i++) {
                     Issues.update(data[i], {
@@ -73,55 +75,55 @@ Template.planBoardSprintsInput.rendered = function () {
     }, 500);
 }
 
-Template.planBoardSprintsListItem.rendered = function() {
-   $("#backlog, .sprint").sortable({
-            stop: function (event, ui) {
-                // Getting the element id and containing sprint's id (or a backlogItems container)
-                var ownerId = ui.item.parent().attr("id");
-                var selfId = ui.item.attr("id");
-                var previousId = ui.item.attr("ref");
-                // If no owner is specified or element was returned to backlog container ownerId is set to 0
-                if (ownerId == 'backlog') ownerId = '0';
-                // If no previous owner present, previousId is set to 0
-                if (typeof (previousId) == 'undefined') previousId = '0';
-                // Check if the item was dropped back in container it was taken from by
-                // comparing parent id with original parent id stored in "ref" variable
-                if (ownerId != previousId) {
-                    // Check if owner is actually a sprint
-                    if (ownerId != 0) {
-                        Issues.update(selfId, {
-                            $set: {
-                                sprint: ownerId
-                            }
-                        });
-                    } else {
-                        // If ownerId = 0, the field sprint is removed
-                        // resulting in element becoming unassigned
-                        Issues.update(selfId, {
-                            $unset: {
-                                sprint: ""
-                            }
-                        });
-                    }
-                    // Getting rid of the duplicated ui item
-                    ui.item.remove();
-                }
-                // If so, starting positioning query
-                var data = $("#backlog").sortable("toArray");
-                for (var i = 0; i < data.length; i++) {
-                    Issues.update(data[i], {
+Template.planBoardSprintsListItem.rendered = function () {
+    $("#backlog, .sprint").sortable({
+        stop: function (event, ui) {
+            // Getting the element id and containing sprint's id (or a backlogItems container)
+            var ownerId = ui.item.parent().attr("id");
+            var selfId = ui.item.attr("id");
+            var previousId = ui.item.attr("ref");
+            // If no owner is specified or element was returned to backlog container ownerId is set to 0
+            if (ownerId == 'backlog') ownerId = '0';
+            // If no previous owner present, previousId is set to 0
+            if (typeof (previousId) == 'undefined') previousId = '0';
+            // Check if the item was dropped back in container it was taken from by
+            // comparing parent id with original parent id stored in "ref" variable
+            if (ownerId != previousId) {
+                // Check if owner is actually a sprint
+                if (ownerId != 0) {
+                    Issues.update(selfId, {
                         $set: {
-                            position: i
+                            sprint: ownerId
+                        }
+                    });
+                } else {
+                    // If ownerId = 0, the field sprint is removed
+                    // resulting in element becoming unassigned
+                    Issues.update(selfId, {
+                        $unset: {
+                            sprint: ""
                         }
                     });
                 }
-            },
-            delay: '100',
-            connectWith: "#backlog, .sprint",
-            // Elements to exclude from sortable list
-            cancel: "#backlogFooter, .form-control, :input, button, [contenteditable]",
-            placeholder: "placeholder"
-        });
+                // Getting rid of the duplicated ui item
+                ui.item.remove();
+            }
+            // If so, starting positioning query
+            var data = $("#backlog").sortable("toArray");
+            for (var i = 0; i < data.length; i++) {
+                Issues.update(data[i], {
+                    $set: {
+                        position: i
+                    }
+                });
+            }
+        },
+        delay: '100',
+        connectWith: "#backlog, .sprint",
+        // Elements to exclude from sortable list
+        cancel: "#backlogFooter, .form-control, :input, button, [contenteditable]",
+        placeholder: "placeholder"
+    });
 }
 
 Template.planBoardSprintsList.helpers({
@@ -252,7 +254,8 @@ Template.planBoardSprintsList.events = {
                     // Update sprint status
                     Sprints.update(parentId, {
                         $set: {
-                            status: 'in progress'
+                            status: 'in progress',
+                            status_changed: CurrDate()
                         }
                     });
                 } else alert('Sprint is already overdue.');
@@ -273,13 +276,14 @@ Template.planBoardSprintsList.events = {
             if (sprint.status == 'in progress') {
                 Sprints.update(parentId, {
                     $set: {
-                        status: 'ready'
+                        status: 'ready',
+                        status_changed: ''
                     }
                 });
             };
         } else alert('Only master or owner can stop a sprint.');
     },
-    
+
     'click .sprintTitle': function (event) {
         event.currentTarget.setAttribute('contenteditable', true);
     },
@@ -308,10 +312,11 @@ Template.planBoardSprintsInput.events = {
         } else if (name.value == "") {
             alert("Please write title of sprint");
         } else {
+
             Sprints.insert({
                 name: name.value,
-                endDate: date.value,
-                startDate: Date(),
+                endDate: moment(date.value).format("DD/MM/YYYY"),
+                startDate: CurrDate(),
                 project_id: projectId,
                 status: 'ready'
             });

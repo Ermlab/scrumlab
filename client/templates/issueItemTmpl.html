@@ -2,7 +2,7 @@
     <div title="{{gitlab.title}}" ref="{{sprint}}" objectType="issue" class="issue issue-{{gitlab.state}}" data-id={{_id}} state={{gitlab.state}}>
         <div class="handler"></div>
         <div class="inner">
-            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">&#35;{{gitlab.iid}}</a>{{gitlab.state}}
+            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">&#35;{{gitlab.iid}}</a>
             <span class="title">{{>xeditable titleOptions}}</span>
             <div class="description">{{gitlab.description}}</div>
             <div class="estimation" title="estimation">{{totalEstimation}}</div>

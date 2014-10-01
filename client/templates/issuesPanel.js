@@ -8,6 +8,58 @@ Template.issuesPanel.selectedSprint = function () {
     }
 }
 
+Template.issuesPanel.panelStats = function (sprintId) {
+    var openCount = 0;
+    var openEstimation = 0;
+    var totalEstimation = 0;
+
+    var sprint = Sprints.findOne(sprintId);
+    if (sprint) {
+        // sprint
+        console.log(sprint.gitlab.id);
+        var issues = Issues.find({
+            'gitlab.milestone.id': sprint.gitlab.id
+        }).fetch();
+    } else {
+        // backlog
+        var issues = Issues.find({
+            'gitlab.milestone.id': {
+                $exists: false
+            }
+        }).fetch();
+    }
+
+    for (var i = 0; i < issues.length; i++) {
+        console.log(i);
+        var total = 0;
+        var tasks = Tasks.find({
+            issue_id: issues[i]._id
+        }).fetch();
+
+        for (var j = 0; j < tasks.length; j++) {
+            if (tasks[j].estimation) {
+                total += tasks[j].estimation * 1;
+            }
+        }
+
+        if (issues[i].gitlab.state == 'opened') {
+            openCount++;
+            openEstimation += total;
+        }
+        
+        totalEstimation += total;
+
+    }
+
+
+    return {
+        openCount: openCount,
+        totalCount: issues.length,
+        openEstimation: openEstimation,
+        totalEstimation: totalEstimation
+    }
+}
+
 Template.issuesPanel.issues = function (sprint) {
     var sort = {
         sort: {

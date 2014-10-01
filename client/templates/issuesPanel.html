@@ -18,7 +18,9 @@
             </ul>
         </div>
         <div class="issues-panel-footer">
-            footer {{selectedSprint.value}}
+            {{#with panelStats selectedSprint._id}}
+                Issues: {{totalCount}} ({{openCount}} open), Estimation: {{totalEstimation}} ({{openEstimation}} left)
+            {{/with}}
         </div>
         
     </div>

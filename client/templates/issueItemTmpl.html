@@ -1,34 +1,26 @@
 <template name="issueItemTmpl">
-    <div id={{_id}} title={{gitlab.title}} ref={{sprint}} objectType="issue" class="list-group-item story" state={{gitlab.state}}>
-        <div class="pull-right right_icons">
-            <span class="deleteButton glyphicon glyphicon-remove" id={{_id}}></span> 
-            <span class="glyphicon glyphicon-th-list"></span>
+    <div id={{_id}} title="{{gitlab.title}}" ref="{{sprint}}" objectType="issue" class="issue issue-{{gitlab.state}}" state={{gitlab.state}}>
+        <div class="handler">
         </div>
-        {{#if estimation}}
-        <span id={{_id}} contenteditable="true" class="label label-warning pull-left">
-            {{estimation}}
-            </span>
-        {{else}}
-        <span id={{_id}} contenteditable="true" class="label label-warning pull-left">
-            <span id={{_id}} contenteditable="true" class="glyphicon glyphicon-time"></span>
-        </span>
-        {{/if}} {{#unless checkIfDone _id}}
-        <h4 id={{_id}} contenteditable="false" class="title list-group-item-heading">
-                {{gitlab.title}}
-        </h4>
-        {{else}}
-        <h4 id={{_id}} contenteditable="false" class="title list-group-item-heading" style="text-decoration: line-through;">
-                {{gitlab.title}}
-        </h4>
-        {{/unless}}
-        <div class="details collapse">
-            <p id={{_id}} ref="description" contenteditable="false" class="description list-group-item-text">{{gitlab.description}}</p>
-            <form class="form-horizontal" id="{{_id}}">
-                <p>
-                    <input type="text" class="form-control" name="title" placeholder="Add new task and press enter" tabindex="1">
-                </p>
-            </form>
-            {{#unless workBoard}} {{> tasksListTmpl tasks _id}} {{/unless}}
+        <div class="inner">
+            
+            <span class="title"><span class="inline-edit single-line" contenteditable="true">{{gitlab.title}}<i class="fa fa-pencil"></i></span></span>&nbsp;<a class="issue-id" href="#">&#35;{{gitlab.iid}}</a>
+            <div class="description">{{gitlab.description}}</div>
+
+                <div class="header">
+                <span class="estimation" title="size">
+                    <span class="inline-edit single-line" contenteditable="true">
+                    {{#if estimation}}
+                    {{estimation}}
+                    {{else}}
+                    ?
+                    {{/if}}
+                    <i class="fa fa-pencil"></i>
+                    </span>
+                </span>
+                    
+            </div>
+            {{> tasksListTmpl tasks=tasks issue=this}}
         </div>
     </div>
 </template>

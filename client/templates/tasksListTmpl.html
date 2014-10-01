@@ -1,5 +1,9 @@
 <template name="tasksListTmpl">
-    <ul class="list-group" style="padding:0px;">
-    {{#each this}} {{> taskItemTmpl}} {{/each}}
+    <ul class="issue-tasks">
+    {{#each tasks}} 
+        {{> taskItemTmpl}} 
+    {{/each}}
+        <li class="new-task"><form><input type="text" name="title" class="form-control input-sm" placeholder="Add new task"/></form></li>
     </ul>
+    
 </template>

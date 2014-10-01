@@ -1,0 +1,13 @@
+<template name="connectionStatus">
+    {{#unless status.connected}}
+    <div class="connection-status">
+        <div class="inner">
+            <span class="glyphicon glyphicon-warning-sign"></span>
+            {{status.status}}
+            {{#if status.retryCount}}
+             (retried {{status.retryCount}} times)
+            {{/if}}
+        </div>
+    </div>
+    {{/unless}}
+</template>

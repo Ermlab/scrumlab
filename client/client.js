@@ -4,8 +4,16 @@
 Meteor.subscribe("userData");
 
 
+live = function() {
+    $(document.body).on('change', '*[contenteditable^="true"]', function () {
+        alert('on',$(this));
+    });
+}
+
+
 Meteor.startup(function () {
     // code to run on server at startup
+
 });
 
 

@@ -1,6 +1,6 @@
 <template name="taskItemTmpl">
-    <li class="task list-group-item list-group-item-info" id={{_id}} issueId={{issue_id}}>
-        <div>
+    <li class="task " id={{_id}} issueId={{issue_id}}>
+        <span class="status">
             {{#if statusCheck status 'toDo'}}
             <span class="label label-danger">{{taskState status}}</span>
             {{/if}}
@@ -11,12 +11,15 @@
             <span class="label label-success">{{taskState status}}</span>
             {{/if}}
             {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
-            <span class="deleteTaskButton glyphicon glyphicon-remove pull-right" id={{_id}} issueId={{issue_id}}></span> 
-        </div>
+        </span>
         {{#unless statusCheck status 'done'}}
-        <p id={{_id}} class="taskTitle" contenteditable="false">{{name}}</p>
+          {{#if placeholder}}
+            <span class="title placeholder">{{name}}</span>
+          {{else}}
+            <span class="title">{{name}}</span><a href="#" class="delete-task fa fa-trash" title="remove task"></a>
+          {{/if}}
         {{else}}
-        <p id={{_id}} class="taskTitle" contenteditable="false" style="text-decoration: line-through">{{name}}</p>
+          <span class="title done">{{name}}</span>
         {{/unless}}
     </li> 
 </template>

@@ -1,54 +1,47 @@
-Template.taskItemTmpl.helpers({
-    'estimation': function () {
-        return this.estimation;// || "N/A";
-    },
-
-    'estimateDataValue': function () {
-        if (isNaN(parseFloat(this.estimation))) {
-            return "";
+var estimationOptions = function (task) {
+    return {
+        collection: Tasks,
+        id: task._id,
+        field: 'estimation',
+        type: 'text',
+        title: 'Task estimation',
+        value: task.estimation,
+        emptytext: 'N/A',
+        container: 'body',
+        validate: function (value) {
+            if (isNaN(parseFloat(value))) {
+                return "Number is required";
+            }
         }
-        return this.estimate;
-    },
+    };
+}
 
-    'taskState': function (status) {
-        if (status == 'toDo') return "Todo";
-        if (status == 'inProgress') return "In progress";
-        if (status == 'done') return "Done";
-    },
+var nameOptions = function (task) {
+    return {
+        collection: Tasks,
+        id: task._id,
+        field: 'name',
+        type: 'text',
+        title: 'Task name',
+        value: task.name,
+        container: 'body',
+    };
+}
 
-    'statusCheck': function (status, input) {
+
+
+Template.taskItemTmpl.helpers({
+    statusCheck: function (status, input) {
         if (status == input) return true;
         else return false;
     },
-    
+
     estimationOptions: function () {
-        return {
-            collection: Tasks,
-            id: this._id,
-            field: 'estimation',
-            type: 'text',
-            title: 'Task estimation',
-            value: this.estimation,
-            emptytext: 'N/A',
-            container: 'body',
-            validate: function (value) {
-                if (isNaN(parseFloat(value))) {
-                    return "Number is required";
-                }
-            }
-        };
+        return estimationOptions(this);
     },
-    
+
     nameOptions: function () {
-        return {
-            collection: Tasks,
-            id: this._id,
-            field: 'name',
-            type: 'text',
-            title: 'Task name',
-            value: this.name,
-            container: 'body',
-        };
+        return nameOptions(this);
     }
 });
 
@@ -63,21 +56,82 @@ Template.taskItemTmpl.events = {
             AddPlaceholderTaskToIssue(this.issue_id);
         }
     },
-
-    'click .taskTitle': function (event) {
-        //event.currentTarget.setAttribute('contenteditable', true);
-    },
-
-    'blur .taskTitle': function (event) {
-        /*
-        var newValue = event.currentTarget.innerHTML.trim();
-        var taskId = event.currentTarget.getAttribute("id");
-        Tasks.update(taskId, {$set: {'name': newValue}});
-        event.currentTarget.setAttribute('contenteditable', false);
-        */
-    }
 }
 
 
-Template.taskItemTmpl.rendered = function () {
+Template.taskItemWorkboard.helpers({
+    statusCheck: function (status, input) {
+        if (status == input) return true;
+        else return false;
+    },
+    estimationOptions: function () {
+        return estimationOptions(this);
+    },
+
+    nameOptions: function () {
+        return nameOptions(this);
+    },
+    assigneeOptions: function () {
+        var task = this;
+        var users = Meteor.users.find().fetch();
+        var members = [ /*{id:'', text: 'not assigned'}*/ ];
+        for (var i = 0; i < users.length; i++) {
+            members.push({
+                value: users[i]._id,
+                text: users[i].gitlab.username,
+                avatarUrl: users[i].gitlab.avatar_url,
+            });
+        }
+        return {
+            collection: Tasks,
+            id: task._id,
+            field: 'assignee',
+            type: 'select',
+            source: members,
+            title: 'Assignee',
+            value: task.assignee,
+            container: 'body',
+            display: function (value, sourceData) {
+                if (sourceData) {
+                    for (var i = 0; i < sourceData.length; i++) {
+                        if (sourceData[i].value == value) {
+                            $(this).attr('src', sourceData[i].avatarUrl);
+                            return;
+                        }
+                    }
+                }
+                $(this).attr('src', "/img/anonymous.png");
+            }
+        };
+
+    },
+
+    assignee: function () {
+        var user = Meteor.users.findOne(this.assignee);
+        if (user) {
+            return {
+                name: user.gitlab.username,
+                avatarUrl: user.gitlab.avatar_url || "/img/anonymous.png"
+            }
+        } else {
+            return {
+                name: "not assigned",
+                avatarUrl: "/img/anonymous.png"
+            }
+        }
+    },
+});
+
+
+Template.taskItemWorkboard.events = {
+    'click .delete-task': function (e) {
+        Tasks.remove(this._id);
+
+        // add placeholder task if needed
+        if (Tasks.find({
+            issue_id: this.issue_id
+        }).count() == 0) {
+            AddPlaceholderTaskToIssue(this.issue_id);
+        }
+    },
 }

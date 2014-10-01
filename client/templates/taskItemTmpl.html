@@ -1,26 +1,46 @@
 <template name="taskItemTmpl">
-    <li class="task">
-        <span class="status">
-            {{#if statusCheck status 'toDo'}}
+    <span class="status">
+        {{#if statusCheck status 'toDo'}}
+        <span class="label label-danger">{{>xeditable estimationOptions}}</span>
+    {{/if}} {{#if statusCheck status 'inProgress'}}
+    <span class="label label-warning">{{>xeditable estimationOptions}}</span>
+    {{/if}} {{#if statusCheck status 'done'}}
+    <span class="label label-success">{{>xeditable estimationOptions}}</span>
+    {{/if}} {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
+    </span>
+    {{#unless statusCheck status 'done'}} {{#if placeholder}}
+    <span class="title placeholder">{{name}}</span>
+    {{else}}
+    <span class="title">{{>xeditable nameOptions}}</span>
+    <a href="#" class="delete-task fa fa-trash" title="remove task"></a>
+
+    {{/if}} {{else}}
+    <span class="title done">{{name}}</span>
+    {{/unless}}
+</template>
+
+
+<template name="taskItemWorkboard">
+    <div class="task-workboard clearfix" data-id="{{_id}}">
+        <div class="handler"></div>
+        <div class="status">
+            {{>xeditableImg assigneeOptions}} {{#if statusCheck status 'toDo'}}
             <span class="label label-danger">{{>xeditable estimationOptions}}</span>
-            {{/if}}
-            {{#if statusCheck status 'inProgress'}}
+            {{/if}} {{#if statusCheck status 'inProgress'}}
             <span class="label label-warning">{{>xeditable estimationOptions}}</span>
-            {{/if}}
-            {{#if statusCheck status 'done'}}
+            {{/if}} {{#if statusCheck status 'done'}}
             <span class="label label-success">{{>xeditable estimationOptions}}</span>
             {{/if}}
-            {{#if user_avatar}}<span class="avatar"><img width="20" height="20" src={{user_avatar}} title={{username}}></span>{{/if}}
-        </span>
-        {{#unless statusCheck status 'done'}}
-          {{#if placeholder}}
+        </div>
+        <div class="inner">
+            {{#unless statusCheck status 'done'}} {{#if placeholder}}
             <span class="title placeholder">{{name}}</span>
-          {{else}}
-            <span class="title">{{>xeditable nameOptions}}</span><a href="#" class="delete-task fa fa-trash" title="remove task"></a>
-            
-          {{/if}}
-        {{else}}
-          <span class="title done">{{name}}</span>
-        {{/unless}}
-    </li> 
+            {{else}}
+            <span class="title">{{>xeditable nameOptions}}</span>
+            <a href="#" class="delete-task fa fa-trash" title="remove task"></a>
+            {{/if}} {{else}}
+            <span class="title done">{{name}}</span>
+            {{/unless}}
+        </div>
+    </div>
 </template>

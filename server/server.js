@@ -197,7 +197,7 @@ Server = {
 
     }, //end issue create
 
-    pushIssue: function (id) {
+    pushIssue: function (id, stateEvent) {
         try {
             doc = Issues.findOne(id);
             logger.info("[issue^] {0}".format(doc.gitlab.title));
@@ -225,6 +225,11 @@ Server = {
             if (doc.gitlab.milestone && doc.gitlab.milestone.id) {
                 params.milestone_id = doc.gitlab.milestone.id;
             }
+            
+            if (_.contains(['reopen', 'close'], stateEvent)) {
+                params.state_event = stateEvent;                
+            }
+    
             api.issues.edit(doc.gitlab.project_id, doc.gitlab.id, params);
         } catch (err) {
             logger.error(err);

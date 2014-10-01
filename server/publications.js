@@ -15,6 +15,30 @@ Meteor.publish("userData", function () {
     }
 });
 
+Meteor.publish('members', function (projectId) {
+
+    var project = Projects.findOne(projectId);
+    if (project) {
+        var members = [];
+        for (var i = 0; i < project.member_ids.length; i++) {
+            members.push(project.member_ids[i].id);
+        }
+    }
+    if (_.contains(members, this.userId)) {
+        return Meteor.users.find({
+            '_id': {
+                $in: members
+            }
+        }, {
+            fields: {
+                gitlab: 1
+            }
+        });
+        
+        
+    }
+});
+
 //TODO: it should return only logged user projects
 Meteor.publish('userProjects', function () {
     if (this.userId) {

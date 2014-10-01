@@ -1,15 +1,29 @@
-Template.issueItemTmpl.tasks = function () {
-    return Tasks.find({
-        issue_id: this._id
-    });
+var issueTitleOptions = function (issue) {
+    return {
+        collection: Issues,
+        id: issue._id,
+        field: 'gitlab.title',
+        type: 'text',
+        title: 'Issue title',
+        value: issue.gitlab.title,
+        container: 'body',
+        validate: function (value) {
+            if (!value) {
+                return "This field is required";
+            }
+        },
+        updated: function (id) {
+            Meteor.call('pushIssue', issue.id);
+        }
+    };
 }
 
-Template.issueItemTmpl.totalEstimation = function () {
-   var tasks = Tasks.find({
-        issue_id: this._id
+var totalEstimation = function (issue) {
+    var tasks = Tasks.find({
+        issue_id: issue._id
     }).fetch();
     var sum = 0;
-    for (var i=0; i<tasks.length; i++) {
+    for (var i = 0; i < tasks.length; i++) {
         var n = parseFloat(tasks[i].estimation);
         if (!isNaN(n)) {
             sum += n;
@@ -18,93 +32,84 @@ Template.issueItemTmpl.totalEstimation = function () {
     return sum;
 }
 
+var tasks = function (issue) {
+    return Tasks.find({
+        issue_id: issue._id
+    });
+}
+
+
 Template.issueItemTmpl.helpers({
-    'checkIfDone': function (id) {
-        var tasks = Tasks.find({
-            $and: [{
-                issue_id: id
-            }, {
-                $or: [{
-                    status: 'inProgress'
-                }, {
-                    status: 'toDo'
-                }]
-            }]
-        }).fetch();
-        if (tasks.length == 0) return true;
-        else return false;
+    tasks: function () {
+        return tasks(this);
     },
 
-    'workBoard': function () {
-        var board = _.last(document.URL.split('/'));
-        if (board == 'work') return true;
-        return false;
+    tasksCount: function () {
+        return Tasks.find({
+            issue_id: this._id
+        }).count();
     },
-    
+
+    totalEstimation: function () {
+        return totalEstimation(this);
+    },
+
     titleOptions: function () {
-        return {
-            collection: Issues,
-            id: this._id,
-            field: 'gitlab.title',
-            type: 'text',
-            title: 'Issue title',
-            value: this.gitlab.title,
-            container: 'body',
-            validate: function (value) {
-                if (!value) {
-                    return "This field is required";
-                }
-            },
-            updated: function(id) {
-                Meteor.call('pushIssue', this.id);
-            }
-        };
+        return issueTitleOptions(this);
     },
 
+    members: function () {
+        return Tasks.find({
+            issue_id: this._id
+        }).count();
+    },
 });
 
 
-Template.issueItemTmpl.events = {
-    'focus .inline-edit': function (e) {
-        $(e.target).data('original', $(e.target).text());
-        // TODO: select all text on edit - not working
-        //$(e.target).selectText();
-        
-        if ($(e.target).hasClass('inline-placeholder')) {
-            // clear placeholder
-            console.log('aa', $(e.target).is(':focus'));
-            //$(e.target).text('');
-            console.log('bb', $(e.target).is(':focus'));
-            $(e.target).selectText();
-        }
+Template.issueItemWorkboard.helpers({
+    tasks: function () {
+        return tasks(this);
     },
+    titleOptions: function () {
+        return issueTitleOptions(this);
+    },
+    totalEstimation: function () {
+        return totalEstimation(this);
+    },
+    progress: function () {
+        var totals = {
+            toDo: 0,
+            inProgress: 0,
+            done: 0
+        };
 
-    'keydown .inline-edit': function (e) {
-        switch (e.keyCode) {
-            case 13:
-                // Enter key was pressed
-                e.preventDefault();
-                var field = $(e.target).data("name");
-                var value = $(e.target).text();
-                var id = this._id;
-                var update = {};
-                update[field] = value;
-                $(e.target).blur();
-                // Fix for doubling text input with contenteditable
-                $(e.target).text("");
-                Meteor.defer(function() {
-                    Issues.update(id, {
-                        $set: update
-                    });
-                    Meteor.call('pushIssue', id);
-                });
-                break;
-            case 27:
-                // Esc key was pressed
-                e.preventDefault();
-                $(e.target).text($(e.target).data('original'));
-                $(e.target).blur();
-                break;
+        var tasks = Tasks.find({
+            issue_id: this._id
+        }).fetch();
+
+        for (var i = 0; i < tasks.length; i++) {
+            if (tasks[i].estimation) {
+                totals[tasks[i].status] += tasks[i].estimation * 1;
+            }
         }
-    },
-}
+        var total = totals.toDo + totals.inProgress + totals.done;
+        
+        if (total==0) {
+            return;
+        }
+        
+        totals.toDo = Math.round(100 * totals.toDo / total);
+        totals.inProgress = Math.round(100 * totals.inProgress / total);
+        totals.done = 100 - totals.toDo - totals.inProgress;
+        return [{
+            status: 'danger',
+            percent: totals.toDo
+        }, {
+            status: 'warning',
+            percent: totals.inProgress
+        }, {
+            status: 'success',
+            percent: totals.done
+        }];
+    }
+});

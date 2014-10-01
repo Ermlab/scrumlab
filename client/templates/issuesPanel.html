@@ -30,11 +30,11 @@
     <div class="input-group">
         <select class="container form-control">
             {{#each options}}
-            <option {{selectedIfEq value selectedSprint}} value="{{value}}">{{name}}</option>
+            <option {{selectedIfEq value selectedSprint}} value="{{value}}">{{name}}{{status_str}}</option>
             {{/each}}
         </select>
         <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Add</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li><a class="new-issue" href="#">New Issue</a>
                 </li>

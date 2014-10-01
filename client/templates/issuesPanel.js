@@ -47,7 +47,7 @@ Template.issuesPanel.created = function () {
     });
 }
 
-Template.issuesPanel.invalidate = function() {
+Template.issuesPanel.invalidate = function () {
     return Session.get("invalidatePanels");
 }
 
@@ -58,42 +58,44 @@ Template.issuesPanel.destroyed = function () {
 Template.issuesPanel.rendered = function () {
     OnElementReady('.issues-panel-body', function () {
         resizePanels();
-        
+
 
         $('.issues-list').sortable({
-            cancel: "[contenteditable=true], input",
+            cancel: "textarea, input, .new-issue-wrapper",
             cursor: "cursor",
             connectWith: ".issues-list",
             placeholder: "sortable-placeholder",
             revert: 50,
-            
+
             start: function (event, ui) {
+                console.log('start');
                 //console.log(ui.item.parents('.issues-panel').attr('data-name'));
-                var issueId = $('.issue',ui.item).attr('data-id');
-                $('.issues-panel').each(function() {
+                var issueId = $('.issue', ui.item).attr('data-id');
+                $('.issues-panel').each(function () {
                     var search = $(this).find(ui.item);
-                    if (search.length==0) {
+                    if (search.length == 0) {
                         // found item duplicate on the other (non-source) panel
                         $(this).find('.issue[data-id={0}]'.format(issueId)).addClass('duplicate');
                     }
                 });
             },
             stop: function (event, ui) {
+                console.log('stop');
                 var srcPanel = $(this).parents('.issues-panel')[0];
                 var dstPanel = $(ui.item[0]).parents('.issues-panel')[0];
-                
+
                 var issueId = $('.issue', ui.item).attr('data-id');
-                var sprintId = $(dstPanel).attr('data-id');       
+                var sprintId = $(dstPanel).attr('data-id');
 
                 var issue = Issues.findOne(issueId);
                 var sprint = Sprints.findOne(sprintId);
-                
+
                 // Reweight issued based on positions in the destination panel
                 var last;
                 var predecessor;
                 $('.issue', dstPanel).not('.duplicate').each(function (i) {
                     var id = $(this).attr('data-id');
-                    if (id==issue._id) {
+                    if (id == issue._id) {
                         predecessor = last;
                     }
                     Issues.update(id, {
@@ -103,34 +105,32 @@ Template.issuesPanel.rendered = function () {
                     });
                     last = id;
                 });
-                
+
                 if (srcPanel == dstPanel) {
                     // Issue moved inside one panels
                     console.log("moved in the same panel");
-                }
-                else {
+                } else {
                     console.log("moved between panels");
                     // Issue moved between 2 panels
                     if ($(srcPanel).attr('data-id') == $(dstPanel).attr('data-id')) {
                         // both panels display the same sprint
-                        
+
                         // move original issue b back to the source panel but in a correct position
-                        if (predecessor===undefined) {
+                        if (predecessor === undefined) {
                             // new item is first on the list
                             console.log('insert at the begg');
                             $(this).prepend(ui.item);
-                        }
-                        else {
-                            console.log($('.issue[data-id={0}]'.format(predecessor),this));
+                        } else {
+                            console.log($('.issue[data-id={0}]'.format(predecessor), this));
                             console.log(ui.item);
-                            $('.issue[data-id={0}]'.format(predecessor),this).parent().after(ui.item);
+                            $('.issue[data-id={0}]'.format(predecessor), this).parent().after(ui.item);
                         }
                     }
                 }
-                
+
                 // show duplicated issue
                 $('.issue.duplicate').removeClass('duplicate');
-            
+
                 if (sprint) {
                     // Add issue to sprint
                     console.log("adding to sprint ", issueId, sprint.gitlab.title);
@@ -229,7 +229,7 @@ Template.issuesPanelNewIssue.events({
 
         var projectId = this.context.project._id
         var gitlabProjectId = this.context.project.gitlab.id;
-        
+
         var issue = {
             project_id: projectId,
             gitlabProjectId: gitlabProjectId,
@@ -237,10 +237,12 @@ Template.issuesPanelNewIssue.events({
             description: description,
             estimation: estimation,
         };
-        
+
         var iid = Session.get(this.name + 'IssuesPanel');
-        var sprint = Sprints.findOne({'gitlab.iid':iid*1});
-        if (sprint!==undefined) {
+        var sprint = Sprints.findOne({
+            'gitlab.iid': iid * 1
+        });
+        if (sprint !== undefined) {
             issue.sprint = sprint._id;
         }
 
@@ -266,24 +268,6 @@ Template.issuesPanelNewIssue.events({
 
 
 var _options = function (panel) {
-    var options = [
-        /*
-        {
-            value: 'sandbox',
-            name: 'Sandbox',
-            help: 'Issues which are not ready for planning',
-            panel: panel
-        },
-        */
-        {
-            value: 'backlog',
-            _id: 'backlog',
-            name: 'Backlog',
-            help: 'Issues which are ready for planning',
-            panel: panel,
-            editable: false
-        },
-    ];
     var sprints = Sprints.find({
         'gitlab.state': 'active'
     }, {
@@ -291,17 +275,7 @@ var _options = function (panel) {
             'gitlab.iid': 1
         }
     }).fetch();
-    for (var i in sprints) {
-        options.push({
-            value: sprints[i].gitlab.iid,
-            _id: sprints[i]._id,
-            name: "#" + sprints[i].gitlab.iid + " " + sprints[i].gitlab.title,
-            help: 'Issues assigned to the sprint',
-            panel: panel,
-            editable: true
-        });
-    }
-    return options;
+    return SprintSelectOptions(sprints, panel);
 }
 
 

@@ -1,82 +1,153 @@
 <template name="workBoard">
-    {{#with project}}
-    <div class="page-header">
-        <h1>{{gitlab.name}} - Work Board</h1>
-        <input type="hidden" id="projectId" ref={{_id}}>
-    </div>
-    Work board for project: {{_id}} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>) 
-    {{/with}} 
-    
-    {{#if sprint}}
-    <div class="row">
-        <p class="col-md-12">
-            <h3>{{sprint.name}}: End date: {{sprint.endDate}}</h3>
+    {{!--
+    Project: <a href="{{project.gitlab.web_url}}" target="_blank">{{project.gitlab.name_with_namespace}} <i class="fa fa-external-link"></i></a>,
+    Sprint:
+    {{#if sprint.isBacklog}}
+    <a href="{{project.gitlab.web_url}}/issues" target="_blank">{{sprint.gitlab.title}} <i class="fa fa-external-link"></i></a>
+    {{else}}
+    <a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">{{sprint.gitlab.title}} <i class="fa fa-external-link"></i></a>
+    {{/if}}
+    --}}
+    {{> workboardSprintDropdown}}
+
+    <div class="row sprint-stats">
+        {{#if sprint.start_date}}
+        <div class="col-sm-2">
+            <p>Starts: <strong>{{sprint.start_date}}</strong></p>
+        </div>
+        {{/if}}
+        {{#if sprint.gitlab.due_date}}
+        <div class="col-sm-2">
+            <p class="end-date">Ends: <strong>{{sprint.gitlab.due_date}}</strong> {{#with daysLeft}}<span class="{{status}}">({{text}})</span>{{/with}}</p>
+        </div>
+        {{/if}}
+        <div class="col-sm-2">
+            <p>Issues: <strong>{{numberOfIssues}}</strong></p>
+        </div>
+        <div class="col-sm-2">
+            <p>Sprint size: <strong>{{sprintSize}}</strong></p>
+        </div>
+        {{#if numberOfIssues}}
+        <div class="col-sm-12">
             {{> workBoardProgressBar}}
-        </p>
-        <div class="col-md-3">
-            <h4>Issues:</h4>
         </div>
-        <div class="col-md-3">
-            <h4>To do:</h4>
-        </div>
-        <div class="col-md-3">
-            <h4>In progress:</h4>
-        </div>
-        <div class="col-md-3">
-            <h4>Done:</h4>
-        </div>
+        {{/if}}
     </div>
-{{log issues "issues in wb"}}
+
+    <div class="row">
+        {{#if numberOfIssues}}
+
+        <div class="col-sm-3">
+            <h4>Issue</h4>
+        </div>
+        <div class="col-sm-3">
+            <h4>Todo</h4>
+        </div>
+        <div class="col-sm-3">
+            <h4>In progress</h4>
+        </div>
+        <div class="col-sm-3">
+            <h4>Done</h4>
+        </div>
+
+
+        {{else}}
+        <p class="col-sm-12">There are 0 issues planned for this sprint.</p>
+
+        {{/if}}
+
+    </div>
+
     {{#each issues}}
-    <div class="row issue-panel" id="{{_id}}">
-        <div class="col-md-3">
-            {{>issueItemTmpl}}
-        </div>
-        <div class="todo col-md-3" id="{{_id}}">
-            {{#each taskList _id 'toDo'}} {{>taskItemTmpl}} {{/each}}
-        </div>
-        <div class="inprogress col-md-3" id="{{_id}}">
-            {{#each taskList _id 'inProgress'}} {{>taskItemTmpl}} {{/each}}
-        </div>
-        <div class="done col-md-3" id="{{_id}}">
-            {{#each taskList _id 'done'}} {{>taskItemTmpl}} {{/each}}
+    <div class="row">
+        <div class="col-sm-12">
+            {{>workBoardRow }}
         </div>
     </div>
     {{/each}}
-    <div class="row">
-        <p class="footer col-md-3"></p>
-        <div id="stats" class="col-md-12">{{sprintStats sprint._id}}</div>
-    </div>
-    {{else}}
-    <div class="row">
-        <div class="col-md-12">
-            <p>Your project has no active sprints. Start one using plan board.</p>
-            {{#if startableSprints}}
-                <ul>
-                {{#each startableSprints}}
-                    <li>{{gitlab.iid}} {{gitlab.title}} {{status}} <button type="button" class="btn btn-default start-sprint">Start Sprint</button></li>
-                {{/each}}
-                </ul>
-            {{else}}
-                <p>No sprints at all</p>
-            {{/if}}
-            <button type="button" class="btn btn-default new-sprint">New Sprint</button>
-        </div>
-    </div>
-    {{/if}}
+
 </template>
 
+
+<template name="workBoardRow">
+    <div class="row workboard-issue" id="issue-{{_id}}">
+        <div class="issue-wrapper col-sm-3">
+            {{>issueItemWorkboard}}
+        </div>
+        <div class="todo col-sm-3">
+            {{#if taskList _id 'toDo'}}
+            <div class="new-task">
+                {{> newTask this}}
+            </div>
+            <ul data-status="toDo">
+                {{#each taskList _id 'toDo'}}
+                <li class="task">{{>taskItemWorkboard}}</li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </div>
+        <div class="inprogress col-sm-3">
+            {{#if taskList _id 'inProgress'}}
+            <ul data-status="inProgress">
+                {{#each taskList _id 'inProgress'}}
+                <li class="task">{{>taskItemWorkboard}}</li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </div>
+        <div class="done col-sm-3">
+            {{#if taskList _id 'done'}}
+            <ul data-status="done">
+                {{#each taskList _id 'done'}}
+                <li class="task">{{>taskItemWorkboard}}</li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+
 <template name="workBoardProgressBar">
-    <h5>Task distribution:</h5>
     <div class="progress">
-        <div class="progress-bar progress-bar-danger" style="width: {{progress sprint._id 'toDo'}}%">
-            {{progress sprint._id 'toDo'}}% To do
+        {{#each progress}}
+        <div class="progress-bar progress-bar-{{status}}" style="width: {{percent}}%">
+            <span class="">{{value}}</span>
         </div>
-        <div class="progress-bar progress-bar-warning" style="background-color: #f0ad4e; width: {{progress sprint._id 'inProgress'}}%">
-            {{progress sprint._id 'inProgress'}}% In progress
-        </div>
-        <div class="progress-bar progress-bar-success" style="width: {{progress sprint._id 'done'}}%">
-            {{progress sprint._id 'done'}}% Done
+        {{/each}}
+    </div>
+</template>
+
+<template name="workboardSprintDropdown">
+    <div class="input-group">
+        <select class="container form-control">
+            {{#each options}}
+            <option {{selectedIfEq value ../params.sprint_iid}} value="{{value}}">{{name}}{{status_str}}</option>
+            {{/each}}
+        </select>
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                {{#if ../sprint.isBacklog}}
+                <li class="disabled"><a href="#">Edit</a></li>
+                {{else}}
+                <li><a class="edit-sprint" href="#">Edit</a></li>
+                {{/if}}
+                <li class="divider"></li>
+                
+                <li class="dropdown-header">GitLab</li>
+                <li><a class="open-project" href="{{project.gitlab.web_url}}" target="_blank">View project</a></li>
+                {{#if ../sprint.isBacklog}}
+                <li><a class="open-project" href="{{project.gitlab.web_url}}/issues" target="_blank">View issues</a></li>
+                {{else}}
+                <li><a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">View milestone</a></li>
+                {{/if}}
+                {{!--
+                <li class="divider"></li>
+                <li class="disabled"><a class="new-issue" href="#">New Issue</a></li>
+                <li class="disabled"><a class="new-sprint" href="#">New Sprint</a></li>
+                --}}
+            </ul>
         </div>
     </div>
 </template>

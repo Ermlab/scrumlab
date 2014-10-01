@@ -9,7 +9,7 @@ Template.workBoard.startableSprints = function () {
             {
                 status: 'inPlanning'
             },
-            
+
         ]
     }, {
         sort: {
@@ -17,7 +17,7 @@ Template.workBoard.startableSprints = function () {
         }
     });
 }
-            
+
 Template.workBoard.events({
     'click .start-sprint': function (e) {
         Sprints.update(this._id, {
@@ -31,125 +31,71 @@ Template.workBoard.events({
             template: 'modalEditSprint',
             data: this.project._id + ""
         });
-    }, 
+    },
+    'click .edit-sprint': function (e) {
+        Session.set('editSprint', this.sprint.gitlab.iid);
+        Session.set('modal', {
+            template: 'modalEditSprint',
+            data: 'editSprint'
+        });
+    },
+    'click .plan-sprint': function (e) {
+        Session.set('rightIssuesPanel','backlog');
+        Session.set('rightIssuesPanel', this.sprint.gitlab.iid);
+        Router.go('planBoard', {id:this.project._id});
+    }
 });
 
-Template.workBoard.rendered = function () {
-    Meteor.setTimeout(function () {
-        $(".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3").sortable({
-            stop: function (event, ui) {
-                // Check if task was moved to another issue
-                var issueId = ui.item.attr("issueId");
-                var parentId = ui.item.parent().attr("id");
-                if (issueId != parentId) {
-                    event.preventDefault();
-                } else {
-                    var selfId = ui.item.attr("id");
-                    var parentType = ui.item.parent().attr("class").split(' ')[0];
-                    var actualState = Tasks.findOne({
-                        _id: selfId
-                    }).status;
-                    var avatar = Meteor.user().gitlab.avatar_url;
-                    var username = Meteor.user().gitlab.username;
-                    if (parentType == 'inprogress') parentType = 'inProgress';
-                    else if (parentType == 'todo') parentType = 'toDo';
-                    if (actualState != parentType) {
-                        Tasks.update(selfId, {
-                            $set: {
-                                'status': parentType,
-                                'user_avatar': avatar,
-                                'username': username
-                            }
-                        });
-                        if (parentType == 'toDo') {
-                            Tasks.update(selfId, {
-                                $unset: {
-                                    'user_avatar': '',
-                                    'username': ''
-                                }
-                            });
-                        }
-                        ui.item.remove();
-                        if (parentType == 'done') {
-                            // Check if all tasks are done
-                            var tasks = Tasks.find({
-                                $and: [{
-                                    issue_id: issueId
-                                }, {
-                                    $or: [{
-                                        status: 'inProgress'
-                                }, {
-                                        status: 'toDo'
-                                }]
-                                }]
-                            }).fetch();
-                            if (tasks.length == 0) {
-                                Issues.update(issueId, {
-                                    $set: {
-                                        'gitlab.state': 'closed',
-                                        'closed_at': Date()
-                                    }
-                                });
-                                var issue = Issues.findOne(issueId);
-                                var updateObject = {
-                                    'id': issue.gitlab.project_id,
-                                    'issue_id': issue.gitlab.id,
-                                    'state_event': 'close'
-                                }
-                                Meteor.call('editIssue', updateObject);
-                            }
-                        } else {
-                            Issues.update(issueId, {
-                                $set: {
-                                    'gitlab.state': 'opened'
-                                }
-                            });
-                            var issue = Issues.findOne(issueId);
-                            var updateObject = {
-                                'id': issue.gitlab.project_id,
-                                'issue_id': issue.gitlab.id,
-                                'state_event': 'reopen'
-                            }
-                            Meteor.call('editIssue', updateObject);
-                        }
-                    }
-                };
-            },
-            delay: '100',
-            opacity: '0.7',
-            connectWith: ".todo.col-md-3, .inprogress.col-md-3, .done.col-md-3",
-            cancel: ".footer, :input, button, [contenteditable]",
-            placeholder: "placeholder"
-        })
-    }, 500);
-}
-
 Template.workBoardProgressBar.helpers({
-    'progress': function (sprintId, status) {
-        var issueIds = _.pluck(Issues.find({
-            sprint: sprintId
-        }).fetch(), '_id');
-        var taskCount = Tasks.find({
-            $and: [{
-                'issue_id': {
-                    $in: issueIds
-                }
-            }, {
-                'status': status
-            }]
-        }).fetch().length;
-        var totalCount = Tasks.find({
+    progress: function () {
+        //var sprintId = this.sprint.gitlab.d;
+
+        var issues = this.issues.fetch();
+        var issue_ids = [];
+        for (var i = 0; i < issues.length; i++) {
+            issue_ids.push(issues[i]._id);
+        }
+
+        var totals = {
+            toDo: 0,
+            inProgress: 0,
+            done: 0
+        };
+
+        var tasks = Tasks.find({
             'issue_id': {
-                $in: issueIds
+                $in: issue_ids
             }
-        }).fetch().length;
-        var output = (taskCount / totalCount) * 100;
-        return Math.floor(output * 10) / 10;
+        }).fetch();
+
+        for (var i = 0; i < tasks.length; i++) {
+            if (tasks[i].estimation) {
+                totals[tasks[i].status] += tasks[i].estimation * 1;
+            }
+        }
+        var total = totals.toDo + totals.inProgress + totals.done;
+        toDoPercent = Math.round(100 * totals.toDo / total);
+        inProgressPercent = Math.round(100 * totals.inProgress / total);
+        donePercent = 100 - toDoPercent - inProgressPercent;
+        return [{
+            status: 'danger',
+            value: totals.toDo,
+            percent: toDoPercent,
+        }, {
+            status: 'warning',
+            value: totals.inProgress,
+            percent: inProgressPercent,
+        }, {
+            status: 'success',
+            value: totals.done,
+            percent: donePercent
+        }];
+
     }
 });
 
 Template.workBoard.helpers({
-    'taskList': function (issueId, status) {
+    taskList: function (issueId, status) {
         return Tasks.find({
             $and: [{
                 'issue_id': issueId
@@ -159,7 +105,26 @@ Template.workBoard.helpers({
         });
     },
 
-    'sprintStats': function (sprintId) {
+    daysLeft: function () {
+        if (this.sprint && this.sprint.gitlab.due_date) {
+            var now = moment();
+            var end = moment(this.sprint.gitlab.due_date);
+            var diff = end.diff(now, 'days');
+
+            if (diff < 0) {
+                return {
+                    status: 'late',
+                    text: "{0} days overdue".format(-diff)
+                }
+            } else {
+                return {
+                    text: "{0} days left".format(diff)
+                }
+            }
+        }
+    },
+
+    sprintStats: function (sprintId) {
         var unestimated = Issues.find({
             $and: [{
                 sprint: sprintId
@@ -210,5 +175,132 @@ Template.workBoard.helpers({
             return sum + parseInt(val);
         }, 0);
         return totalTime + ' hours in  ' + totalStories + ' stories (' + unestimated.length + ' unestimated) - ' + doneStories + ' stories closed (' + ~~(doneTime / totalTime * 100) + '% sprint completion)';
+    },
+
+    numberOfIssues: function () {
+        if (this.issues) {
+            return this.issues.count();
+        }
+    },
+
+    sprintSize: function () {
+        var total = 0;
+
+        if (this.issues) {
+            var issues = this.issues.fetch();
+            var issue_ids = [];
+            for (var i = 0; i < issues.length; i++) {
+                issue_ids.push(issues[i]._id);
+            }
+
+            var tasks = Tasks.find({
+                'issue_id': {
+                    $in: issue_ids
+                }
+            }).fetch();
+
+            for (var i = 0; i < tasks.length; i++) {
+                if (tasks[i].estimation) {
+                    total += tasks[i].estimation * 1;
+                }
+            }
+            return total;
+        }
+    }
+});
+
+
+Template.workBoardRow.helpers({
+    taskList: function (issueId, status) {
+        return Tasks.find({
+            $and: [{
+                'issue_id': issueId
+                }, {
+                'status': status
+            }]
+        });
+    },
+});
+
+Template.workBoardRow.rendered = function () {
+    OnElementReady("#issue-" + this.data._id, function (selector) {
+        $(selector + " ul").sortable({
+            delay: '100',
+            opacity: '0.7',
+            connectWith: selector + " ul",
+            cancel: ".footer, :input, button",
+            placeholder: "placeholder",
+            stop: function (event, ui) {
+                var taskId = $('.task-workboard', ui.item).attr('data-id');
+                var task = Tasks.findOne(taskId);
+                console.log(task);
+                var newStatus = ui.item.parent().attr('data-status');
+                if (task.status != newStatus) {
+
+                    if (newStatus == 'toDo') {
+                        Tasks.update(taskId, {
+                            $set: {
+                                status: newStatus
+                            },
+                            $unset: {
+                                assignee: ''
+                            }
+                        });
+                    } else {
+                        Tasks.update(taskId, {
+                            $set: {
+                                status: newStatus,
+                                assignee: Meteor.userId()
+                            }
+                        });
+
+                        if (newStatus == 'done') {
+                            // Check if all tasks are done
+                            var tasks = Tasks.find({
+                                $and: [{
+                                    issue_id: task.issue_id
+                                }, {
+                                    $or: [{
+                                        status: 'inProgress'
+                                }, {
+                                        status: 'toDo'
+                                }]
+                                }]
+                            }).fetch();
+                            if (tasks.length == 0) {
+                                Issues.update(task.issue_id, {
+                                    $set: {
+                                        'gitlab.state': 'closed',
+                                        'closed_at': new Date()
+                                    }
+                                });
+                                var issue = Issues.findOne(task.issue_id);
+                                Meteor.call('pushIssue', task.issue_id, 'close');
+                            }
+                        } else {
+                            Issues.update(task.issue_id, {
+                                $set: {
+                                    'gitlab.state': 'opened'
+                                }
+                            });
+                            var issue = Issues.findOne(task.issue_id);
+                            Meteor.call('pushIssue', task.issue_id, 'reopen');
+                        }
+                    }
+                }
+            },
+
+        });
+    });
+}
+
+Template.workboardSprintDropdown.options = function () {
+    var sprints = Sprints.find().fetch();
+    return SprintSelectOptions(sprints);
+}
+
+Template.workboardSprintDropdown.events({
+    'change select': function (e) {
+        Session.set('workboardSprint', $(e.target).val() * 1);
     }
 });

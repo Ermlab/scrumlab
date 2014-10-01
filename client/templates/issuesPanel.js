@@ -248,12 +248,17 @@ Template.issuesPanelDropdown.events({
     },
 
     'click .new-sprint': function (e) {
-        console.log('new sprint in', this.context.project._id);
         Session.set('modal', {
             template: 'modalEditSprint',
             data: this.context.project._id + ""
         });
         Session.set("newSprintTarget", this.name + 'IssuesPanel');
+    },
+    
+    'click .work-sprint': function (e) {
+        var iid = Session.get(this.name + 'IssuesPanel');
+        Session.set('workboardSprint', iid);
+        Router.go('workBoard', {id: this.context.project._id});
     },
 
     'change select.container': function (e) {

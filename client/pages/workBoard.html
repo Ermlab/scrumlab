@@ -129,8 +129,10 @@
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 {{#if ../sprint.isBacklog}}
+                <li class="disabled"><a href="#">Open Planboard</a></li>
                 <li class="disabled"><a href="#">Edit</a></li>
                 {{else}}
+                <li class="plan-sprint"><a href="#">Open Planboard</a></li>
                 <li><a class="edit-sprint" href="#">Edit</a></li>
                 {{/if}}
                 <li class="divider"></li>

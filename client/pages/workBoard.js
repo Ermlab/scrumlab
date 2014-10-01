@@ -39,6 +39,11 @@ Template.workBoard.events({
             data: 'editSprint'
         });
     },
+    'click .plan-sprint': function (e) {
+        Session.set('rightIssuesPanel','backlog');
+        Session.set('rightIssuesPanel', this.sprint.gitlab.iid);
+        Router.go('planBoard', {id:this.project._id});
+    }
 });
 
 Template.workBoardProgressBar.helpers({

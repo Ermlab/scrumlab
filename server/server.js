@@ -709,7 +709,8 @@ Server = {
             if (CheckDate(spr.endDate) === false) {
                 Sprints.update(spr._id, {
                     $set: {
-                        'status': 'finished'
+                        'status': 'finished',
+                        'closedAt': CurrDate
                     }
                 });
             }

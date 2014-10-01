@@ -54,7 +54,6 @@ Template.modalEditSprint.canAbortSprint = function (sprint) {
 
 Template.modalEditSprint.events({
     'change input, change textarea': function (e) {
-        console.log("changed");
         if (this.isNew === true) {
             // do nothing if this is a new sprint
             return;
@@ -80,7 +79,6 @@ Template.modalEditSprint.events({
     },
 
     'click .start-sprint': function (e) {
-        console.log("click ss");
         e.preventDefault();
         Sprints.update(this._id, {
             $set: {
@@ -91,7 +89,6 @@ Template.modalEditSprint.events({
     },
 
     'click .complete-sprint': function (e) {
-        console.log("click cs");
         e.preventDefault();
         Sprints.update(this._id, {
             $set: {
@@ -113,7 +110,6 @@ Template.modalEditSprint.events({
 
     'submit form': function (e) {
         e.preventDefault();
-        console.log('submit');
 
         // form was sumbitted for existing sprint
         if (this._id) {

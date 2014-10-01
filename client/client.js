@@ -14,7 +14,6 @@ Meteor.startup(function () {
                 $(selector).modal('show');
                 $(selector).on('shown.bs.modal', function (e) {
                     $('[name]:first', selector).focus();
-                    console.log('shown', e);
                 });
                 $(selector).on('hide.bs.modal', function (e) {
                     Session.set("modal", undefined);
@@ -42,14 +41,6 @@ Meteor.loginWithGitlabAccount = function (email, password, serverUrl, callback) 
     });
 };
 
-
-//helper function for showing things (objects etc.) in broweser console, 
-//it can be used in templates: {{ conlog user}}
-Handlebars.registerHelper('conlog', function (thing) {
-
-    console.log("Template log:");
-    console.log(thing);
-});
 
 
 Client = {

@@ -233,7 +233,6 @@ Template.workBoardRow.rendered = function () {
             stop: function (event, ui) {
                 var taskId = $('.task-workboard', ui.item).attr('data-id');
                 var task = Tasks.findOne(taskId);
-                console.log(task);
                 var newStatus = ui.item.parent().attr('data-status');
                 if (task.status != newStatus) {
 

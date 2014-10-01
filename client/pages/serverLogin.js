@@ -1,5 +1,4 @@
 Template.serverLogin.errorMessage = function () {
-    console.log('err msg',Session.get('loginErrorMessage'));
     return Session.get('loginErrorMessage');
 };
 

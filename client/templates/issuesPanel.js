@@ -16,7 +16,6 @@ Template.issuesPanel.panelStats = function (sprintId) {
     var sprint = Sprints.findOne(sprintId);
     if (sprint) {
         // sprint
-        console.log(sprint.gitlab.id);
         var issues = Issues.find({
             'gitlab.milestone.id': sprint.gitlab.id
         }).fetch();
@@ -30,7 +29,6 @@ Template.issuesPanel.panelStats = function (sprintId) {
     }
 
     for (var i = 0; i < issues.length; i++) {
-        console.log(i);
         var total = 0;
         var tasks = Tasks.find({
             issue_id: issues[i]._id
@@ -120,8 +118,6 @@ Template.issuesPanel.rendered = function () {
             revert: 50,
 
             start: function (event, ui) {
-                console.log('start');
-                //console.log(ui.item.parents('.issues-panel').attr('data-name'));
                 var issueId = $('.issue', ui.item).attr('data-id');
                 $('.issues-panel').each(function () {
                     var search = $(this).find(ui.item);
@@ -132,7 +128,6 @@ Template.issuesPanel.rendered = function () {
                 });
             },
             stop: function (event, ui) {
-                console.log('stop');
                 var srcPanel = $(this).parents('.issues-panel')[0];
                 var dstPanel = $(ui.item[0]).parents('.issues-panel')[0];
 
@@ -160,9 +155,7 @@ Template.issuesPanel.rendered = function () {
 
                 if (srcPanel == dstPanel) {
                     // Issue moved inside one panels
-                    console.log("moved in the same panel");
                 } else {
-                    console.log("moved between panels");
                     // Issue moved between 2 panels
                     if ($(srcPanel).attr('data-id') == $(dstPanel).attr('data-id')) {
                         // both panels display the same sprint
@@ -170,11 +163,8 @@ Template.issuesPanel.rendered = function () {
                         // move original issue b back to the source panel but in a correct position
                         if (predecessor === undefined) {
                             // new item is first on the list
-                            console.log('insert at the begg');
                             $(this).prepend(ui.item);
                         } else {
-                            console.log($('.issue[data-id={0}]'.format(predecessor), this));
-                            console.log(ui.item);
                             $('.issue[data-id={0}]'.format(predecessor), this).parent().after(ui.item);
                         }
                     }
@@ -185,7 +175,6 @@ Template.issuesPanel.rendered = function () {
 
                 if (sprint) {
                     // Add issue to sprint
-                    console.log("adding to sprint ", issueId, sprint.gitlab.title);
                     Issues.update(issue._id, {
                         $set: {
                             'gitlab.milestone': {
@@ -198,7 +187,6 @@ Template.issuesPanel.rendered = function () {
 
                 } else {
                     // Remove issue from sprint
-                    console.log("removing from sprint ", issueId);
                     Issues.update(issueId, {
                         $unset: {
                             'gitlab.milestone.id': "",

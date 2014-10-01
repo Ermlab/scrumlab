@@ -9,7 +9,6 @@ var rendered = function (self) {
             unsavedclass: null,
             success: function (response, value) {
                 var options = $(this).data().editable.options;
-                console.log(value);
                 if (options.collection && options.id && options.field) {
                     var update = {};
                     update[options.field] = value;

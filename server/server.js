@@ -29,13 +29,6 @@ Server = {
             }
         };
         HTTP.post(postUrl, postObject, function (error, result) {
-            /*
-            console.log("POST response from gitlab server. error,data:", {
-                eror: error,
-                result: result
-            });
-            */
-
             if (error) {
                 if (error.code) {
                     future.return({
@@ -68,6 +61,7 @@ Server = {
     },
 
     createIssue: function (issue) {
+        logger.info("Creating issue", issue);
         // Create issue at GitLab server
         /*
         id (required) - The ID of a project
@@ -104,32 +98,16 @@ Server = {
 
         api.issues.create(issue.gitlabProjectId, gitlabIssue, function (glIssue) {
             Fiber(function () {
-                console.log("After creation of issue ", glIssue);
-
-
-                /* var new_issue = {
-                    'project_id': projectId, //mongo project_id
-                    'gitlab': glIssue,
-                    'origin': api.options.origin,
-                    'estimation': issue.
-                    'created_at': issue.created_at
-                };*/
-
+                logger.info("Gitlab server created issue", glIssue);
 
                 var new_issue = BuildAnIssue(issue, glIssue);
 
-                console.log('issue on server \n', new_issue);
+                logger.info("Inserting issue to Mongo", new_issue);
 
-                var output = Issues.insert(new_issue);
-                // Add placeholder task
-                Tasks.insert({
-                    'project_id': new_issue.project_id,
-                    'issue_id': output,
-                    'name': new_issue.gitlab.title,
-                    'status': 'toDo',
-                    'placeholder': true
-                });
-                return output;
+                var issueId = Issues.insert(new_issue);
+                AddPlaceholderTaskToIssue(issueId);
+                
+                return issueId;
 
             }).run(); //end fiber
 
@@ -138,6 +116,7 @@ Server = {
     }, //end issue create
 
     editIssue: function (updateObject) {
+        logger.info("Editing issue", updateObject);
         // Edit issue at GitLab server
         /*
         id (required) - The ID of a project
@@ -153,7 +132,7 @@ Server = {
         if (!user) {
             return;
         }
-        console.dir(updateObject);
+        
         var server = GitlabServers.findOne(user.origin);
         var api = Server.getGitlabApi({
             url: server.url,
@@ -161,7 +140,7 @@ Server = {
             origin: server._id
         });
         api.issues.edit(updateObject.id, updateObject.issue_id, updateObject, function (data) {
-            console.log("After editing issue ", data);
+            logger.info("Gitlab server updated issue", data);
         });
     },
 
@@ -171,6 +150,8 @@ Server = {
         if (!user) {
             return;
         }
+        
+        logger.info('Refreshing projects for user', user);
 
         var server = GitlabServers.findOne(user.origin);
         var api = Server.getGitlabApi({
@@ -181,16 +162,11 @@ Server = {
 
         //we fetch user projects, and execute callback
         Server.fetchProjects(api, function (ids) {
-
-            console.log('ref proj:', ids);
-
             Meteor.users.update(user._id, {
                 $set: {
                     project_ids: ids
                 }
             });
-
-
             _.each(ids, function (id) {
                 // TODO: refactor, issues should be fetched when project is activated
                 Server.fetchProjectIssues(api, id);
@@ -214,17 +190,10 @@ Server = {
 
                     if (existingUser !== undefined) {
 
-                        /* console.log("!!!Existing\ n ",existingUser.gitlab);                    
-                        console.log("
-                from gitlab\ n ",users[i]);*/
-
-
                         //we extend existed user by the new information which comes from gitlab
                         //the fields in existing user are overwritten by the gitlab users[i], fields
                         //that didn't appear in gitlab user object stay untouched
                         var usrUpdated = _.extend(existingUser.gitlab, users[i]);
-
-                        //console.log("merged\ n ",usrUpdated);
 
                         Meteor.users.update(existingUser._id, {
                             $set: {
@@ -232,15 +201,6 @@ Server = {
                                 'gitlab': usrUpdated,
                             }
                         });
-
-                        //todo: gitlab object is overwritten, possible data loss!
-                        //use _.extend method form underscore.js
-                        /*Meteor.users.update(existingUser._id, {
-                            $set: {
-                                'username': users[i].username,
-                                'gitlab': users[i],
-                            }
-                        });*/
 
                     } else {
                         Meteor.users.insert({
@@ -260,7 +220,7 @@ Server = {
         api.projects.all(function (projects) {
             var allProjectIds = [];
             Fiber(function () {
-                console.log('Projects: ' + projects.length);
+                logger.info('fetched projects from gitlab server: ' + projects.length);
                 for (var i = 0; i < projects.length; i++) {
                     // Check if project already exists, then update or insert
                     var existingProject = Projects.findOne({

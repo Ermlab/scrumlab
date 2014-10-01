@@ -21,9 +21,10 @@
                     </datalist>
                 </p>
                 <input type="submit" class="btn btn-success" tabindex="5" value="Sign in">
+                {{#if errorMessage}}
                 <span class="message error-message"><span class="glyphicon glyphicon-exclamation-sign"></span> {{errorMessage}}</span>
+                {{/if}}
             </form>
-            {{#if errorMessage}} {{/if}}
         </div>
     </div>
 </template>

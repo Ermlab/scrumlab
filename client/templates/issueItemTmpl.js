@@ -1,6 +1,6 @@
-Template.issueItemTmpl.tasks = function (id) {
+Template.issueItemTmpl.tasks = function () {
     return Tasks.find({
-        issue_id: id
+        issue_id: this._id
     });
 }
 
@@ -20,19 +20,42 @@ Template.issueItemTmpl.helpers({
         if (tasks.length == 0) return true;
         else return false;
     },
-    
+
     'workBoard': function () {
         var board = _.last(document.URL.split('/'));
-        if(board == 'work') return true;
+        if (board == 'work') return true;
         return false;
     }
 });
 
 Template.issueItemTmpl.events = {
+    'focus .inline-edit': function (e) {
+        $(e.target).data('original', $(e.target).text());
+        //$(e.target).selectText();
+    },
+
+    
+    'keydown .inline-edit': function (e) {
+        switch (e.keyCode) {
+            case 13:
+                e.preventDefault();
+                $(e.target).blur();
+                break;
+            case 27:
+                e.preventDefault();
+                $(e.target).text($(e.target).data('original'));
+                $(e.target).blur();
+                break;
+        }
+    },
+    
+
+    /*
     'click .glyphicon-th-list': function (e) {
         e.preventDefault();
         $('#' + e.currentTarget.parentElement.parentElement.getAttribute("id") + ' .collapse').collapse('toggle');
     },
+
 
     'submit form': function (e) {
         e.preventDefault();
@@ -81,11 +104,11 @@ Template.issueItemTmpl.events = {
             });
         }
     },
-    
+
     'click .description.list-group-item-text': function (event) {
         event.currentTarget.setAttribute('contenteditable', true);
     },
-    
+
     'click .title.list-group-item-heading': function (event) {
         event.currentTarget.setAttribute('contenteditable', true);
     },
@@ -159,4 +182,5 @@ Template.issueItemTmpl.events = {
         var newValue = event.currentTarget.innerHTML;
         if (newValue.length == 0) event.currentTarget.innerHTML = ' ';
     }
+    */
 }

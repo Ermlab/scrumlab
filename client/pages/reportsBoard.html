@@ -1,25 +1,44 @@
 <template name="reportsBoard">
-    {{#with project}}
-    <div class="page-header">
-        <h1>{{gitlab.name}} - Reports</h1>
-        Reports board for project: {{ _id }} (Gitlab -<a href="{{gitlab.web_url }}">{{gitlab.name}}</a>)
-    </div>
-    {{/with}}
-
-    <h3>Project Velocity</h3>
-    {{> projectVelocity}}
-
-    <h3>Sprint Burndown</h3>
-    {{> projectBurndown}}
-
+    {{> reportsBoardSprintDropdown }}
+    {{> reportsBoardSprintChart}}
 </template>
 
-<template name="projectVelocity">
-    <div style="position:relative;" class="row">
-        <div id="legend" style="position:absolute; right:40px;"></div>
-        <canvas id="myChart" height="300" width="900"></canvas>
+<template name="reportsBoardSprintChart">
+    <div id="sprintChart" style="position:relative;" class="row">
+        <div class="legend" style="position:absolute; right:40px;"></div>
+        <canvas height="300" width="900"></canvas>
+    </div>
+    {{draw}}
+</template>
+
+<template name="reportsBoardSprintDropdown">
+    <div class="input-group">
+        <select class="container form-control">
+            {{#each options}}
+            <option {{selectedIfEq value selectedSprint}} value="{{value}}">{{name}}{{status_str}}</option>
+            {{/each}}
+        </select>
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                {{!--
+                {{#if ../sprint.isBacklog}}
+                <li class="disabled"><a href="#">Open Planboard</a></li>
+                <li class="disabled"><a href="#">Edit</a></li>
+                {{else}}
+                <li class="plan-sprint"><a href="#">Open Planboard</a></li>
+                <li><a class="edit-sprint" href="#">Edit</a></li>
+                {{/if}}
+                <li class="divider"></li>
+                --}}
+                <li class="dropdown-header">GitLab</li>
+                <li><a class="open-project" href="{{project.gitlab.web_url}}" target="_blank">View project</a></li>
+                <li><a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">View milestone</a></li>
+            </ul>
+        </div>
     </div>
 </template>
+
 
 <template name="projectBurndown">
     <div class="row" style="position:relative;">

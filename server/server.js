@@ -168,7 +168,7 @@ Server = {
             'assignee_id': issue.assignee_id,
             'labels': 'story'
         };
-        
+
         if (issue.sprint) {
             var sprint = Sprints.findOne(issue.sprint);
             if (sprint) {
@@ -204,37 +204,37 @@ Server = {
             if (user === undefined || user.origin != doc.origin) {
                 return new Meteor.Error(403, "Access denied.");
             }
-            
+
             var project = Projects.findOne(doc.project_id);
             var api = Server.getUserApi(user);
 
             var params = {
                 title: doc.gitlab.title,
                 description: doc.gitlab.description,
-                labels: doc.gitlab.labels.join(','), 
+                labels: doc.gitlab.labels.join(','),
                 state: doc.gitlab.state
             }
-            
+
             params.assignee_id = 0;
             if (doc.gitlab.assignee && doc.gitlab.assignee.id) {
                 params.assignee_id = doc.gitlab.assignee.id;
             }
-            
+
             params.milestone_id = 0;
             if (doc.gitlab.milestone && doc.gitlab.milestone.id) {
                 params.milestone_id = doc.gitlab.milestone.id;
             }
-            
+
             if (_.contains(['reopen', 'close'], stateEvent)) {
-                params.state_event = stateEvent;                
+                params.state_event = stateEvent;
             }
-    
+
             api.issues.edit(doc.gitlab.project_id, doc.gitlab.id, params);
         } catch (err) {
             logger.error(err);
             return new Meteor.Error(500, err.message);
         }
-        
+
         // Edit issue at GitLab server
         /*
         id (required) - The ID of a project
@@ -512,7 +512,7 @@ Server = {
                         var changes = {
                             gitlab: milestones[i]
                         };
-                        
+
                         // switch to inPlanning status in milestone has been opened in Gitlab
                         if (milestones[i].state == 'active' && _.contains(['completed', 'aborted'], existingSprint.status)) {
                             changes.status = undefined;
@@ -522,7 +522,7 @@ Server = {
                         if (milestones[i].state == 'closed' && _.contains([undefined, 'inPlanning', 'inProgess'], existingSprint.status)) {
                             changes.status = 'completed';
                         }
-                        
+
                         Sprints.update(existingSprint._id, {
                             $set: changes
                         });
@@ -716,6 +716,40 @@ Server = {
         });
     },
 
+    buildReport: function (projectId) {
+        var sprints = Sprints.find({
+            project_id: projectId
+        }).fetch();
+        var now = moment();
+
+        var report = {};
+
+        var issues = ProjectModel.getIssuesInSprint(projectId, 'backlog');
+        var tasks = IssueModel.getTasksInIssues(issues);
+        report.backlog = TaskModel.getTotalTaskEstimates(tasks);
+
+        for (var i = 0; i < sprints.length; i++) {
+            var issues = ProjectModel.getIssuesInSprint(projectId, sprints[i]._id);
+            var tasks = IssueModel.getTasksInIssues(issues);
+            report[sprints[i].gitlab.iid] = TaskModel.getTotalTaskEstimates(tasks);
+        }
+
+        var field = 'reports.' + now.format('YYYY-MM-DD')
+        var update = {};
+        update[field] = report;
+
+        Projects.update(projectId, {
+            $set: update
+        });
+    },
+
+    buildReports: function () {
+        var projects = Projects.find().fetch();
+        for (var i = 0; i < projects.length; i++) {
+            Server.buildReport(projects[i]._id);
+        }
+    },
+
     getGitlabServerIds: function (email) {
         var users = Meteor.users.find({
             'gitlab.email': email
@@ -742,8 +776,17 @@ Meteor.startup(function () {
         },
         job: Server.sprintFinisher
     });
+    SyncedCron.add({
+        name: 'Building reports',
+        schedule: function (parser) {
+            // parser is a later.parse object
+            return parser.text('at 0:00 am');
+        },
+        job: Server.buildReports
+    });
     SyncedCron.start();
 
     // Run sprint finishing 
     Server.sprintFinisher();
+    Server.buildReports();
 });

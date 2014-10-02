@@ -26,9 +26,11 @@
         <div class="status">
             {{>xeditableImg assigneeOptions}} {{#if statusCheck status 'toDo'}}
             <span class="label label-danger">{{>xeditable estimationOptions}}</span>
-            {{/if}} {{#if statusCheck status 'inProgress'}}
+            {{/if}} 
+            {{#if statusCheck status 'inProgress'}}
             <span class="label label-warning">{{>xeditable estimationOptions}}</span>
-            {{/if}} {{#if statusCheck status 'done'}}
+            {{/if}}
+            {{#if statusCheck status 'done'}}
             <span class="label label-success">{{>xeditable estimationOptions}}</span>
             {{/if}}
         </div>

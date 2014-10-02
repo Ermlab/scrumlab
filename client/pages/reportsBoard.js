@@ -1,9 +1,132 @@
-Template.projectVelocity.rendered = function () {
+var sprintChart;
 
+function getChartData(labels, plannedLine, doneLine) {
+    var data = {
+        labels: labels,
+        datasets: [
+            {
+                label: "Planned",
+                fillColor: "rgba(220,220,220,0.5)",
+                strokeColor: "rgba(220,220,220,0.8)",
+                highlightFill: "rgba(220,220,220,0.75)",
+                highlightStroke: "rgba(220,220,220,1)",
+                data: plannedLine
+                },
+            {
+                label: "Done",
+                fillColor: "rgba(151,187,205,0.5)",
+                strokeColor: "rgba(151,187,205,0.8)",
+                highlightFill: "rgba(151,187,205,0.75)",
+                highlightStroke: "rgba(151,187,205,1)",
+                data: doneLine
+                }
+            ]
+    }
+
+    var options = {
+        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+        scaleBeginAtZero: true,
+
+        //Boolean - Whether grid lines are shown across the chart
+        scaleShowGridLines: true,
+
+        //String - Colour of the grid lines
+        scaleGridLineColor: "rgba(0,0,0,.05)",
+
+        //Number - Width of the grid lines
+        scaleGridLineWidth: 1,
+
+        //Boolean - If there is a stroke on each bar
+        barShowStroke: true,
+
+        //Number - Pixel width of the bar stroke
+        barStrokeWidth: 1,
+
+        responsive: true,
+
+        //Number - Spacing between each of the X value sets
+        barValueSpacing: 5,
+
+        //Number - Spacing between data sets within X values
+        barDatasetSpacing: 0,
+
+        //String - A legend template
+        legendTemplate: "<span style=\"background-color: rgba(220,220,220,0.5); width: 100px;height: 20px;display: block;font-family: &quot;Helvetica Neue&quot;;color: #666;text-align: center;\">Planned</span><span style=\"background-color:rgba(151,187,205,0.5); width: 100px;height: 20px;display: block;font-family: &quot;Helvetica Neue&quot;;color: #666;text-align: center;\">Done</span>"
+    };
+
+    return {
+        data: data,
+        options: options
+    }
+}
+
+Template.reportsBoardSprintChart.draw = function () {
+    
+    if (this.project && this.project.reports) {
+        var reports = this.project.reports;
+        var sprintIid = Session.get('reportsSprint') || 'backlog';
+        var due_date;
+        var sprint = Sprints.findOne({
+            project_id: this.project._id,
+            'gitlab.iid': sprintIid
+        });
+        var startDate = sprint ? sprint.start_date : undefined;
+        var endDate = sprint ? sprint.gitlab.due_date : undefined;
+        var startMoment = moment(startDate || 0);
+        var endMoment = moment(endDate);
+        
+        //console.log(startMoment.toString(), endMoment.toString());
+        
+        
+
+        OnElementReady('#sprintChart', function (selector) {
+            var plannedLine = [];
+            var doneLine = [];
+            var labels = [];
+
+            _.each(reports, function (data, key) {
+                labels.push(key);
+                var total = data[sprintIid].total;
+                doneLine.push(total - data[sprintIid].done);
+                plannedLine.push(total);
+            });
+
+            var chart = getChartData(labels, plannedLine, doneLine);
+
+            var ctx = $(selector + ' canvas')[0].getContext("2d");
+            if (sprintChart) {
+                sprintChart.destroy();
+            }
+            sprintChart = new Chart(ctx).Bar(chart.data, chart.options);
+            var legend = sprintChart.generateLegend();
+            $(selector + '.legend').html(legend);
+        });
+    }
+}
+
+Template.reportsBoardSprintDropdown.options = function () {
+    var sprints = Sprints.find().fetch();
+    return SprintSelectOptions(sprints);
+}
+
+Template.reportsBoardSprintDropdown.selectedSprint = function () {
+    return Session.get('reportsSprint');
+}
+
+Template.reportsBoardSprintDropdown.events({
+    'change select': function (e) {
+        Session.set('reportsSprint', $(e.target).val() * 1);
+    }
+});
+
+
+
+/*
+
+Template.projectVelocity.rendered = function () {}
+
+/*
     Meteor.setTimeout(function () {
-
-            var sprints = Sprints.find().fetch();
-
             var data = {
                 labels: [],
                 datasets: [
@@ -14,7 +137,7 @@ Template.projectVelocity.rendered = function () {
                         highlightFill: "rgba(220,220,220,0.75)",
                         highlightStroke: "rgba(220,220,220,1)",
                         data: []
-        },
+            },
                     {
                         label: "Done",
                         fillColor: "rgba(151,187,205,0.5)",
@@ -23,9 +146,9 @@ Template.projectVelocity.rendered = function () {
                         highlightStroke: "rgba(151,187,205,1)",
                         data: []
         }]
-            }
+            };
 
-            totalTimeProject = 0;
+            var totalTimeProject = 0;
 
             _.each(sprints, function (spr) {
 
@@ -36,6 +159,7 @@ Template.projectVelocity.rendered = function () {
                     sprint: spr._id
 
                 }).fetch();
+                console.log('issues',issues);
 
                 var closed = Issues.find({
                     $and: [{
@@ -53,19 +177,25 @@ Template.projectVelocity.rendered = function () {
             }]
 
                 }).fetch();
+                console.log('closed',closed);
 
                 var totalTime = _.reduce(_.pluck(issues, 'estimation'), function (sum, val) {
                     return sum + parseInt(val);
                 }, 0);
 
+                // sumowanie czasu dla wszystkich issues
                 totalTimeProject += totalTime;
 
+                // sumowanie czasu wszystkich skonczonych
                 var doneTime = _.reduce(_.pluck(closed, 'estimation'), function (sum, val) {
                     return sum + parseInt(val);
                 }, 0);
 
                 var sprintName = spr.name;
 
+                // pierwszy punkt zaczepienia - calkowita liczba godzin w sprincie
+                // data.datasets[0] - planned
+                // data.datasets[1] - done
                 data.datasets[0].data.push(totalTime);
 
                 if (!(_.contains(data.labels, sprintName))) {
@@ -74,7 +204,7 @@ Template.projectVelocity.rendered = function () {
 
                 data.datasets[1].data.push(doneTime);
 
-            })
+            });
 
             var options = {
                 //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
@@ -319,3 +449,4 @@ Template.projectVelocity.rendered = function () {
         500)
 
 }
+*/

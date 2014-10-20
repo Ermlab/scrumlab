@@ -21,4 +21,5 @@ iron:router
 zimme:iron-router-active
 mrt:moment
 mrt:chartjs
+meteorhacks:kadira
 

@@ -15,6 +15,7 @@ ctl@1.0.1
 ddp@1.0.9
 deps@1.0.4
 ejson@1.0.3
+email@1.0.3
 ermlab:gitlab@0.1.1
 ermlab:log4js-silos@0.1.7
 fastclick@1.0.0
@@ -37,10 +38,14 @@ localstorage@1.0.0
 logging@1.0.3
 meteor-platform@1.1.1
 meteor@1.1.1
+meteorhacks:kadira-binary-deps@1.2.0
+meteorhacks:kadira@2.11.13
+meteorhacks:meteorx@1.2.0
 minifiers@1.1.0
 minimongo@1.0.3
 mizzao:bootstrap-3@3.2.0
 mobile-status-bar@1.0.0
+mongo-livedata@1.0.5
 mongo@1.0.6
 mrt:chartjs@0.0.6
 mrt:jquery-ui@1.9.2

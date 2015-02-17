@@ -89,7 +89,7 @@ Template.taskItemWorkboard.helpers({
             type: 'select',
             source: members,
             title: 'Assignee',
-            value: task.assignee,
+            value: 'wacek', /* task.assignee, */
             container: 'body',
             display: function (value, sourceData) {
                 if (sourceData) {

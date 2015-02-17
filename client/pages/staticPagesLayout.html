@@ -76,9 +76,11 @@
                 <div class='jumbotron'>
                     <h2 id='mainTitle'>Gitlab integrated scrum project managment tool</h2>
                     <p>Scrumlab introduce a scrum methodology into gitlab</p>
+                    {{#if currentUser}} {{else}}
                     <p>
                         <a class="btn btn-primary btn-lg" role="button" href="{{ pathFor 'serverLogin' }}">Sign in</a>
                     </p>
+                    {{/if}}
                 </div>
             </div>
             <img class='col-md-2' src='/img/screen.png' style='width:500px; padding:20px;'>
@@ -146,4 +148,3 @@
 
     </div>
 </template>
-

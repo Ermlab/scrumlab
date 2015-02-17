@@ -44,7 +44,7 @@ Template.serverLogin.events = {
             if (error) {
                 Session.set('loginErrorMessage', error.reason);
             } else {
-                Router.go('home');
+                Router.go('settingsProjects');
             }
         });
     },

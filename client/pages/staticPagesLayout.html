@@ -2,9 +2,9 @@
     <!-- Used with datepicker control in Sprints -->
     <link type="text/css" rel="Stylesheet" href="http://ajax.microsoft.com/ajax/jquery.ui/1.8.6/themes/smoothness/jquery-ui.css" />{{> connectionStatus}}
 
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+   <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
+           
             <div class="navbar-header ">
                 <button type="button " class="navbar-toggle " data-toggle="collapse " data-target=".navbar-collapse">
                     <span class="sr-only ">Toggle navigation</span>
@@ -14,9 +14,7 @@
                 </button>
 
                 <a class="navbar-brand" href="#">Scrumlab</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
+            </div>           
             <div class="navbar-collapse collapse in">
                 <ul class="nav navbar-nav">
                     <li class="{{ isActiveRoute '^home$' }}">
@@ -27,7 +25,6 @@
                     <li class="dropdown">
                         {{> navProjectsList}}
                     </li>
-
 
                     {{#if isActivePath 'project\/' }}
 
@@ -43,7 +40,12 @@
                         <a href="{{ pathFor 'reportsBoard' id=project._id }}">Reports</a>
                     </li>
 
-                    {{/if}} {{else}}
+                    <li class="sync">
+                        <a href="#" class="fa fa-refresh" title="Sync with gitlab"></a>
+                    </li>
+
+
+                    {{/if}} <!--{{else}}
                     <li class="{{ isActiveRoute '^serverLogin$' }}">
                         <a href="{{ pathFor 'pricing' }}">Pricing</a>
                     </li>
@@ -52,7 +54,7 @@
                     </li>
                     <li class="{{ isActiveRoute '^serverLogin$' }}">
                         <a href="{{ pathFor 'about' }}">About</a>
-                    </li>
+                    </li>-->
                     {{/if}}
                 </ul>
 
@@ -70,10 +72,10 @@
 
     <div>
 
-        <div class='row' style='background-color:#eee; margin-bottom: 20px;'>
+        <div class='row' style='background-color:#fff; margin-bottom: 20px;'>
             <div class='col-md-2'></div>
             <div class='col-md-4'>
-                <div class='jumbotron'>
+                <div class='jumbotron' style='background-color:#fff;'>
                     <h2 id='mainTitle'>Gitlab integrated scrum project managment tool</h2>
                     <p>Scrumlab introduce a scrum methodology into gitlab</p>
                     {{#if currentUser}} {{else}}
@@ -87,7 +89,7 @@
             <div class='col-md-2 '></div>
         </div>
 
-        <div class='row ' style='margin-bottom: 20px;'>
+      <!--  <div class='row ' style='margin-bottom: 20px;'>
             <div class='col-md-2 '></div>
             <div class='col-md-3 '>
                 <h3 id='mainTitle'>Realtime</h3>
@@ -102,17 +104,17 @@
                 <p>Functionality of scrum was implemented.</p>
             </div>
             <div class='col-md-2 '></div>
-        </div>
+        </div>-->
 
-        <div class='row ' style='background-color:#eee; margin-bottom: 20px;'>
+       <!-- <div class='row ' style='background-color:#eee; margin-bottom: 20px;'>
             <div class='col-md-2 '></div>
             <div class='col-md-8 '>
                 <h3 class='text-center' id='mainTitle'>Our clients</h3>
                 <img class='col-md-offset-1 ' src='/img/logos.png '>
             </div>
-        </div>
+        </div>-->
 
-        <div class='row ' style='margin-bottom: 20px;'>
+      <!--  <div class='row ' style='margin-bottom: 20px;'>
             <div class='col-md-2 '></div>
             <div class='col-md-3 '>
                 <blockquote>
@@ -137,7 +139,7 @@
             </div>
             <div class='col-md-2 '></div>
         </div>
-
+-->
         <hr>
 
         <div class="row" style="margin-top: 10px;">

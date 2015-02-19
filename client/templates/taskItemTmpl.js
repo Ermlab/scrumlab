@@ -51,8 +51,8 @@ Template.taskItemTmpl.events = {
 
         // add placeholder task if needed
         if (Tasks.find({
-            issue_id: this.issue_id
-        }).count() == 0) {
+                issue_id: this.issue_id
+            }).count() == 0) {
             AddPlaceholderTaskToIssue(this.issue_id);
         }
     },
@@ -72,6 +72,7 @@ Template.taskItemWorkboard.helpers({
         return nameOptions(this);
     },
     assigneeOptions: function () {
+
         var task = this;
         var users = Meteor.users.find().fetch();
         var members = [ /*{id:'', text: 'not assigned'}*/ ];
@@ -89,39 +90,44 @@ Template.taskItemWorkboard.helpers({
             type: 'select',
             source: members,
             title: 'Assignee',
-            value: 'wacek', /* task.assignee, */
+            value: task.assignee,
             container: 'body',
             display: function (value, sourceData) {
                 if (sourceData) {
                     for (var i = 0; i < sourceData.length; i++) {
                         if (sourceData[i].value == value) {
                             $(this).attr('src', sourceData[i].avatarUrl);
+                            $(this).attr('title', sourceData[i].text);
                             return;
                         }
                     }
                 }
                 $(this).attr('src', "/img/anonymous.png");
+                $(this).attr('title', 'unassigned');
             }
         };
 
     },
 
-    assignee: function () {
-        var user = Meteor.users.findOne(this.assignee);
-        if (user) {
-            return {
-                name: user.gitlab.username,
-                avatarUrl: user.gitlab.avatar_url || "/img/anonymous.png"
-            }
-        } else {
-            return {
-                name: "not assigned",
-                avatarUrl: "/img/anonymous.png"
-            }
-        }
-    },
-});
+    /*    assignee: function () {
+            var user = Meteor.users.findOne(this.assignee);
+            console.log("this assinggge", this.assignee);
+            if (user) {
 
+                return {
+                    name: user.gitlab.username,
+                    avatarUrl: user.gitlab.avatar_url || "/img/anonymous.png"
+
+                }
+            } else {
+                return {
+                    name: "not assigned",
+                    avatarUrl: "/img/anonymous.png"
+                }
+            }
+        },*/
+
+});
 
 Template.taskItemWorkboard.events = {
     'click .delete-task': function (e) {
@@ -129,8 +135,8 @@ Template.taskItemWorkboard.events = {
 
         // add placeholder task if needed
         if (Tasks.find({
-            issue_id: this.issue_id
-        }).count() == 0) {
+                issue_id: this.issue_id
+            }).count() == 0) {
             AddPlaceholderTaskToIssue(this.issue_id);
         }
     },

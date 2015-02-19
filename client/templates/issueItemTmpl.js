@@ -93,11 +93,11 @@ Template.issueItemWorkboard.helpers({
             }
         }
         var total = totals.toDo + totals.inProgress + totals.done;
-        
-        if (total==0) {
+
+        if (total == 0) {
             return;
         }
-        
+
         totals.toDo = Math.round(100 * totals.toDo / total);
         totals.inProgress = Math.round(100 * totals.inProgress / total);
         totals.done = 100 - totals.toDo - totals.inProgress;

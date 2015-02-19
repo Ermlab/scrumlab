@@ -41,7 +41,7 @@ var rendered = function (self) {
 Template.xeditable.rendered = function () {
     rendered(this);
 }
-
+    
 
 Template.xeditableImg.rendered = function () {
     rendered(this);

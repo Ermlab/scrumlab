@@ -3,8 +3,11 @@
         <div class="handler"></div>
         <div class="inner">
             <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">&#35;{{gitlab.iid}}</a>
-            <span class="title">{{>xeditable titleOptions}}</span>
-            <div class="description">{{gitlab.description}}</div>
+            <span class="title">
+                {{>xeditable titleOptions}}</span>
+            <div class="description">
+                {{#markdown}}{{gitlab.description}} {{/markdown}}
+            </div>
             <div class="estimation" title="estimation">{{totalEstimation}}</div>
             <div class="footer">
                 <span class="tasksCount"><i class="fa fa-check-square-o"></i> {{tasksCount}}</span>
@@ -18,15 +21,15 @@
     <div title="{{gitlab.title}}" objectType="issue" class="issue issue-{{gitlab.state}}" data-id={{_id}} state={{gitlab.state}}>
         <div class="inner">
             <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">&#35;{{gitlab.iid}}</a>
-            <span class="title">{{>xeditable titleOptions}}</span>
-            {{#if gitlab.description}}
-            <div class="description">{{gitlab.description}}</div>
+            <span class="title">{{>xeditable titleOptions}}</span> {{#if gitlab.description}}
+            <div class="description">
+                {{#markdown}} {{gitlab.description}} {{/markdown}}
+            </div>
             {{else}}
             <div class="description empty">No description.</div>
             {{/if}}
             <div class="estimation" title="estimation">{{totalEstimation}}</div>
-            {{!-- {{> tasksListTmpl tasks=tasks issue=this}} --}}
-            {{#if progress}}
+            {{!-- {{> tasksListTmpl tasks=tasks issue=this}} --}} {{#if progress}}
             <div class="progress">
                 {{#each progress}}
                 <div class="progress-bar progress-bar-{{status}}" style="width: {{percent}}%">

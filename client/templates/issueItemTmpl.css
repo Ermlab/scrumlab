@@ -53,3 +53,8 @@ div.story:hover {
     color: black;
 }
 */
+
+p > img {
+    vertical-align: middle;
+    width: 300px;
+}

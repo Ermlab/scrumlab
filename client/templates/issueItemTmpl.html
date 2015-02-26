@@ -21,7 +21,7 @@
     <div title="{{gitlab.title}}" objectType="issue" class="issue issue-{{gitlab.state}}" data-id={{_id}} state={{gitlab.state}}>
         <div class="inner">
             <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">&#35;{{gitlab.iid}}</a>
-            <span class="title">{{>xeditable titleOptions}}</span> {{#if gitlab.description}}
+            <h4 class="title">{{>xeditable titleOptions}}</h4> {{#if gitlab.description}}
             <div class="description">
                 {{#markdown}} {{gitlab.description}} {{/markdown}}
             </div>

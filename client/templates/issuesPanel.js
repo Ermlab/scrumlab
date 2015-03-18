@@ -29,6 +29,7 @@ Template.issuesPanel.panelStats = function (sprintId) {
     }
 
     for (var i = 0; i < issues.length; i++) {
+
         var total = 0;
         var tasks = Tasks.find({
             issue_id: issues[i]._id
@@ -39,6 +40,12 @@ Template.issuesPanel.panelStats = function (sprintId) {
                 total += tasks[j].estimation * 1;
             }
         }
+
+
+/*
+
+        console.log("zmienna total" + total);
+*/
 
         if (issues[i].gitlab.state == 'opened') {
             openCount++;
@@ -280,7 +287,7 @@ Template.issuesPanelNewIssue.events({
             gitlabProjectId: gitlabProjectId,
             title: title,
             description: description,
-            estimation: estimation,
+            estimation: estimation
         };
 
         var iid = Session.get(this.name + 'IssuesPanel');

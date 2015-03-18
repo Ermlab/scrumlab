@@ -173,7 +173,8 @@ Server = {
             'title': issue.title,
             'description': issue.description,
             'assignee_id': issue.assignee_id,
-            'labels': 'story'
+            'labels': 'story',
+            'milestone_id': null
         };
 
         if (issue.sprint) {

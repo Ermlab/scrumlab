@@ -27,7 +27,6 @@ function getChartData(labels, plannedLine, doneLine) {
             }
         ]
     }
-
     var options = {
         //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
         scaleBeginAtZero: true,

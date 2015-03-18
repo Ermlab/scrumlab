@@ -108,7 +108,7 @@ Template.modalEditSprint.events({
         Meteor.call('pushSprint', this._id);
     },
 
-    'submit form': function (e) {
+    'submit form': function (e, template) {
         e.preventDefault();
 
         // form was sumbitted for existing sprint
@@ -128,8 +128,12 @@ Template.modalEditSprint.events({
             }
         });
         $('#update-sprint').prop('disabled', true);
+        $('.errorMessage').text('');
+
+        $('#add-sprint').attr("disabled", true);
 
         Meteor.call('createSprint', doc, function (error, result) {
+
             if (result) {
                 // wait until new document arrives to client...
                 var id = Meteor.setInterval(function () {
@@ -144,6 +148,8 @@ Template.modalEditSprint.events({
                     }
                 }, 100);
             } else {
+
+                $('.errorMessage').text(error.reason);
                 $('#update-sprint').prop('disabled', false);
             }
         });

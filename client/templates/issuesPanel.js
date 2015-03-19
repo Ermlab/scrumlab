@@ -38,22 +38,20 @@ Template.issuesPanel.panelStats = function (sprintId) {
         for (var j = 0; j < tasks.length; j++) {
             if (tasks[j].estimation) {
                 total += tasks[j].estimation * 1;
+
             }
+
         }
-
-
-/*
-
-        console.log("zmienna total" + total);
-*/
 
         if (issues[i].gitlab.state == 'opened') {
             openCount++;
+            if(!(isNaN(total)))
             openEstimation += total;
         }
-        
-        totalEstimation += total;
 
+
+        if (!(isNaN(total)))
+            totalEstimation += total;
     }
 
 

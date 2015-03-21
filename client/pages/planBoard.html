@@ -1,5 +1,13 @@
 <template name="planBoard">
     <div class="row">
+        <div class="col-sm-12"><div class="checkbox">
+            <label class="hide-completed">
+                <input type="checkbox" checked="{{showActive}}"/>
+                Show only active Sprints
+            </label>
+        </div></div>
+    </div>
+    <div class="row">
         <div class="col-sm-6">
             {{> issuesPanel context=this name='left'}}
         </div>

@@ -45,8 +45,8 @@ Template.issuesPanel.panelStats = function (sprintId) {
 
         if (issues[i].gitlab.state == 'opened') {
             openCount++;
-            if(!(isNaN(total)))
-            openEstimation += total;
+            if (!(isNaN(total)))
+                openEstimation += total;
         }
 
 
@@ -71,28 +71,28 @@ Template.issuesPanel.issues = function (sprint) {
     };
 
     switch (sprint) {
-    case 'sandbox':
-        return Issues.find({
-            sprint: sprint
-        });
-    case 'backlog':
-        return Issues.find({
-            'gitlab.milestone.iid': {
-                $exists: false
-            },
-            $or: [{
+        case 'sandbox':
+            return Issues.find({
                 sprint: sprint
-            }, {
-                sprint: {
+            });
+        case 'backlog':
+            return Issues.find({
+                'gitlab.milestone.iid': {
                     $exists: false
-                }
-            }]
-        }, sort);
-        break;
-    default:
-        return Issues.find({
-            'gitlab.milestone.iid': sprint * 1
-        }, sort);
+                },
+                $or: [{
+                    sprint: sprint
+                }, {
+                    sprint: {
+                        $exists: false
+                    }
+                }]
+            }, sort);
+            break;
+        default:
+            return Issues.find({
+                'gitlab.milestone.iid': sprint * 1
+            }, sort);
     }
 }
 
@@ -111,6 +111,9 @@ Template.issuesPanel.destroyed = function () {
 };
 
 Template.issuesPanel.rendered = function () {
+
+    Session.set("showActive",null);
+
     OnElementReady('.issues-panel-body', function () {
         resizePanels();
 
@@ -217,12 +220,48 @@ Template.issuesPanel.events({
             template: 'modalEditSprint',
             data: this.name + 'IssuesPanel'
         });
+    },
+
+});
+Template.planBoard.events({
+    'change .hide-completed input' : function (e) {
+        e.preventDefault();
+        Session.set("showActive",e.target.checked);
     }
 });
 
-
 Template.issuesPanelDropdown.options = function () {
-    return _options(this.name);
+    var options = 0;
+    if (Session.get("showActive")) {
+        options = _activeOptions(this.name);
+    }
+    else {
+        options = _options(this.name);
+    }
+
+    return options;
+}
+var _options = function (panel) {
+    var sprints = Sprints.find({
+        'gitlab.state': 'active',
+    }, {
+        sort: {
+            'gitlab.iid': 1,
+        }
+    }).fetch();
+    return SprintSelectOptions(sprints, panel);
+}
+
+var _activeOptions = function (panel) {
+    var sprints = Sprints.find({
+        'gitlab.state': 'active',
+        'status': 'inProgress'
+    }, {
+        sort: {
+            'gitlab.iid': 1,
+        }
+    }).fetch();
+    return SprintSelectOptions(sprints, panel);
 }
 
 Template.issuesPanelDropdown.selectedSprint = function () {
@@ -247,7 +286,7 @@ Template.issuesPanelDropdown.events({
         });
         Session.set("newSprintTarget", this.name + 'IssuesPanel');
     },
-    
+
     'click .work-sprint': function (e) {
         var iid = Session.get(this.name + 'IssuesPanel');
         Session.set('workboardSprint', iid);
@@ -258,7 +297,6 @@ Template.issuesPanelDropdown.events({
         Session.set(this.name + 'IssuesPanel', $(e.target).val());
     }
 });
-
 
 
 Template.issuesPanelNewIssue.events({
@@ -314,19 +352,6 @@ Template.issuesPanelNewIssue.events({
         }
     }
 });
-
-
-
-var _options = function (panel) {
-    var sprints = Sprints.find({
-        'gitlab.state': 'active'
-    }, {
-        sort: {
-            'gitlab.iid': 1
-        }
-    }).fetch();
-    return SprintSelectOptions(sprints, panel);
-}
 
 
 var resizePanels = function () {

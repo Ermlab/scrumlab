@@ -25,7 +25,7 @@ Template.modalEditSprint.sprint = function () {
 }
 
 Template.modalEditSprint.sprintStatus = function () {
-    if (this.status === undefined || this.status === null || this.status === "In planning") {
+    if (this.status === undefined || this.status === null || this.status === "inPlanning") {
         return 'In planning';
     }
     if (this.status == 'inProgress') {
@@ -165,7 +165,7 @@ Template.modalEditSprint.events({
         e.preventDefault();
         Sprints.update(this._id, {
             $set: {
-                status: "In planning"
+                status: "inPlanning"
             }
         });
         Meteor.call('pushSprint', this._id);

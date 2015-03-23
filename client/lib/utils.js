@@ -13,12 +13,14 @@ OnElementReady = function (selector, fcn) {
 
 var statusStr = function (status) {
     switch (status) {
-    case undefined:
-        return 'in planning';
-    case 'inProgress':
-        return 'in progress';
-    default:
-        return status;
+        case undefined:
+            return 'in planning';
+        case 'inPlanning':
+            return 'in planning';
+        case 'inProgress':
+            return 'in progress';
+        default:
+            return status;
     }
 }
 

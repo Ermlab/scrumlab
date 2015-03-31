@@ -111,5 +111,40 @@ Template.issueItemWorkboard.helpers({
             status: 'success',
             percent: totals.done
         }];
+    },
+    issueTitle: function () {
+        return Session.get('selectedIssueTitle');
+    },
+    issueDescription: function () {
+        return Session.get('SelectedIssueDesctiption');
+    },
+    issueId: function () {
+        return Session.get('selectedIssueId');
+    },
+    issueState: function () {
+        return Session.get('selectedIssueState');
+    },
+    issueIid: function () {
+        return Session.get('selectedIssueIid');
+    },
+    issueEstimation: function () {
+        return Session.get('selectedIssueEstimation');
     }
+
+
+});
+
+Template.issueItemWorkboard.events({
+
+    'click .description': function() {
+
+        Session.set('selectedIssueEstimation', totalEstimation(this));
+        Session.set('selectedIssueIid',this.gitlab.iid);
+        Session.set('selectedIssueId',this._id);
+        Session.set('selectedIssueState',this.gitlab.state);
+        Session.set('selectedIssueTitle', this.gitlab.title);
+        Session.set('SelectedIssueDesctiption', this.gitlab.description)
+
+    },
+
 });

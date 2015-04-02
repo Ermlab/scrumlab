@@ -22,5 +22,5 @@ UI.registerHelper('fetching', function () {
 
 
 UI.registerHelper('test', function () {
-    return "this is a test helper";
+   /* return "this is a test helper";*/
 });

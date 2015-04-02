@@ -34,8 +34,8 @@ Meteor.publish('members', function (projectId) {
                 gitlab: 1
             }
         });
-        
-        
+
+
     }
 });
 
@@ -51,8 +51,9 @@ Meteor.publish('userProjects', function () {
 
 Meteor.publish('sprints', function (projectId) {
     return Sprints.find({
-        'project_id': projectId
-    });
+            'project_id': projectId
+        }
+    );
 });
 
 Meteor.publish('issues', function (projectId) {

@@ -233,10 +233,10 @@ Template.planBoard.events({
 Template.issuesPanelDropdown.options = function () {
     var options = 0;
     if (Session.get("showActive")) {
-        options = _activeOptions(this.name);
+        options = _options(this.name);
     }
     else {
-        options = _options(this.name);
+        options = _activeOptions(this.name);
     }
 
     return options;
@@ -246,6 +246,7 @@ var _options = function (panel) {
         'gitlab.state': 'active',
     }, {
         sort: {
+            'status' : "inProgress",
             'gitlab.iid': 1,
         }
     }).fetch();
@@ -255,10 +256,11 @@ var _options = function (panel) {
 var _activeOptions = function (panel) {
     var sprints = Sprints.find({
         'gitlab.state': 'active',
-        'status': 'inProgress'
+        'status': { "$in":['inPlanning','inProgress']}
     }, {
         sort: {
-            'gitlab.iid': 1,
+            'status' : "inProgress",
+            'gitlab.iid': 1
         }
     }).fetch();
     return SprintSelectOptions(sprints, panel);

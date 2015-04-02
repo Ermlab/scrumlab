@@ -1,8 +1,12 @@
+
 <template name="issuesPanel">
     {{#if context.project}}
+
     <div class="issues-panel" id="panel-{{name}}" data-name="{{name}}" data-id="{{selectedSprint._id}}">
         <div class="issues-panel-header">
+
             {{> issuesPanelDropdown}}
+
             <em>{{selectedSprint.help}}</em>
             {{#if selectedSprint.editable}}
                 <a href="#" class="edit-sprint fa fa-pencil"></a>
@@ -25,6 +29,7 @@
         
     </div>
     {{/if}}
+
 </template>
 
 
@@ -64,7 +69,9 @@
             <div class="form-group">
                 <input type="submit" class="btn btn-sm btn-primary" value="Add new issue" />
                 <a class="close-it" href="#">close</a>
+
             </div>
         </form>
     </div>
+
 </template>

@@ -1,68 +1,100 @@
 <template name="modalEditSprint">
     {{#with sprint}}
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 id="modal-title" class="modal-title">
-            {{#if isNew}}Add new sprint{{else}}Edit sprint{{/if}}
-        </h4>
-    </div>
-    <div class="modal-body">
-        <form id="edit-sprint" class="form-horizontal" role="form">
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Name:</label>
-                <div class="col-sm-10">
-                    <input type="text" required class="form-control" name="gitlab.title" placeholder="Sprint name" value="{{gitlab.title}}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inputPassword3" class="col-sm-2 control-label">Description:</label>
-                <div class="col-sm-10">
-                    <textarea class="form-control" name="gitlab.description" placeholder="Sprint description">{{gitlab.description}}</textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Start date:</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        <label class="input-group-addon btn"><span class="glyphicon glyphicon-calendar"></span>
-                        </label>
-                        <input type="date" name="start_date" min="" max="{{gitlab.due_date}}" class="sprint-date date-picker form-control" value="{{start_date}}" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">End date:</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        <label class="input-group-addon btn"><span class="glyphicon glyphicon-calendar"></span>
-                        </label>
-                        <input type="date" name="gitlab.due_date" min="{{start_date}}" class="sprint-date date-picker form-control" value="{{gitlab.due_date}}" />
-                    </div>
-                </div>
-            </div>
-            {{#unless isNew}}
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Status:</label>
-                <div class="form-group row">
-                    <div class="col-sm-2">
-                        <p class="form-control-static">{{sprintStatus}}</p>
-                    </div>
-                        {{#if canStartSprint}}<button type="button" class="btn btn-success start-sprint">Start Sprint</button>{{/if}}
-                        {{#if canCompleteSprint}}<button type="button" class="btn btn-success complete-sprint">Complete Sprint</button>{{/if}}
-                        {{#if canAbortSprint}}<button type="button" class="btn btn-warning abort-sprint">Abort Sprint</button>{{/if}}
-                </div>
-            </div>            
-            {{/unless}}
-            
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    {{#if isNew}}
-                    <button type="submit" id="add-sprint" class="btn btn-primary">Add sprint</button>
-                    {{/if}}
-                </div>
-            </div>
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                    class="sr-only">Close</span></button>
+            <h4 id="modal-title" class="modal-title">
+                {{#if isNew}}Add new sprint{{else}}Edit sprint{{/if}}
+            </h4>
+        </div>
+        <div class="modal-body">
+            <form id="edit-sprint" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Name:</label>
 
-        </form>
-    </div>
+                    <div class="col-sm-10">
+                        <input type="text" required class="form-control" name="gitlab.title" placeholder="Sprint name"
+                               value="{{gitlab.title}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Description:</label>
+
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="gitlab.description"
+                                  placeholder="Sprint description">{{gitlab.description}}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Start date:</label>
+
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <label class="input-group-addon btn"><span class="glyphicon glyphicon-calendar"></span>
+                            </label>
+                            <input type="date" name="start_date" min="" max="{{gitlab.due_date}}"
+                                   class="sprint-date date-picker form-control" value="{{start_date}}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">End date:</label>
+
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <label class="input-group-addon btn"><span class="glyphicon glyphicon-calendar"></span>
+                            </label>
+                            <input type="date" name="gitlab.due_date" min="{{start_date}}"
+                                   class="sprint-date date-picker form-control" value="{{gitlab.due_date}}"/>
+                        </div>
+                    </div>
+                </div>
+                {{#unless isNew}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Status:</label>
+
+                        <div class="form-group row">
+                            <div class="col-sm-2">
+                                <p class="form-control-static">{{sprintStatus}}</p>
+                            </div>
+                            <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group"
+                                 style="width: 468.328px;margin-left: 128px;">
+                                <div class="btn-group" role="group">{{#if checkInPlanningStatus this.status}}
+                                    <button type="button"  class="btn btn-default confirmed" style="color: white;background-color: #5cb85c;">
+                                        In progress
+                                    </button>
+                                {{else}}
+                                    <button type="button" class="btn btn-default start-sprint">Start Sprint</button>
+                                {{/if}}</div>
+                                <div class="btn-group" role="group">{{#if checkCompletedStatus this.status}}
+                                    <button type="button" class="btn btn-default confirmed" style="background-color: #f0ad4e; color: white;">
+                                        Completed Sprint
+                                    </button>
+                                {{else}}
+                                    <button type="button" class="btn btn-default complete-sprint">Complete Sprint
+                                    </button>
+                                {{/if}}</div>
+                                <div class="btn-group" role="group">{{#if checkAbortedStatus this.status}}
+                                    <button type="button" class="btn btn-default confirmed" style="color: white;background-color: #d9534f;">
+                                        Aborted Sprint
+                                    </button>
+                                {{else}}
+                                    <button type="button" class="btn btn-default abort-sprint"> Abort Sprint
+                                    </button>     {{/if}}</div>
+                            </div>
+                        </div>
+                    </div>
+                {{/unless}}
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        {{#if isNew}}
+                            <button type="submit" id="add-sprint" class="btn btn-primary">Add sprint</button>
+                            <span class="errorMessage" style="color :rgb(228, 87, 87)"></span>
+                        {{/if}}
+                    </div>
+                </div>
+            </form>
+        </div>
     {{/with}}
 </template>

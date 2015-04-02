@@ -100,9 +100,16 @@ Server = {
                     delete doc['gitlab.due_date'];
 
                     logger.debug('milestone added', milestone, doc);
-                    var id = Sprints.insert(doc);
-                    logger.debug("New sprint added with id", id);
-                    future.return(id);
+                    if (milestone.id !== undefined) {
+                        var id = Sprints.insert(doc);
+                        logger.debug("New sprint added with id", id);
+                        future.return(id);
+                    }
+                    else {
+                        logger.debug("Failed to add sprint");
+                        future.return(undefined);
+                    }
+
                 }).run();
             });
             return future.wait();
@@ -166,7 +173,8 @@ Server = {
             'title': issue.title,
             'description': issue.description,
             'assignee_id': issue.assignee_id,
-            'labels': 'story'
+            'labels': 'story',
+            'milestone_id': null
         };
 
         if (issue.sprint) {
@@ -763,6 +771,7 @@ Server = {
 };
 
 Meteor.startup(function () {
+    Sprints.remove({gitlab:true});
     // Set schedule to check if sprint has ended
     // Schedule to fire every day at 1:00 am
     // parser.text('at 1:00 am');

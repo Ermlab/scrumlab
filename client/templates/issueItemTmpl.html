@@ -1,10 +1,16 @@
 <template name="issueItemTmpl">
-    <div title="{{gitlab.title}}" ref="{{sprint}}" objectType="issue" class="issue issue-{{gitlab.state}}" data-id={{_id}} state={{gitlab.state}}>
+    <div title="{{gitlab.title}}" ref="{{sprint}}" objectType="issue" class="issue issue-{{gitlab.state}}"
+         data-id={{_id}} state={{gitlab.state}}>
         <div class="handler"></div>
         <div class="inner">
-            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">&#35;{{gitlab.iid}}</a>
-            <span class="title">{{>xeditable titleOptions}}</span>
-            <div class="description">{{gitlab.description}}</div>
+            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">
+                &#35;{{gitlab.iid}}</a>
+            <span class="title">
+                {{>xeditable titleOptions}}</span>
+
+            <div class="description" data-toggle="modal" data-target="#myModal">
+                {{#markdown}}{{gitlab.description}} {{/markdown}}
+            </div>
             <div class="estimation" title="estimation">{{totalEstimation}}</div>
             <div class="footer">
                 <span class="tasksCount"><i class="fa fa-check-square-o"></i> {{tasksCount}}</span>
@@ -15,26 +21,66 @@
 
 
 <template name="issueItemWorkboard">
-    <div title="{{gitlab.title}}" objectType="issue" class="issue issue-{{gitlab.state}}" data-id={{_id}} state={{gitlab.state}}>
+    <div title="{{gitlab.title}}" objectType="issue" class="issue issue-{{gitlab.state}}"
+         data-id={{_id}} state={{gitlab.state}}>
         <div class="inner">
-            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">&#35;{{gitlab.iid}}</a>
-            <span class="title">{{>xeditable titleOptions}}</span>
-            {{#if gitlab.description}}
-            <div class="description">{{gitlab.description}}</div>
-            {{else}}
+            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">
+                &#35;{{gitlab.iid}}</a>
+            <h4 class="title">{{>xeditable titleOptions}}</h4> {{#if gitlab.description}}
+            <div class="description" data-toggle="modal" data-target="#myModal">
+                {{#markdown}} {{gitlab.description}} {{/markdown}}
+
+            </div>
+        {{else}}
             <div class="description empty">No description.</div>
-            {{/if}}
+        {{/if}}
             <div class="estimation" title="estimation">{{totalEstimation}}</div>
-            {{!-- {{> tasksListTmpl tasks=tasks issue=this}} --}}
-            {{#if progress}}
+            {{!-- {{> tasksListTmpl tasks=tasks issue=this}} --}} {{#if progress}}
             <div class="progress">
                 {{#each progress}}
-                <div class="progress-bar progress-bar-{{status}}" style="width: {{percent}}%">
-                    <span class="">{{value}}</span>
-                </div>
+                    <div class="progress-bar progress-bar-{{status}}" style="width: {{percent}}%">
+                        <span class="">{{value}}</span>
+                    </div>
                 {{/each}}
             </div>
-            {{/if}}
+        {{/if}}
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <div title="{{issueTitle}}" class="issue issue-{{issueState}}"
+                         data-id={{issueId}} state={{issueState}}>
+                        <div class="inner">
+                            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{issueIid}}"
+                               target="_blank">&#35;{{issueIid}}</a>
+                            <h4 class="modal-title" id="myModalLabel">{{issueTitle}}</h4>
+
+                            <div class="estimation" title="estimation" style="
+    margin-right: 20px;">{{issueEstimation}}</div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div title="{{issueTitle}}" class="issue issue-{{issueState}}"
+                         data-id={{issueId}} state={{issueState}}>
+                        <div class="inner">
+                            {{#markdown}} {{issueDescription}} {{/markdown}}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
+
+
 </template>

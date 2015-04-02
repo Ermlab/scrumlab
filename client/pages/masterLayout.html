@@ -1,13 +1,10 @@
 <template name="masterLayout">
     {{!--
-    <link type="text/css" rel="Stylesheet" href="http://ajax.microsoft.com/ajax/jquery.ui/1.8.6/themes/smoothness/jquery-ui.css" />
-    --}}
-    
-    {{> connectionStatus}}
+    <link type="text/css" rel="Stylesheet" href="http://ajax.microsoft.com/ajax/jquery.ui/1.8.6/themes/smoothness/jquery-ui.css" /> --}} {{> connectionStatus}}
 
     <nav class="navbar-fluid navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
+
             <div class="navbar-header ">
                 <button type="button " class="navbar-toggle " data-toggle="collapse " data-target=".navbar-collapse">
                     <span class="sr-only ">Toggle navigation</span>
@@ -18,8 +15,6 @@
 
                 <a class="navbar-brand" href="#">Scrumlab</a>
             </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="navbar-collapse collapse in">
                 <ul class="nav navbar-nav">
                     <li class="{{ isActiveRoute '^home$' }}">
@@ -44,13 +39,14 @@
                     <li class="{{ isActiveRoute '^reportsBoard$' }}">
                         <a href="{{ pathFor 'reportsBoard' id=project._id }}">Reports</a>
                     </li>
-                    
+
                     <li class="sync">
                         <a href="#" class="fa fa-refresh" title="Sync with gitlab"></a>
                     </li>
 
 
-                    {{/if}} {{else}}
+                    {{/if}}
+                    <!-- {{else}}
                     <li class="{{ isActiveRoute '^serverLogin$' }}">
                         <a href="{{ pathFor 'pricing' }}">Pricing</a>
                     </li>
@@ -59,7 +55,7 @@
                     </li>
                     <li class="{{ isActiveRoute '^serverLogin$' }}">
                         <a href="{{ pathFor 'about' }}">About</a>
-                    </li>
+                    </li>-->
                     {{/if}}
                 </ul>
 
@@ -75,8 +71,6 @@
         </div>
     </nav>
     <div class="container-fluid">
-        {{> yield}}
-        {{> modal}}
+        {{> yield}} {{> modal}}
     </div>
 </template>
-

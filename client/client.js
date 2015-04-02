@@ -51,13 +51,15 @@ Client = {
         if (!user) {
             return;
         }
-
-        var gitlabIssue = {
-            'project_id': issue.gitlabProjectId,
-            'title': issue.title,
-            'description': issue.description,
-        };
-
+        function extracted() {
+            var gitlabIssue = {
+                'project_id': issue.gitlabProjectId,
+                'title': issue.title,
+                'description': issue.description,
+            };
+            return gitlabIssue;
+        }
+        var gitlabIssue = extracted();
         var new_issue = BuildAnIssue(issue, gitlabIssue);
 
         return Issues.insert(new_issue);

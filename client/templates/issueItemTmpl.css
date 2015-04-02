@@ -53,3 +53,17 @@ div.story:hover {
     color: black;
 }
 */
+
+p > img {
+    vertical-align: middle;
+    width: 300px;
+}
+
+.modal-body img  {
+    vertical-align: middle;
+    width: 800px;
+}
+.modal .modal-body {
+    max-height: 620px;
+    overflow-y: auto;
+}

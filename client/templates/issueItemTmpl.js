@@ -93,11 +93,11 @@ Template.issueItemWorkboard.helpers({
             }
         }
         var total = totals.toDo + totals.inProgress + totals.done;
-        
-        if (total==0) {
+
+        if (total == 0) {
             return;
         }
-        
+
         totals.toDo = Math.round(100 * totals.toDo / total);
         totals.inProgress = Math.round(100 * totals.inProgress / total);
         totals.done = 100 - totals.toDo - totals.inProgress;
@@ -111,5 +111,40 @@ Template.issueItemWorkboard.helpers({
             status: 'success',
             percent: totals.done
         }];
+    },
+    issueTitle: function () {
+        return Session.get('selectedIssueTitle');
+    },
+    issueDescription: function () {
+        return Session.get('SelectedIssueDesctiption');
+    },
+    issueId: function () {
+        return Session.get('selectedIssueId');
+    },
+    issueState: function () {
+        return Session.get('selectedIssueState');
+    },
+    issueIid: function () {
+        return Session.get('selectedIssueIid');
+    },
+    issueEstimation: function () {
+        return Session.get('selectedIssueEstimation');
     }
+
+
+});
+
+Template.issueItemWorkboard.events({
+
+    'click .description': function() {
+
+        Session.set('selectedIssueEstimation', totalEstimation(this));
+        Session.set('selectedIssueIid',this.gitlab.iid);
+        Session.set('selectedIssueId',this._id);
+        Session.set('selectedIssueState',this.gitlab.state);
+        Session.set('selectedIssueTitle', this.gitlab.title);
+        Session.set('SelectedIssueDesctiption', this.gitlab.description)
+
+    },
+
 });

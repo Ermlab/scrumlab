@@ -25,7 +25,7 @@ Template.modalEditSprint.sprint = function () {
 }
 
 Template.modalEditSprint.sprintStatus = function () {
-    if (this.status === undefined || this.status === null) {
+    if (this.status === undefined || this.status === null || this.status === "inPlanning") {
         return 'In planning';
     }
     if (this.status == 'inProgress') {
@@ -39,8 +39,10 @@ Template.modalEditSprint.sprintStatus = function () {
     }
 }
 
-Template.modalEditSprint.canStartSprint = function (sprint) {
+
+Template.modalEditSprint.canStartSprint = function () {
     return (this.status === undefined || this.status === null);
+
 }
 
 Template.modalEditSprint.canCompleteSprint = function (sprint) {
@@ -79,6 +81,7 @@ Template.modalEditSprint.events({
     },
 
     'click .start-sprint': function (e) {
+
         e.preventDefault();
         Sprints.update(this._id, {
             $set: {
@@ -86,6 +89,7 @@ Template.modalEditSprint.events({
             }
         });
         Meteor.call('pushSprint', this._id);
+
     },
 
     'click .complete-sprint': function (e) {
@@ -96,6 +100,7 @@ Template.modalEditSprint.events({
             }
         });
         Meteor.call('pushSprint', this._id);
+
     },
 
     'click .abort-sprint': function (e) {
@@ -106,9 +111,11 @@ Template.modalEditSprint.events({
             }
         });
         Meteor.call('pushSprint', this._id);
+
     },
 
-    'submit form': function (e) {
+
+    'submit form': function (e, template) {
         e.preventDefault();
 
         // form was sumbitted for existing sprint
@@ -128,8 +135,12 @@ Template.modalEditSprint.events({
             }
         });
         $('#update-sprint').prop('disabled', true);
+        $('.errorMessage').text('');
+
+        $('#add-sprint').attr("disabled", true);
 
         Meteor.call('createSprint', doc, function (error, result) {
+
             if (result) {
                 // wait until new document arrives to client...
                 var id = Meteor.setInterval(function () {
@@ -144,8 +155,44 @@ Template.modalEditSprint.events({
                     }
                 }, 100);
             } else {
+
+                $('.errorMessage').text(error.reason);
                 $('#update-sprint').prop('disabled', false);
             }
         });
+    },
+    'click .confirmed': function (e) {
+        e.preventDefault();
+        Sprints.update(this._id, {
+            $set: {
+                status: "inPlanning"
+            }
+        });
+        Meteor.call('pushSprint', this._id);
     }
+
+});
+Template.modalEditSprint.helpers({
+    'checkCompletedStatus': function (status) {
+    if(status == "completed") {
+        return true;
+    }else {
+        return false;
+    }
+    },
+    'checkAbortedStatus': function (status) {
+        if(status == "aborted") {
+            return true;
+        }else {
+            return false;
+        }
+    },
+    'checkInPlanningStatus': function (status) {
+        if(status == "inProgress") {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 });

@@ -5,21 +5,24 @@
 
 <template name="reportsBoardSprintChart">
     <div id="sprintChart" style="position:relative;" class="row">
-        <div class="legend" style="position:absolute; right:40px;"></div>
+        <div class="legend"  style="position:absolute; right:40px;"></div>
         <canvas height="300" width="900"></canvas>
     </div>
     {{draw}}
+    <div id="lineLegend"></div>
 </template>
 
 <template name="reportsBoardSprintDropdown">
     <div class="input-group">
         <select class="container form-control">
             {{#each options}}
-            <option {{selectedIfEq value selectedSprint}} value="{{value}}">{{name}}{{status_str}}</option>
+                <option {{selectedIfEq value selectedSprint}} value="{{value}}">{{name}}{{status_str}}</option>
             {{/each}}
         </select>
+
         <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i
+                    class="fa fa-bars"></i></button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 {{!--
                 {{#if ../sprint.isBacklog}}
@@ -33,7 +36,8 @@
                 --}}
                 <li class="dropdown-header">GitLab</li>
                 <li><a class="open-project" href="{{project.gitlab.web_url}}" target="_blank">View project</a></li>
-                <li><a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">View milestone</a></li>
+                <li><a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">View
+                    milestone</a></li>
             </ul>
         </div>
     </div>

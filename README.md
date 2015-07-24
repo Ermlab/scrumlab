@@ -11,11 +11,23 @@ Description
 
 ## Try Scrumlab
 
-http://scrumlab.ermlab.com
+http://scrumlab.it
 
 
 # Instalation
 
+Prerequisites:
+* Gitlab - server - link to intalation prcedure
+* Mongodb - 
+* Meteor > version?
+
+
+MongoDB instalation + replica sets (one machine)
+
+Meteor: 
+* metoer user - special accout for meteor user, 
+* nginx - see our server configuration
+* upstrat script - krzysiek
 
 
 # Licesns

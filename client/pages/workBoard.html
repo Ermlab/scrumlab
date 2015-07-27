@@ -11,6 +11,16 @@
     <a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">{{sprint.gitlab.title}} <i class="fa fa-external-link"></i></a>
     {{/if}}
     --}}
+
+    <div class="row">
+        <div class="col-sm-12"><div class="checkbox">
+            <label class="hide-completed">
+                <input id="showActiveSprintsWorkBoard" type="checkbox" checked="{{showActiveSprintsWorkBoard}}"/>
+                Show all Sprints
+            </label>
+        </div></div>
+    </div>
+
     {{> workboardSprintDropdown}}
 
     <div class="row sprint-stats">

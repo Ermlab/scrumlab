@@ -112,7 +112,7 @@ Template.issuesPanel.destroyed = function () {
 
 Template.issuesPanel.rendered = function () {
 
-    Session.set("showActive",null);
+    Session.set("showActiveSprintsPlanBoard",null);
 
     OnElementReady('.issues-panel-body', function () {
         resizePanels();
@@ -224,15 +224,15 @@ Template.issuesPanel.events({
 
 });
 Template.planBoard.events({
-    'change .hide-completed input' : function (e) {
+    'change #showActiveSprintsPlanBoard' : function (e) {
         e.preventDefault();
-        Session.set("showActive",e.target.checked);
+        Session.set("showActiveSprintsPlanBoard",e.target.checked);
     }
 });
 
 Template.issuesPanelDropdown.options = function () {
     var options = 0;
-    if (Session.get("showActive")) {
+    if (Session.get("showActiveSprintsPlanBoard")) {
         options = _options(this.name);
     }
     else {
@@ -242,20 +242,24 @@ Template.issuesPanelDropdown.options = function () {
     return options;
 }
 var _options = function (panel) {
-    var sprints = Sprints.find({
+  /*  var sprints = Sprints.find({
         'gitlab.state': 'active',
     }, {
         sort: {
             'status' : "inProgress",
             'gitlab.iid': 1,
         }
-    }).fetch();
+    }).fetch();*/
+    var sprints = Sprints.find().fetch();
+
     return SprintSelectOptions(sprints, panel);
 }
 
 var _activeOptions = function (panel) {
     var sprints = Sprints.find({
+/*
         'gitlab.state': 'active',
+*/
         'status': { "$in":['inPlanning','inProgress']}
     }, {
         sort: {

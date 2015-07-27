@@ -43,7 +43,12 @@ Template.workBoard.events({
         Session.set('rightIssuesPanel','backlog');
         Session.set('rightIssuesPanel', this.sprint.gitlab.iid);
         Router.go('planBoard', {id:this.project._id});
+    },
+    'change #showActiveSprintsWorkBoard' : function (e) {
+        e.preventDefault();
+        Session.set("showActiveSprintsWorkBoard", e.target.checked);
     }
+
 });
 
 Template.workBoardProgressBar.helpers({
@@ -223,6 +228,9 @@ Template.workBoardRow.helpers({
 });
 
 Template.workBoardRow.rendered = function () {
+
+    Session.set("showActiveSprintsWorkBoard",null);
+
     OnElementReady("#issue-" + this.data._id, function (selector) {
         $(selector + " ul").sortable({
             delay: '100',
@@ -294,8 +302,14 @@ Template.workBoardRow.rendered = function () {
 }
 
 Template.workboardSprintDropdown.options = function () {
-    var sprints = Sprints.find().fetch();
-    return SprintSelectOptions(sprints);
+    var options = 0;
+    if (Session.get("showActiveSprintsWorkBoard")) {
+        options = _options();
+    }
+    else {
+        options = _activeOptions();
+    }
+    return options;
 }
 
 Template.workboardSprintDropdown.events({
@@ -303,3 +317,21 @@ Template.workboardSprintDropdown.events({
         Session.set('workboardSprint', $(e.target).val() * 1);
     }
 });
+
+var _options = function(){
+    var sprints = Sprints.find().fetch();
+    return SprintSelectOptions(sprints);
+}
+
+var _activeOptions = function() {
+    var sprints = Sprints.find({
+
+        'status': { "$in":['inPlanning','inProgress']}
+    }, {
+        sort: {
+            'status' : "inProgress",
+            'gitlab.iid': 1
+        }
+    }).fetch();
+    return SprintSelectOptions(sprints);
+}

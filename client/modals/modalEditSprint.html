@@ -7,7 +7,7 @@
                 {{#if isNew}}Add new sprint{{else}}Edit sprint{{/if}}
             </h4>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="padding-right: 30px;padding-left: 30px;">
             <form id="edit-sprint" class="form-horizontal" role="form">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Name:</label>
@@ -60,14 +60,16 @@
                             <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group"
                                  style="width: 468.328px;margin-left: 128px;">
                                 <div class="btn-group" role="group">{{#if checkInPlanningStatus this.status}}
-                                    <button type="button"  class="btn btn-default confirmed" style="color: white;background-color: #5cb85c;">
+                                    <button type="button" class="btn btn-default confirmed"
+                                            style="color: white;background-color: #5cb85c;">
                                         In progress
                                     </button>
                                 {{else}}
                                     <button type="button" class="btn btn-default start-sprint">Start Sprint</button>
                                 {{/if}}</div>
                                 <div class="btn-group" role="group">{{#if checkCompletedStatus this.status}}
-                                    <button type="button" class="btn btn-default confirmed" style="background-color: #f0ad4e; color: white;">
+                                    <button type="button" class="btn btn-default confirmed"
+                                            style="background-color: #f0ad4e; color: white;">
                                         Completed Sprint
                                     </button>
                                 {{else}}
@@ -75,7 +77,8 @@
                                     </button>
                                 {{/if}}</div>
                                 <div class="btn-group" role="group">{{#if checkAbortedStatus this.status}}
-                                    <button type="button" class="btn btn-default confirmed" style="color: white;background-color: #d9534f;">
+                                    <button type="button" class="btn btn-default confirmed"
+                                            style="color: white;background-color: #d9534f;">
                                         Aborted Sprint
                                     </button>
                                 {{else}}

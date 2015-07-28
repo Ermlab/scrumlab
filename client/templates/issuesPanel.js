@@ -112,7 +112,7 @@ Template.issuesPanel.destroyed = function () {
 
 Template.issuesPanel.rendered = function () {
 
-    Session.set("showActiveSprintsPlanBoard",null);
+    Session.set("showAllSprintsInPlanBoard", null);
 
     OnElementReady('.issues-panel-body', function () {
         resizePanels();
@@ -221,18 +221,22 @@ Template.issuesPanel.events({
             data: this.name + 'IssuesPanel'
         });
     },
-
 });
+
 Template.planBoard.events({
-    'change #showActiveSprintsPlanBoard' : function (e) {
+    'change #showAllSprintsPlanBoard': function (e) {
         e.preventDefault();
-        Session.set("showActiveSprintsPlanBoard",e.target.checked);
+        Session.set("showAllSprintsInPlanBoard", e.target.checked);
+        setTimeout(function () {
+            Session.set('leftIssuesPanel', $('#panel-left .form-control :selected').val());
+            Session.set('rightIssuesPanel', $('#panel-right .form-control :selected').val());
+        }, 500)
     }
 });
 
 Template.issuesPanelDropdown.options = function () {
     var options = 0;
-    if (Session.get("showActiveSprintsPlanBoard")) {
+    if (Session.get("showAllSprintsInPlanBoard")) {
         options = _options(this.name);
     }
     else {
@@ -241,29 +245,35 @@ Template.issuesPanelDropdown.options = function () {
 
     return options;
 }
+
 var _options = function (panel) {
-  /*  var sprints = Sprints.find({
-        'gitlab.state': 'active',
-    }, {
+    /*  var sprints = Sprints.find({
+     'gitlab.state': 'active',
+     }, {
+     sort: {
+     'status' : "inProgress",
+     'gitlab.iid': 1,
+     }
+     }).fetch();*/
+    var sprints = Sprints.find({}, {
         sort: {
-            'status' : "inProgress",
-            'gitlab.iid': 1,
+            'status': "inProgress",
+            'gitlab.iid': 1
         }
-    }).fetch();*/
-    var sprints = Sprints.find().fetch();
+    }).fetch();
 
     return SprintSelectOptions(sprints, panel);
 }
 
 var _activeOptions = function (panel) {
     var sprints = Sprints.find({
-/*
-        'gitlab.state': 'active',
-*/
-        'status': { "$in":['inPlanning','inProgress']}
+        'gitlab.state': 'active'
+        /*
+         'status': { "$in":['inPlanning','inProgress']}
+         */
     }, {
         sort: {
-            'status' : "inProgress",
+            'status': "inProgress",
             'gitlab.iid': 1
         }
     }).fetch();

@@ -3,7 +3,7 @@
          data-id={{_id}} state={{gitlab.state}}>
         <div class="handler"></div>
         <div class="inner">
-            <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{gitlab.iid}}" target="_blank">
+            <a class="issue-id" href="{{getProjectUrl project_id}}/issues/{{gitlab.iid}}" target="_blank">
                 &#35;{{gitlab.iid}}</a>
             <span class="title">
                 {{>xeditable titleOptions}}</span>
@@ -18,7 +18,6 @@
         </div>
     </div>
 </template>
-
 
 <template name="issueItemWorkboard">
     <div title="{{gitlab.title}}" objectType="issue" class="issue issue-{{gitlab.state}}"

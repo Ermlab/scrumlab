@@ -50,18 +50,18 @@
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog" style="width: 1200px;">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="height: 66px;">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
                     <div title="{{issueTitle}}" class="issue issue-{{issueState}}"
                          data-id={{issueId}} state={{issueState}}>
                         <div class="inner">
                             <a class="issue-id" href="{{../project.gitlab.web_url}}/issues/{{issueIid}}"
-                               target="_blank">&#35;{{issueIid}}</a>
-                            <h4 class="modal-title" id="myModalLabel">{{issueTitle}}</h4>
+                               target="_blank" style="font-size: large;">&#35;{{issueIid}}</a>
+                            <h4 class="modal-title" id="myModalLabel" style="display: inline;">{{issueTitle}}</h4>
 
                             <div class="estimation" title="estimation" style="
-    margin-right: 20px;">{{issueEstimation}}</div>
+    margin-right: 20px; font-size: inherit;">{{issueEstimation}}</div>
                         </div>
 
                     </div>

@@ -13,7 +13,7 @@ var issueTitleOptions = function (issue) {
             }
         },
         updated: function (id) {
-            Meteor.call('pushIssue', issue.id);
+            Meteor.call('pushIssue', id);
         }
     };
 }

@@ -330,8 +330,7 @@ Template.workboardSprintDropdown.events({
 var _options = function () {
     var sprints = Sprints.find({}, {
         sort: {
-            'status': "inProgress",
-            'gitlab.iid': 1
+            'status': "inProgress"
         }
     }).fetch();
     return SprintSelectOptions(sprints);
@@ -346,8 +345,7 @@ var _activeOptions = function () {
          */
     }, {
         sort: {
-            'status': "inProgress",
-            'gitlab.iid': 1
+            'status': "inProgress"
         }
     }).fetch();
     return SprintSelectOptions(sprints);

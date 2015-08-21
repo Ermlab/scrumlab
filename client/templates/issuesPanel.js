@@ -257,8 +257,7 @@ var _options = function (panel) {
      }).fetch();*/
     var sprints = Sprints.find({}, {
         sort: {
-            'status': "inProgress",
-            'gitlab.iid': 1
+            'status': "inProgress"
         }
     }).fetch();
 
@@ -268,13 +267,9 @@ var _options = function (panel) {
 var _activeOptions = function (panel) {
     var sprints = Sprints.find({
         'gitlab.state': 'active'
-        /*
-         'status': { "$in":['inPlanning','inProgress']}
-         */
     }, {
         sort: {
-            'status': "inProgress",
-            'gitlab.iid': 1
+            'status': "inProgress"
         }
     }).fetch();
     return SprintSelectOptions(sprints, panel);

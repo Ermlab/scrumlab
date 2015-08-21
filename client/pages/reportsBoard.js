@@ -108,7 +108,11 @@ Template.reportsBoardSprintChart.draw = function () {
 }
 
 Template.reportsBoardSprintDropdown.options = function () {
-    var sprints = Sprints.find().fetch();
+    var sprints = Sprints.find({}, {
+        sort: {
+            'status': "inProgress"
+        }
+    }).fetch();
     return SprintSelectOptions(sprints);
 }
 

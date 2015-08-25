@@ -13,7 +13,7 @@ var issueTitleOptions = function (issue) {
             }
         },
         updated: function (id) {
-            Meteor.call('pushIssue', issue.id);
+            Meteor.call('pushIssue', id);
         }
     };
 }
@@ -63,6 +63,11 @@ Template.issueItemTmpl.helpers({
             issue_id: this._id
         }).count();
     },
+    getProjectUrl: function (projectId) {
+        var project = Projects.findOne(projectId);
+        return project.gitlab.web_url;
+    }
+
 });
 
 
@@ -136,12 +141,12 @@ Template.issueItemWorkboard.helpers({
 
 Template.issueItemWorkboard.events({
 
-    'click .description': function() {
+    'click .description': function () {
 
         Session.set('selectedIssueEstimation', totalEstimation(this));
-        Session.set('selectedIssueIid',this.gitlab.iid);
-        Session.set('selectedIssueId',this._id);
-        Session.set('selectedIssueState',this.gitlab.state);
+        Session.set('selectedIssueIid', this.gitlab.iid);
+        Session.set('selectedIssueId', this._id);
+        Session.set('selectedIssueState', this.gitlab.state);
         Session.set('selectedIssueTitle', this.gitlab.title);
         Session.set('SelectedIssueDesctiption', this.gitlab.description)
 

@@ -1,7 +1,8 @@
 <template name="modal">
-    <div id="modal" class="modal fade" role="dialog" aria-labelledby="modal-title" aria-hidden="true" data-backdrop="{{backdropClose}}">
+    <div id="editSprintModal" class="modal fade" role="dialog" aria-labelledby="modal-title" aria-hidden="true"
+         data-backdrop="{{backdropClose}}">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" style="width: 636px;">
                 {{> UI.dynamic template=templateName data=templateData}}
             </div>
         </div>
@@ -18,6 +19,6 @@
         <code>{{this}}</code>
     </div>
     <div class="modal-footer">
-        
+
     </div>
 </template>

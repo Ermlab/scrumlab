@@ -1,8 +1,8 @@
 Template.navProjectsList.anyProjectIsEnabled = function () {
     return Projects.find({
-        enabled: true
-    }).count() > 0;
-}
+            enabled: true
+        }).count() > 0;
+};
 
 Template.navProjectsList.projectNames = function () {
     //TODO: refactor, fields are not needed on the client side (PG)
@@ -15,5 +15,26 @@ Template.navProjectsList.projectNames = function () {
         }
     });
 
+};
+Session.set("activeProject", null);
+
+Template.navProjectsList.anyProjectIsActive = function () {
+    if (Session.get("activeProject") != null && Projects.find({
+            enabled: true
+        }).count() > 0) {
+        return true;
+    } else {
+        Session.set("activeProject", null);
+        return false;
+    }
+};
+Template.navProjectsList.activeProject = function () {
+    return Session.get("activeProject");
+};
+
+Template.navProjectsList.events = {
+    'click .projectName': function () {
+        Session.set("activeProject", this.gitlab.name_with_namespace);
+    }
 };
 

@@ -11,18 +11,29 @@
     <a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">{{sprint.gitlab.title}} <i class="fa fa-external-link"></i></a>
     {{/if}}
     --}}
-    {{> workboardSprintDropdown}}
 
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="checkbox">
+                <label class="hide-completed">
+                    <input id="showAllSprintsWorkBoard" type="checkbox" checked="{{showAllSprintsWorkBoard}}"/>
+                    Show all Sprints
+                </label>
+            </div>
+        </div>
+    </div>
+        {{> workboardSprintDropdown}}
     <div class="row sprint-stats">
         {{#if sprint.start_date}}
-        <div class="col-sm-2">
-            <p>Starts: <strong>{{sprint.start_date}}</strong></p>
-        </div>
+            <div class="col-sm-2">
+                <p>Starts: <strong>{{sprint.start_date}}</strong></p>
+            </div>
         {{/if}}
         {{#if sprint.gitlab.due_date}}
-        <div class="col-sm-2">
-            <p class="end-date">Ends: <strong>{{sprint.gitlab.due_date}}</strong> {{#with daysLeft}}<span class="{{status}}">({{text}})</span>{{/with}}</p>
-        </div>
+            <div class="col-sm-2">
+                <p class="end-date">Ends: <strong>{{sprint.gitlab.due_date}}</strong> {{#with daysLeft}}<span
+                        class="{{status}}">({{text}})</span>{{/with}}</p>
+            </div>
         {{/if}}
         <div class="col-sm-2">
             <p>Issues: <strong>{{numberOfIssues}}</strong></p>
@@ -31,42 +42,42 @@
             <p>Sprint size: <strong>{{sprintSize}}</strong></p>
         </div>
         {{#if numberOfIssues}}
-        <div class="col-sm-12">
-            {{> workBoardProgressBar}}
-        </div>
+            <div class="col-sm-12">
+                {{> workBoardProgressBar}}
+            </div>
         {{/if}}
     </div>
 
     <div class="row">
         {{#if numberOfIssues}}
 
-        <div class="col-sm-3">
-            <h4>Issue</h4>
-        </div>
-        <div class="col-sm-3">
-            <h4>Todo</h4>
-        </div>
-        <div class="col-sm-3">
-            <h4>In progress</h4>
-        </div>
-        <div class="col-sm-3">
-            <h4>Done</h4>
-        </div>
+            <div class="col-sm-3">
+                <h4>Issue</h4>
+            </div>
+            <div class="col-sm-3">
+                <h4>Todo</h4>
+            </div>
+            <div class="col-sm-3">
+                <h4>In progress</h4>
+            </div>
+            <div class="col-sm-3">
+                <h4>Done</h4>
+            </div>
 
 
         {{else}}
-        <p class="col-sm-12">There are 0 issues planned for this sprint.</p>
+            <p class="col-sm-12">There are 0 issues planned for this sprint.</p>
 
         {{/if}}
 
     </div>
 
     {{#each issues}}
-    <div class="row">
-        <div class="col-sm-12">
-            {{>workBoardRow }}
+        <div class="row">
+            <div class="col-sm-12" >
+                {{>workBoardRow }}
+            </div>
         </div>
-    </div>
     {{/each}}
 
 </template>
@@ -79,32 +90,32 @@
         </div>
         <div class="todo col-sm-3">
             {{#if taskList _id 'toDo'}}
-            <div class="new-task">
-                {{> newTask this}}
-            </div>
-            <ul data-status="toDo">
-                {{#each taskList _id 'toDo'}}
-                <li class="task">{{>taskItemWorkboard}}</li>
-                {{/each}}
-            </ul>
+                <div class="new-task">
+                    {{> newTask this}}
+                </div>
+                <ul data-status="toDo">
+                    {{#each taskList _id 'toDo'}}
+                        <li class="task">{{>taskItemWorkboard}}</li>
+                    {{/each}}
+                </ul>
             {{/if}}
         </div>
         <div class="inprogress col-sm-3">
             {{#if taskList _id 'inProgress'}}
-            <ul data-status="inProgress">
-                {{#each taskList _id 'inProgress'}}
-                <li class="task">{{>taskItemWorkboard}}</li>
-                {{/each}}
-            </ul>
+                <ul data-status="inProgress">
+                    {{#each taskList _id 'inProgress'}}
+                        <li class="task">{{>taskItemWorkboard}}</li>
+                    {{/each}}
+                </ul>
             {{/if}}
         </div>
         <div class="done col-sm-3">
             {{#if taskList _id 'done'}}
-            <ul data-status="done">
-                {{#each taskList _id 'done'}}
-                <li class="task">{{>taskItemWorkboard}}</li>
-                {{/each}}
-            </ul>
+                <ul data-status="done">
+                    {{#each taskList _id 'done'}}
+                        <li class="task">{{>taskItemWorkboard}}</li>
+                    {{/each}}
+                </ul>
             {{/if}}
         </div>
     </div>
@@ -114,9 +125,9 @@
 <template name="workBoardProgressBar">
     <div class="progress">
         {{#each progress}}
-        <div class="progress-bar progress-bar-{{status}}" style="width: {{percent}}%">
-            <span class="">{{value}}</span>
-        </div>
+            <div class="progress-bar progress-bar-{{status}}" style="width: {{percent}}%">
+                <span class="">{{value}}</span>
+            </div>
         {{/each}}
     </div>
 </template>
@@ -125,27 +136,31 @@
     <div class="input-group">
         <select class="container form-control">
             {{#each options}}
-            <option {{selectedIfEq value ../params.sprint_iid}} value="{{value}}">{{name}}{{status_str}}</option>
+                <option {{selectedIfEq value ../params.sprint_iid}} value="{{value}}">{{name}}{{status_str}}</option>
             {{/each}}
         </select>
+
         <div class="input-group-btn">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i
+                    class="fa fa-bars"></i></button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 {{#if ../sprint.isBacklog}}
-                <li class="disabled"><a href="#">Open Planboard</a></li>
-                <li class="disabled"><a href="#">Edit</a></li>
+                    <li class="disabled"><a href="#">Open Planboard</a></li>
+                    <li class="disabled"><a href="#">Edit</a></li>
                 {{else}}
-                <li class="plan-sprint"><a href="#">Open Planboard</a></li>
-                <li><a class="edit-sprint" href="#">Edit</a></li>
+                    <li class="plan-sprint"><a href="#">Open Planboard</a></li>
+                    <li><a class="edit-sprint" href="#">Edit</a></li>
                 {{/if}}
                 <li class="divider"></li>
-                
+
                 <li class="dropdown-header">GitLab</li>
                 <li><a class="open-project" href="{{project.gitlab.web_url}}" target="_blank">View project</a></li>
                 {{#if ../sprint.isBacklog}}
-                <li><a class="open-project" href="{{project.gitlab.web_url}}/issues" target="_blank">View issues</a></li>
+                    <li><a class="open-project" href="{{project.gitlab.web_url}}/issues" target="_blank">View issues</a>
+                    </li>
                 {{else}}
-                <li><a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">View milestone</a></li>
+                    <li><a href="{{project.gitlab.web_url}}/milestones/{{sprint.gitlab.iid}}" target="_blank">View
+                        milestone</a></li>
                 {{/if}}
                 {{!--
                 <li class="divider"></li>

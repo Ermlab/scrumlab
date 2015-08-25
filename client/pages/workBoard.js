@@ -1,3 +1,7 @@
+Template.workBoard.rendered = function () {
+    Session.set("showAllSprintsInWorkBoard", null);
+}
+
 Template.workBoard.startableSprints = function () {
     return Sprints.find({
         $or: [
@@ -40,9 +44,21 @@ Template.workBoard.events({
         });
     },
     'click .plan-sprint': function (e) {
-        Session.set('rightIssuesPanel','backlog');
+        Session.set('rightIssuesPanel', 'backlog');
         Session.set('rightIssuesPanel', this.sprint.gitlab.iid);
-        Router.go('planBoard', {id:this.project._id});
+        Router.go('planBoard', {id: this.project._id});
+    },
+    'change #showAllSprintsWorkBoard': function (e) {
+        e.preventDefault();
+        Session.set("showAllSprintsInWorkBoard", e.target.checked);
+
+        setTimeout(function () {
+            if (isNaN($('.form-control :selected').val())) {
+                Session.set('workboardSprint', NaN);
+            } else {
+                Session.set('workboardSprint', parseInt($('.form-control :selected').val()));
+            }
+        }, 500);
     }
 });
 
@@ -99,7 +115,7 @@ Template.workBoard.helpers({
         return Tasks.find({
             $and: [{
                 'issue_id': issueId
-                }, {
+            }, {
                 'status': status
             }]
         });
@@ -133,9 +149,9 @@ Template.workBoard.helpers({
                     estimation: {
                         $exists: false
                     }
-            }, {
+                }, {
                     estimation: ''
-            }]
+                }]
             }]
         }).fetch();
         var estimated = Issues.find({
@@ -215,7 +231,7 @@ Template.workBoardRow.helpers({
         return Tasks.find({
             $and: [{
                 'issue_id': issueId
-                }, {
+            }, {
                 'status': status
             }]
         });
@@ -223,6 +239,7 @@ Template.workBoardRow.helpers({
 });
 
 Template.workBoardRow.rendered = function () {
+
     OnElementReady("#issue-" + this.data._id, function (selector) {
         $(selector + " ul").sortable({
             delay: '100',
@@ -261,9 +278,9 @@ Template.workBoardRow.rendered = function () {
                                 }, {
                                     $or: [{
                                         status: 'inProgress'
-                                }, {
+                                    }, {
                                         status: 'toDo'
-                                }]
+                                    }]
                                 }]
                             }).fetch();
                             if (tasks.length == 0) {
@@ -294,8 +311,14 @@ Template.workBoardRow.rendered = function () {
 }
 
 Template.workboardSprintDropdown.options = function () {
-    var sprints = Sprints.find().fetch();
-    return SprintSelectOptions(sprints);
+    var options = 0;
+    if (Session.get("showAllSprintsInWorkBoard")) {
+        options = _options();
+    }
+    else {
+        options = _activeOptions();
+    }
+    return options;
 }
 
 Template.workboardSprintDropdown.events({
@@ -303,3 +326,27 @@ Template.workboardSprintDropdown.events({
         Session.set('workboardSprint', $(e.target).val() * 1);
     }
 });
+
+var _options = function () {
+    var sprints = Sprints.find({}, {
+        sort: {
+            'status': "inProgress"
+        }
+    }).fetch();
+    return SprintSelectOptions(sprints);
+}
+
+var _activeOptions = function () {
+    var sprints = Sprints.find({
+        'gitlab.state': 'active'
+
+        /*
+         'status': { "$in":['inPlanning','inProgress']}
+         */
+    }, {
+        sort: {
+            'status': "inProgress"
+        }
+    }).fetch();
+    return SprintSelectOptions(sprints);
+}

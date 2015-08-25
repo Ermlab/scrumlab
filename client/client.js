@@ -10,7 +10,7 @@ Meteor.startup(function () {
         
         var modal = Session.get("modal");
         if (modal !== undefined) {
-            OnElementReady('#modal', function(selector) {
+            OnElementReady('#editSprintModal', function(selector) {
                 $(selector).modal('show');
                 $(selector).on('shown.bs.modal', function (e) {
                     $('[name]:first', selector).focus();
@@ -21,7 +21,7 @@ Meteor.startup(function () {
             });
         }
         else {
-            $('#modal').modal('hide');
+            $('#editSprintModal').modal('hide');
         }
     });
 });

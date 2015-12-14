@@ -1,0 +1,69 @@
+/*
+.deleteButton {
+    height: 16px;
+    width: 16px;
+    color: red;
+}
+.right_icons {
+    margin-top: -5px;
+    width: 16px;
+    opacity: 0.2;
+    color: black;
+}
+
+div.story:hover .right_icons {
+    opacity: 1;
+}
+div.story:hover {
+    background-color: #fafafa;
+}
+.story.list-group-item {
+    border-radius: 0px;
+    border-left: 4px #49bf67 solid;
+    padding: 10px;
+    min-height: 55px;
+    margin: 1px 1px;
+}
+.story p {
+    margin: 5px 0px;
+}
+.label.label-warning.pull-left {
+    background-color: #f0ad4e;
+    font-size: 150%;
+    height: 31px;
+}
+.glyphicon.glyphicon-time {
+    width: 16px;
+    margin-left: -4px;
+}
+.title.list-group-item-heading {
+    color: #444;
+    margin: 0px 20px 0px 50px;
+}
+.details.collapse {
+    clear: both;
+}
+.details.collapsing {
+    clear: both;
+}
+.details.collapse.in {
+    clear: both;
+}
+.description.list-group-item-text {
+    color: black;
+}
+*/
+
+p > img {
+    vertical-align: middle;
+    width: 300px;
+}
+
+.modal-body img  {
+    vertical-align: middle;
+    width: 800px;
+}
+.modal .modal-body {
+    max-height: 620px;
+    overflow-y: auto;
+}

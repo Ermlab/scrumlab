@@ -1,0 +1,47 @@
+/* custom css file for scrumlab */
+
+/* custom top padding for bootstrap "fixed navigation"" */
+
+body {
+    padding-top: 70px;
+}
+.error-message {
+    color: red;
+    margin-left: 0.5em;
+}
+.connection-status {
+    top: 0;
+    left: 50%;
+    position: fixed;
+    z-index: 2000;
+}
+.connection-status .inner {
+    margin-left: -50%;
+    background: red;
+    padding: 2px;
+    text-align: center;
+    box-shadow: 0px 2px 5px #444;
+    color: white;
+}
+
+#ui-datepicker-div {
+    display: none;
+}
+
+.editable-click {
+    border: none;
+}
+
+.editable-click:hover {
+    background-color: #FFFFAD;
+}
+
+.handler {
+    float: left;
+    width: 6px;
+    background: transparent url("/img/draggable.png?b") repeat-y;
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    cursor: pointer;
+}

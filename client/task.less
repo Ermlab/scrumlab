@@ -1,0 +1,86 @@
+@inactive-color: gray;
+@active-color: black;
+ .task {
+    .placeholder {
+        border: none;
+        border-width: 1px;
+        min-height: inherit;
+        font-style: italic;
+        color: @inactive-color;
+
+    }
+    margin:4px 0;
+    padding:2px 0;
+    border:0;
+    .inner {
+        min-height: 50px;
+        margin-left: 6px;
+        padding-left: 10px;
+        padding-right: 4px;
+        cursor: pointer;
+        background-color: white;
+        overflow: auto;
+        position: relative;
+    }
+    .status {
+        .label {
+            display: inline-block;
+            text-align: center;
+            .editable-empty {
+                color: inherit;
+            }
+        }
+    }
+}
+.task-workboard {
+    position: relative;
+    .handler {
+        top: 2px;
+        bottom: 2px;
+    }
+    .inner {
+        padding-left: 4px;
+        xxfloat: left;
+    }
+    .title {
+        font-size: 0.9em;
+    }
+    .status {
+        width: 32px;
+        float: right;
+        img {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            border-top-left-radius: 0.25em;
+            border-top-right-radius: 0.25em;
+        }
+        .label {
+            display: block;
+            width: 100%;
+            margin: 0;
+            xxpadding: 0;
+            border: 0;
+            border-radius: 0;
+            border-bottom-left-radius: 0.25em;
+            border-bottom-right-radius: 0.25em;
+        }
+    }
+    .delete-task {
+        display: none;
+    }
+    .delete-task:hover {
+        text-decoration: none;
+    }
+}
+
+.task-workboard:hover {
+     .delete-task {
+         display: inline;
+         color: @inactive-color;
+     }
+    .delete-task:hover {
+        color: @active-color;
+    }
+}

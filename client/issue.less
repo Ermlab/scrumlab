@@ -1,0 +1,132 @@
+@inactive-color: gray;
+@active-color: black;
+
+.issue {
+    margin: 0 2px;
+    overflow: hidden;
+    position: relative;
+    background: white;
+    .inner {
+        min-height: 50px;
+        margin-left: 6px;
+        padding-left: 10px;
+        padding-right: 4px;
+        cursor: pointer;
+        background-color: white;
+        overflow: auto;
+        position: relative;
+        .header {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 0.8em;
+        }
+        .issue-id {
+            font-size: 0.9em;
+            width: 2em;
+            display: inline-block;
+        }
+        .title {
+            font-weight: bold;
+        }
+        .description {
+            color: #444;
+            font-size: 0.9em;
+        }
+        .description.empty {
+            color: #888;
+            font-style: italic;
+        }
+        .estimation {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1px 4px;
+            margin: 4px;
+            font-size: 0.8em;
+            background: #ddd;
+        }
+        
+        .issue-tasks {
+            border: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 0.9em;
+            list-style: none;
+            .task {
+                .placeholder {
+                    border: none;
+                    border-width: 1px;
+                    min-height: inherit;
+                    font-style: italic;
+                    color: @inactive-color;
+                }
+                margin: 4px 0;
+                padding: 2px 0;
+                border: 0;
+                .status {
+                    display: inline;
+                }
+                .title {
+                    font-weight: normal;
+                }
+                .delete-task {
+                    display: none;
+                }
+            }
+            
+            .task:hover {
+                .delete-task {
+                    color: @inactive-color;
+                    display: inline;
+                }
+                .delete-task:hover {
+                    color: @active-color;
+                    display: inline;
+                }
+            }
+            
+            .new-task input {
+                height: 25px;
+            }
+        }
+        
+        .progress {
+            margin-top: 4px;
+            margin-right: 12px;
+            margin-bottom: 8px;
+            height: 8px;
+        }
+    }
+}
+
+.issue.duplicate {
+    display: none;
+}
+
+.issue-closed {
+    text-decoration: line-through;
+    color: gray;
+}
+.inline-edit {
+    display: inline-block;
+    padding: 4px;
+    i {
+        display: none;
+    }
+}
+
+
+.new-issue {
+    padding-left: 20px;
+    padding-right: 4px;
+    .title {
+        display: block;
+        font-weight: bold;
+        font-style: italic;
+        padding: 4px;
+    }
+    .form-group {
+        
+    }
+}

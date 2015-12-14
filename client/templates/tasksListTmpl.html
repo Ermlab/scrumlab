@@ -1,0 +1,11 @@
+<template name="tasksListTmpl">
+    <ul class="issue-tasks">
+        {{#each tasks}}
+        <li class="task">{{> taskItemTmpl}}</li>
+        {{/each}} {{#if issue.gitlab.state}}
+        <li class="new-task">
+            {{> newTask issue}}
+        </li>
+        {{/if}}
+    </ul>
+</template>

@@ -1,0 +1,22 @@
+<template name="navProjectsList">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="min-width:120px">
+        {{#if isActivePath '^project' }}
+            {{project.gitlab.name_with_namespace}}
+        {{else}}
+            {{#if anyProjectIsActive }}{{activeProject}}{{else}}
+                <span id="activeProject">Projects</span>
+            {{/if}}
+        {{/if}}
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu" role="menu">
+        {{#each projectNames}} {{#if enabled}}
+            <li class="projectName"><a href="{{ pathFor 'planBoard' id=_id }}">{{gitlab.name_with_namespace}}</a>
+            </li>
+        {{/if}} {{/each}} {{#if anyProjectIsEnabled}}
+        <li class="divider"></li>
+    {{/if}}
+        <li><a href="{{ pathFor 'settingsProjects' }}">Settings</a>
+        </li>
+    </ul>
+</template>

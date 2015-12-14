@@ -4,7 +4,23 @@
 # but you can also edit it by hand.
 
 standard-app-packages
-autopublish
 insecure
-bootstrap-3
-router
+accounts-ui
+http
+sacha:spin
+underscore
+percolatestudio:synced-cron
+ermlab:gitlab
+mizzao:bootstrap-3
+less
+ermlab:log4js-silos
+pfafman:font-awesome-4
+mrt:jquery-ui
+natestrauser:x-editable-bootstrap
+iron:router
+zimme:iron-router-active
+mrt:moment
+mrt:chartjs
+meteorhacks:kadira
+perak:markdown
+

@@ -1,0 +1,21 @@
+.todo.col-md-3 {
+    min-height: 55px;
+}
+.inprogress.col-md-3 {
+    min-height: 55px;
+}
+.done.col-md-3 {
+    min-height: 55px;
+}
+.placeholder {
+    border-style: dotted;
+    border-width: 1px;
+    border-color: lightgray;
+    min-height: 55px;
+}
+.issue-panel {
+    background-color: #fcf8e3;
+    border: 1px #fbeed5 solid;
+    margin-bottom: 5px;
+    padding: 2px;
+}

@@ -19,4 +19,5 @@
 - jako master/owner mam możliwość przeciągnięcia zadania z verify na done lub inprogress
 - jako osoba przydzielona do danego zadania mogę zaktualizować pozostały czas
 - system oznacza sprint jako zakończony po przekroczeniu daty końcowej
-- (epic) raportowanie
+- (epic) raportowanie - wykresy
+

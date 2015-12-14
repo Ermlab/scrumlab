@@ -1,0 +1,18 @@
+<template name="planBoard">
+    <div class="row">
+        <div class="col-sm-12"><div class="checkbox">
+            <label class="hide-completed">
+                <input id="showAllSprintsPlanBoard" type="checkbox" checked="{{showAllSprintsPlanBoard}}"/>
+                Show all Sprints
+            </label>
+        </div></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            {{> issuesPanel context=this name='left'}}
+        </div>
+        <div class="col-sm-6">
+            {{> issuesPanel context=this name='right'}}
+        </div>
+    </div>
+</template>

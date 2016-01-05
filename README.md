@@ -1,7 +1,7 @@
 ## Scrumlab - Gitlab and Scrum integration platform
 ![alt tag](http://ermlab.com/wp-content/uploads/bfi_thumb/scrumlab-x-mhnnt725cz7yewtoou0387xulfo37gor7h9pp01abs.png)
 
-##Description
+## Description
 Scrumlab is a platform which integrates popular software and project management system – Gitlab and Scrum methodology. We create reactive kanban dashboard and provide sprints functionality.
 
 ## Features
@@ -11,6 +11,7 @@ Scrumlab is a platform which integrates popular software and project management 
 * Creating/editing Sprints
 * Estimating Sprints/Issues time
 * Plan Sprint
+* Changing issue status
 
 ## Try Scrumlab
 
@@ -53,8 +54,6 @@ http://scrumlab.it
 
     docker run -d --name scrumlab -e ROOT_URL=http://127.0.0.1 -e MONGO_URL=mongodb://db:27017/test -e MONGO_OPLOG_URL=mongodb://db:27017/local -p 80:80 --link db:db ermlab/scrumlab
     ```
-
-
 
 
 # License

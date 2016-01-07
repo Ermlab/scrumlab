@@ -2,7 +2,13 @@
 ![alt tag](http://ermlab.com/wp-content/uploads/bfi_thumb/scrumlab-x-mhnnt725cz7yewtoou0387xulfo37gor7h9pp01abs.png)
 
 ## Description
-Scrumlab is a platform which integrates popular software and project management system – Gitlab and Scrum methodology. We create reactive kanban dashboard and provide sprints functionality.
+Improve the productivity of your company with convenient tool for iterative and incremental agile software development.
+Scrumlab is a platform which integrates popular software management system – [Gitlab](https://about.gitlab.com/) and Scrum methodology. We create reactive kanban dashboard and provide sprints functionality.
+**Scrumlab let you integrate Gitlab content such as projects and issues assigned to your gitlab account.** 
+
+Divide your project issues into tasks and assign it to specific project member. 
+Work with distributed team, access it from anywhere with an internet connection and get things done with our intuitive Drag and Drop scheduling system.
+
 
 ## Features
 
@@ -12,6 +18,10 @@ Scrumlab is a platform which integrates popular software and project management 
 * Estimating Sprints/Issues time
 * Plan Sprint
 * Changing issue status
+* Create tasks as a parts of Issue 
+* Moving issues to another Sprint
+* Reports
+* Email notifications
 
 ## Try Scrumlab
 

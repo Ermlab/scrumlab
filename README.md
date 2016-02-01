@@ -70,5 +70,5 @@ http://scrumlab.it
 
 For non-comercial and opensource projects - MIT license
 
-For comercial us - please contacta us office@ermlab.com 
+For comercial use - please contact us office@ermlab.com 
 
